@@ -157,24 +157,9 @@ function ReadingRow({
 }
 
 export function DisputeRecord() {
-  const agreeing = READINGS.filter((r) => r.match).length;
-
   return (
     <div className="min-w-0">
-      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-4">
-        <span className="font-mono text-[0.75rem] uppercase tracking-[0.08em] text-ink2">
-          dispute #d-0417
-        </span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-[0.75rem] uppercase tracking-[0.08em] text-accent">
-          <Check size={13} weight="bold" aria-hidden="true" />
-          Resolved
-        </span>
-        <span className="tnum ml-auto font-mono text-[0.75rem] text-ink2">
-          {agreeing} of {READINGS.length} read the face
-        </span>
-      </p>
-
-      <div className="mt-10 flex flex-col gap-14 md:gap-16">
+      <div className="flex flex-col gap-14 md:gap-16">
         {READINGS.map((r, i) => (
           <ReadingRow key={r.name} r={r} index={i} />
         ))}

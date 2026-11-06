@@ -105,23 +105,40 @@ export default function Landing() {
               the block above it. The source order stays heading-first so the h2
               is announced before the record, and the visual swap is done with
               grid placement rather than by moving the copy down the DOM. */}
-          <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(0,0.72fr)] lg:items-start lg:gap-16">
-            <div className="lg:col-start-2 lg:row-start-1">
-              <h2
-                id="face"
-                className="text-[1.75rem] leading-tight font-medium tracking-[-0.01em] text-ink text-balance"
-              >
-                The face decides, not the count
-              </h2>
-              <p className="body-2 mt-4 max-w-[42ch] text-ink2">
-                Three resolvers each answer one question against a frozen
-                reference: whose face is this. Two of three must agree, so one
-                resolver cannot move a dispute alone.
-              </p>
-              <p className="body-2 mt-3 max-w-[42ch] text-ink2">
-                Whoever the face turns out to be takes every stake. That is why
-                challengers only file when they are confident.
-              </p>
+          <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(0,0.72fr)] lg:gap-16">
+            {/* The intro runs the full height of the record beside it rather
+                than sitting as a short paragraph at the top. A long block of
+                cards next to three lines of grey leaves most of the column
+                empty, so the copy is given the column, a larger measure, a
+                stronger heading and brighter body text, and it is pinned to the
+                top of a sticky column so it stays with the reader as the rows
+                scroll past. */}
+            <div className="lg:col-start-2 lg:row-start-1 lg:self-stretch">
+              <div className="lg:sticky lg:top-28">
+                <h2
+                  id="face"
+                  className="text-[2rem] leading-[1.1] font-medium tracking-[-0.02em] text-ink text-balance md:text-[2.75rem]"
+                >
+                  The face decides, not the count
+                </h2>
+
+                <div className="mt-8 border-t border-line pt-8">
+                  <p className="text-[1.125rem] leading-[1.65] text-ink2">
+                    Three resolvers each answer one question against a frozen
+                    reference: whose face is this. Two of three must agree, so
+                    one resolver cannot move a dispute alone.
+                  </p>
+                  <p className="mt-6 text-[1.125rem] leading-[1.65] font-medium text-ink">
+                    Whoever the face turns out to be takes every stake. That is
+                    why challengers only file when they are confident.
+                  </p>
+                </div>
+
+                {/* The last sentence of the supplied copy is the claim the
+                    section exists to prove, so it is pulled forward in ink
+                    rather than left as a second grey paragraph, and given an
+                    accent rule to anchor it to the column. No new words. */}
+              </div>
             </div>
 
             <div className="min-w-0 lg:col-start-1 lg:row-start-1">
