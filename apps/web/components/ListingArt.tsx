@@ -20,11 +20,28 @@ const STYLES = [notionists, adventurer, bigSmile, openPeeps] as const;
  */
 const GROUND = "var(--bg-soft)";
 
+/**
+ * Muted, desaturated skin/hair/garment palette.
+ *
+ * DiceBear picks randomly from its full palette, which produced neon greens and
+ * pinks that out-shouted every other element on the page. These are all low
+ * saturation, so eight tiles read as one quiet grid.
+ */
+const MUTED = [
+  "c9c3b8", "b9b3a8", "d6d0c4", "a9a49a", "cdbda9",
+  "b3a693", "9f9d97", "c2bdb4", "8f9a9c", "a8b0ad",
+  "c7b8bd", "b0a8b5",
+];
+
 const OPTS = {
   // scale < 100 shrinks the artwork inside its viewBox, leaving headroom so a
   // square tile never crops the head on the taller body-drawing styles.
   backgroundColor: ["transparent"],
   scale: 88,
+  // Supported by every style used below; unknown keys are ignored per style.
+  skinColor: MUTED,
+  hairColor: MUTED,
+  clothingColor: MUTED,
 };
 
 /**

@@ -41,6 +41,8 @@
   --accent-ink: #0c0c0c;
 
   /* MetaMask orange, used only for the one money/chain highlight */
+  /* quiet semantic markers: hue without loudness */
+  --live: #7fb89a;
   --warm: #fa4b00;
   --warm-ink: #0c0c0c;
 

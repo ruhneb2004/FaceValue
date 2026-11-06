@@ -46,11 +46,11 @@ export default function Home() {
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-[34ch]">
               <Image
-                src="/logo-dark.png"
+                src="/logo-footer.png"
                 alt="facevalue"
                 width={800}
-                height={343}
-                className="h-9 w-auto"
+                height={195}
+                className="h-8 w-auto"
               />
               <p className="mt-4 text-sm leading-relaxed text-ink-3">
                 A registry interface for likeness rights. FaceValue is not a

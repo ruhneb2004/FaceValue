@@ -42,7 +42,7 @@ export function SiteHeader() {
             aria-label="Network: Hedera testnet"
           >
             <span
-              className="size-1.5 rounded-full bg-[var(--state-active-bg)]"
+              className="size-1.5 rounded-full bg-[var(--live)]"
               aria-hidden="true"
             />
             <span className="font-mono text-[11px] font-medium text-ink-2">
@@ -54,7 +54,7 @@ export function SiteHeader() {
             />
           </div>
 
-          <Button size="md">
+          <Button size="md" variant="secondary">
             <Wallet className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Connect wallet</span>
             <span className="sm:hidden">Connect</span>

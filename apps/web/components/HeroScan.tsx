@@ -50,9 +50,8 @@ export function HeroScan({ className = "" }: { className?: string }) {
             <path
               key={i}
               d={`M${(x as number) + dx} ${34 + dy}h${8 * (sx as number)}M${(x as number) + dx} ${34 + dy}v${8 * (sy as number)}`}
-              stroke="var(--accent)"
+              stroke="var(--line-strong)"
               strokeWidth="1.5"
-              opacity="0.55"
               strokeLinecap="round"
             />
           ))}
@@ -87,14 +86,13 @@ export function HeroScan({ className = "" }: { className?: string }) {
       {/* facial scan ticks on the capture */}
       <path
         d="M290 84h8M310 84h8M290 100h8M310 100h8"
-        stroke="var(--accent)"
+        stroke="var(--line-strong)"
         strokeWidth="1.5"
         strokeLinecap="round"
-        opacity="0.8"
       />
 
       {/* scan line */}
-      <rect x="232" y="104" width="144" height="14" fill="var(--accent)" opacity="0.14" />
+      <rect x="232" y="104" width="144" height="14" fill="var(--accent)" opacity="0.1" />
       <line
         x1="232"
         y1="111"
@@ -124,9 +122,9 @@ export function HeroScan({ className = "" }: { className?: string }) {
 
       {/* score bars */}
       <rect x="24" y="222" width="144" height="6" rx="3" fill="var(--card-hover)" />
-      <rect x="24" y="222" width="128" height="6" rx="3" fill="var(--state-active-bg)" />
+      <rect x="24" y="222" width="128" height="6" rx="3" fill="var(--live)" />
       <rect x="232" y="222" width="144" height="6" rx="3" fill="var(--card-hover)" />
-      <rect x="232" y="222" width="131" height="6" rx="3" fill="var(--accent)" />
+      <rect x="232" y="222" width="131" height="6" rx="3" fill="var(--text-dim)" opacity="0.6" />
       <text
         x="24"
         y="246"

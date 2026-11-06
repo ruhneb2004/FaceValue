@@ -14,10 +14,11 @@ type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
 const VARIANTS: Record<Variant, string> = {
+  // Ink on accent, never white: white on #73a6ff is 2.43:1, ink is 8.04:1.
   primary:
-    "bg-accent text-white border border-transparent shadow-[var(--shadow-border)] hover:bg-accent-hover",
+    "bg-accent text-[var(--accent-ink)] border border-transparent shadow-[var(--shadow-border)] hover:bg-accent-strong",
   // Inputs and outlined controls keep a real border for 3:1 non-text contrast.
-  secondary: "bg-card text-ink border border-line-strong hover:bg-page",
+  secondary: "bg-card text-ink-2 border border-line hover:bg-soft hover:border-line-strong hover:text-ink",
   ghost: "text-ink-2 hover:bg-strong hover:text-ink border border-transparent",
 };
 

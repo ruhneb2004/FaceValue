@@ -76,7 +76,7 @@ export function Hero() {
               <span className="eyebrow">Match preview</span>
               <span className="flex items-center gap-1.5 font-mono text-[11px] text-ink-3">
                 <span
-                  className="size-1.5 rounded-full bg-[var(--state-active-bg)]"
+                  className="size-1.5 rounded-full bg-[var(--live)]"
                   aria-hidden="true"
                 />
                 live
