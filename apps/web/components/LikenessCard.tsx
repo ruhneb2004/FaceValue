@@ -18,8 +18,6 @@ export function LikenessCard({
 
   return (
     <motion.div
-      /* Infrequent entrance: opacity + 4px blur + 12px rise over 300ms,
-         staggered 100ms. Capped so a long grid never feels slow. */
       initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(4px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{
@@ -39,25 +37,29 @@ export function LikenessCard({
             state={likeness.state}
             className="h-full w-full"
           />
-          <div className="absolute left-3 top-3">
+          <div className="absolute left-2.5 top-2.5">
             <StateBadge state={likeness.state} count={likeness.openChallenges} />
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col gap-1 p-4">
-          <h3 className="text-[15px] font-semibold leading-snug text-ink">
-            {likeness.name}
-          </h3>
+        <div className="flex flex-1 flex-col gap-2 p-3">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-sm font-medium leading-snug text-ink">
+              {likeness.name}
+            </h3>
+            {licensable && (
+              <span className="tabular shrink-0 font-mono text-sm font-medium text-ink">
+                {likeness.pricePerUse.toFixed(2)}
+              </span>
+            )}
+          </div>
 
           {licensable ? (
-            <p className="tabular text-sm text-ink-2">
-              <span className="font-semibold text-ink">
-                {likeness.pricePerUse.toFixed(2)} HBAR
-              </span>{" "}
-              per use
-            </p>
+            <p className="font-mono text-[11px] text-ink-3">HBAR per use</p>
           ) : (
-            <p className="text-sm text-ink-3">{reasonShort(likeness)}</p>
+            <p className="text-xs leading-snug text-ink-3">
+              {reasonShort(likeness)}
+            </p>
           )}
         </div>
       </Link>
@@ -71,10 +73,10 @@ function reasonShort(l: Likeness): string {
       return "Not licensable until settled";
     case "disputed":
       return l.openChallenges > 1
-        ? `Not licensable — ${l.openChallenges} challenges open`
-        : "Not licensable — challenge open";
+        ? `${l.openChallenges} challenges open`
+        : "Challenge open";
     case "review":
-      return "Not licensable — under review";
+      return "Under review";
     case "revoked":
       return "Revoked by the registrant";
     default:

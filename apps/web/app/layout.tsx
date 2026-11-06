@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
-import { Baloo_2, Nunito } from "next/font/google";
+import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-/** Nunito for UI: rounded terminals, friendly but legible at 14px. */
-const nunito = Nunito({
+/** Geist: the grotesque OpenSea uses for UI text. */
+const geist = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-/** Baloo 2 for display: chunky rounded weights, the cartoon register. */
-const baloo = Baloo_2({
+/** Inter tight for display: close to GT America / Grotzec in feel. */
+const inter = Inter({
   variable: "--font-display",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+/** Mono for chain data, ENS names, hashes and bond amounts. */
+const mono = JetBrains_Mono({
+  variable: "--font-mono-src",
   subsets: ["latin"],
   display: "swap",
 });
@@ -26,12 +33,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${nunito.variable} ${baloo.variable} h-full antialiased`}
+      className={`${geist.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-page text-ink">
         <a
           href="#main"
-          className="sr-only rounded-control bg-accent px-4 py-2 font-semibold text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+          className="sr-only rounded-control bg-accent px-4 py-2 font-semibold text-[var(--accent-ink)] focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
         >
           Skip to content
         </a>

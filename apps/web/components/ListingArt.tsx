@@ -18,7 +18,7 @@ const STYLES = [notionists, adventurer, bigSmile, openPeeps] as const;
  * badge, and six vivid backgrounds turned the grid into a rainbow, which
  * fights the single-accent rule.
  */
-const GROUND = "var(--bg-deep)";
+const GROUND = "var(--bg-soft)";
 
 const OPTS = {
   // scale < 100 shrinks the artwork inside its viewBox, leaving headroom so a

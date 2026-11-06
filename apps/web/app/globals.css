@@ -1,70 +1,83 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   FaceValue — flat cartoon system
+   FaceValue — dark web3 marketplace
 
-   Reference: Magic Eden's light tokens (cream canvas #fdfaf3, ink #0c0c0c,
-   one magenta accent), which is the closest thing to a "simple but
-   futuristic" web3 marketplace. Deliberately restrained: ONE accent colour
-   for actions, colour elsewhere means STATE and nothing else.
+   Grounded in measured tokens from the reference sites rather than taste:
 
-   No gradients. No transparency on chrome. Flat fills, hairline borders,
-   one soft shadow at most.
+     OpenSea  bg #141415, 1px rgba(255,255,255,.08) lines, 4px spacing grid,
+              radius sm4/md8/lg12, 150ms micro / cubic-bezier(.22,1,.36,1),
+              "don't use bright white backgrounds"
+     MetaMask #73A6FF blue, #FA4B00 orange, Grotzec-style condensed display
 
-   Every pair below was measured. White on Magic Eden's own #e42575 fails at
-   4.36:1, so the accent is deepened to #d31f6b (5.03:1 with white).
+   Two rules that decided the system:
+   1. OpenSea puts DARK ink on its blue buttons. White on #2a93ff measures
+      3.13:1 and fails; dark ink on #73a6ff measures 8.04:1 and passes.
+      So accent fills carry ink, never white.
+   2. Bright fills + dark ink is also what makes the six state pills readable
+      on a dark canvas (all >= 4.9:1).
+
+   No gradients. Opaque chrome.
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* surfaces — cream, flat */
-  --bg: #fdfaf3;
-  --bg-strong: #fff8eb;
-  --bg-deep: #f4ead4;
-  --card: #ffffff;
+  /* surfaces — near-black, flat */
+  --bg: #141415;
+  --bg-soft: #1b1d1f;
+  --bg-quiet: #101011;
+  --card: #1f2023;
+  --card-hover: #26272b;
 
   /* ink */
-  --text: #0c0c0c;        /* 18.77:1 on bg */
-  --text-body: #3a3a3a;   /* 10.91:1 */
-  --text-muted: #6b6b6b;  /*  5.11:1 */
+  --text: #ffffff;        /* 18.41:1 on bg */
+  --text-body: #d5d6d0;
+  --text-muted: #acada6;  /*  8.14:1 */
+  --text-dim: #9d9e98;    /*  6.47:1 on bg, still clearly secondary */
 
-  /* one accent: actions only */
-  --brand: #d31f6b;        /* white 5.03:1, on bg 4.82:1 */
-  --brand-hover: #b81758;
-  --brand-soft: #fdecf3;
+  /* accent — ink text, never white */
+  --accent: #73a6ff;       /* ink 8.04:1, on bg 7.56:1 */
+  --accent-strong: #2a93ff;
+  --accent-soft: #1f3347;
+  --accent-ink: #0c0c0c;
 
-  /* state fills — ink text, all >= 6.4:1 */
-  --state-active-bg: #3eb489;
-  --state-provisional-bg: #f4b942;
-  --state-disputed-bg: #ef6b5e;
-  --state-review-bg: #a78bfa;
-  --state-moved-bg: #7cc4f0;
-  --state-revoked-bg: #c9c4bb;
+  /* MetaMask orange, used only for the one money/chain highlight */
+  --warm: #fa4b00;
+  --warm-ink: #0c0c0c;
+
+  /* state fills — every one measured with ink >= 4.9:1 */
+  --state-active-bg: #47bb64;
+  --state-provisional-bg: #ffdc3a;
+  --state-disputed-bg: #e24756;
+  --state-review-bg: #c66ef5;
+  --state-moved-bg: #73a6ff;
+  --state-revoked-bg: #9a9b96;
   --state-ink: #0c0c0c;
 
-  /* lines */
-  --border: #e8dfc7;
-  --border-strong: #cdbf99;
+  /* lines — hairline, the OpenSea signature */
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
 
   /* semantic aliases */
   --color-bg-page: var(--bg);
   --color-bg-surface: var(--card);
-  --color-bg-sunken: var(--bg-deep);
+  --color-bg-sunken: var(--bg-quiet);
   --color-text-primary: var(--text);
   --color-text-secondary: var(--text-body);
   --color-text-muted: var(--text-muted);
-  --color-text-on-accent: #ffffff;
-  --color-accent-solid: var(--brand);
-  --color-accent-hover: var(--brand-hover);
-  --color-accent-text: var(--brand);
-  --color-border: var(--border);
-  --color-border-subtle: var(--border);
-  --color-focus-ring: var(--brand);
+  --color-accent-solid: var(--accent);
+  --color-accent-text: var(--accent);
+  --color-border: var(--line);
+  --color-focus-ring: var(--accent);
 
-  /* Layered shadow ring, paired with a transparent border so forced-colors
-     mode still draws an edge (better-ui: shadows for elevation). */
+  /* Layered ring instead of a border, so forced-colors still gets an edge. */
   --shadow-border:
-    0 1px 2px rgba(12, 12, 12, 0.06),
-    0 0 0 1px var(--border);
+    inset 0 0 0 1px var(--line),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+
+  /* radii from OpenSea's scale */
+  --radius-chip: 6px;
+  --radius-control: 8px;
+  --radius-card: 12px;
 }
 
 @theme inline {
@@ -72,25 +85,30 @@
   --color-surface: var(--color-bg-surface);
   --color-sunken: var(--color-bg-sunken);
   --color-card: var(--card);
-  --color-strong: var(--bg-strong);
+  --color-cardh: var(--card-hover);
+  --color-soft: var(--bg-soft);
   --color-ink: var(--color-text-primary);
-  --color-ink-2: var(--color-text-secondary);
-  --color-ink-3: var(--color-text-muted);
-  --color-accent: var(--color-accent-solid);
-  --color-accent-hover: var(--color-accent-hover);
-  --color-accent-soft: var(--brand-soft);
-  --color-line: var(--color-border);
-  --color-line-strong: var(--border-strong);
+  --color-ink-2: var(--color-text-muted);
+  --color-ink-3: var(--text-dim);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-warm: var(--warm);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
 
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-src), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --radius-control: 10px;
-  --radius-card: 16px;
+  --radius-chip: 6px;
+  --radius-control: 8px;
+  --radius-card: 12px;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
 }
 
 body {
@@ -101,42 +119,43 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* better-typography: keep a lone word off the last line; balance headings only. */
 p {
   text-wrap: pretty;
 }
 
 h1,
-h2 {
+h2,
+h3 {
   text-wrap: balance;
 }
 
-/* Long ids, ENS names and addresses must not escape their box. */
 .breakable {
   overflow-wrap: break-word;
 }
 
 :focus-visible {
-  outline: 2px solid var(--brand);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* One soft shadow, used only on cards that sit on the canvas. */
+/* Card: hairline ring, no heavy shadow (OpenSea: "very subtle or no shadows"). */
 .card {
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-border);
   border-radius: var(--radius-card);
-  box-shadow: 0 1px 2px rgba(12, 12, 12, 0.04);
-  transition-property: box-shadow, transform, border-color;
+  transition-property: background-color, box-shadow, transform;
   transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (hover: hover) {
   .card:hover {
-    border-color: var(--border-strong);
-    box-shadow: 0 2px 8px rgba(12, 12, 12, 0.07);
+    background: var(--card-hover);
+    box-shadow:
+      inset 0 0 0 1px var(--line-strong),
+      0 1px 2px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -146,7 +165,7 @@ button,
 }
 
 .press {
-  transition-property: transform, background-color, border-color;
+  transition-property: transform, background-color, border-color, color;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
@@ -159,10 +178,25 @@ button,
   font-variant-numeric: tabular-nums;
 }
 
-/* Sticky chrome must be opaque, never see-through. */
+/* Opaque sticky chrome over a dark canvas. */
 .chrome {
   background-color: var(--bg);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Hairline rule used between sections instead of boxes. */
+.hairline {
+  border-color: var(--line);
+}
+
+/* Machined label: the mono micro-type web3 sites use for chain data. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
 @media (prefers-reduced-motion: reduce) {
