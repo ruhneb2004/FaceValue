@@ -111,21 +111,20 @@ export function SiteHeader() {
                 type="button"
                 onClick={connect}
                 disabled={connecting}
-                className="press group relative inline-flex min-h-11 items-stretch overflow-hidden rounded-md border border-accentink/85 bg-accent text-accentink shadow-[0_1px_2px_rgba(0,0,0,0.4),0_2px_0_0_#7a9900] transition-[box-shadow,transform] duration-200 hover:shadow-[0_1px_3px_rgba(0,0,0,0.45),0_2px_0_0_#7a9900] hover:brightness-[1.04] active:translate-y-px active:shadow-[0_1px_1px_rgba(0,0,0,0.35),0_1px_0_0_#7a9900] disabled:opacity-45 motion-reduce:transition-none"
+                className="press group relative inline-flex min-h-11 items-center gap-1.5 rounded-full border border-accentink/85 bg-accent py-1 pl-4 pr-1 text-accentink shadow-[0_1px_2px_rgba(0,0,0,0.4),0_2px_0_0_#7a9900] transition-[box-shadow,transform,background-color] duration-200 hover:shadow-[0_1px_3px_rgba(0,0,0,0.45),0_2px_0_0_#7a9900] hover:brightness-[1.04] active:translate-y-px active:shadow-[0_1px_1px_rgba(0,0,0,0.35),0_1px_0_0_#7a9900] disabled:opacity-45 motion-reduce:transition-none"
               >
-                {/* Three layers give it weight a flat fill cannot: a hard ink
-                    outline so the edge is defined rather than fading into the
-                    dark bar, a solid 2px lower edge that makes it a physical
-                    plate rather than a painted label, and a lime glow that ties
-                    it to the accent. On press the plate drops one pixel and the
-                    lowest shadow shortens, so it reads as being pushed in. */}
-                <span className="flex items-center gap-2 pl-3.5 pr-3 font-mono text-[0.8125rem] font-semibold uppercase tracking-[0.06em]">
+                {/* A capsule, not a rectangle. The radius is fully round so the
+                    control has no corners to read as a box, and the arrow sits
+                    in a circular ink well inset from the right edge by the same
+                    4px as the vertical padding, so it is concentric with the
+                    outer capsule rather than pasted on the end. */}
+                <span className="flex items-center gap-2 font-mono text-[0.8125rem] font-semibold uppercase tracking-[0.06em]">
                   <Wallet size={15} weight="fill" aria-hidden="true" />
                   {connecting ? "Connecting" : "Connect wallet"}
                 </span>
                 <span
                   aria-hidden="true"
-                  className="grid w-9 place-items-center border-l border-accentink/30 bg-accentink text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-accentink motion-reduce:transition-none"
+                  className="grid size-8 shrink-0 place-items-center rounded-full bg-accentink text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-accentink motion-reduce:transition-none"
                 >
                   <ArrowRight
                     size={14}

@@ -11,7 +11,7 @@ import { cn } from "@/lib/cn";
  */
 const button = cva(
   [
-    "press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-[box-shadow,transform,background-color,border-color] duration-200 motion-reduce:transition-none",
+    "press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border font-semibold transition-[box-shadow,transform,background-color,border-color] duration-200 motion-reduce:transition-none",
     "disabled:pointer-events-none disabled:opacity-45",
   ],
   {
