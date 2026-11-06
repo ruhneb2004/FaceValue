@@ -32,11 +32,7 @@ export function LikenessCard({
         className="card press group flex h-full flex-col overflow-hidden"
       >
         <div className="relative aspect-square w-full overflow-hidden border-b border-line">
-          <ListingArt
-            id={likeness.id}
-            state={likeness.state}
-            className="h-full w-full"
-          />
+          <ListingArt id={likeness.id} className="h-full w-full" />
           <div className="absolute left-2.5 top-2.5">
             <StateBadge state={likeness.state} count={likeness.openChallenges} />
           </div>
@@ -54,32 +50,13 @@ export function LikenessCard({
             )}
           </div>
 
-          {licensable ? (
+          {/* The badge carries the state, and the price carries licensability
+              on its own; a second line would only restate one of them. */}
+          {licensable && (
             <p className="font-mono text-[11px] text-ink-3">HBAR per use</p>
-          ) : (
-            <p className="text-xs leading-snug text-ink-3">
-              {reasonShort(likeness)}
-            </p>
           )}
         </div>
       </Link>
     </motion.div>
   );
-}
-
-function reasonShort(l: Likeness): string {
-  switch (l.state) {
-    case "provisional":
-      return "Not licensable until settled";
-    case "disputed":
-      return l.openChallenges > 1
-        ? `${l.openChallenges} challenges open`
-        : "Challenge open";
-    case "review":
-      return "Under review";
-    case "revoked":
-      return "Revoked by the registrant";
-    default:
-      return "Not licensable";
-  }
 }

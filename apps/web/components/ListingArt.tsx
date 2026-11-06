@@ -1,6 +1,5 @@
 import { createAvatar } from "@dicebear/core";
 import { adventurer, bigSmile, notionists, openPeeps } from "@dicebear/collection";
-import type { LikenessState } from "@/lib/types";
 
 /**
  * Listing artwork.
@@ -53,9 +52,22 @@ const OPTS = {
  * wrong viewBox. Rewriting the ids per instance fixes that.
  */
 function normalise(svg: string, uid: string): string {
-  return svg
-    .replace(/viewboxMask/g, `vbMask-${uid}`)
-    .replace(/<svg /, '<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" ');
+  return (
+    svg
+      // DiceBear embeds an RDF <metadata> block with creator names and two raw
+      // licence URLs. It is invisible but sits in the DOM, so assistive tech
+      // reads the whole attribution blob inside every card link.
+      .replace(/<metadata[\s\S]*?<\/metadata>/g, "")
+      // Also drop any other decorative accessibility nodes; the card link
+      // supplies the accessible name.
+      .replace(/<title[\s\S]*?<\/title>/g, "")
+      .replace(/<desc[\s\S]*?<\/desc>/g, "")
+      .replace(/viewboxMask/g, `vbMask-${uid}`)
+      .replace(
+        /<svg /,
+        '<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" ',
+      )
+  );
 }
 
 /**
@@ -78,11 +90,9 @@ function render(id: string, styleIndex: number): string {
 
 export function ListingArt({
   id,
-  state,
   className = "",
 }: {
   id: string;
-  state: LikenessState;
   className?: string;
 }) {
   let h = 2166136261;

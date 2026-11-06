@@ -25,15 +25,13 @@ export function Hero() {
       <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-6 md:py-10">
         <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <div>
-            <motion.div
+            <motion.p
               {...rise(0)}
-              className="mb-4 inline-flex items-center gap-2 rounded-chip border border-line bg-soft px-2.5 py-1"
+              className="mb-4 flex items-center gap-2 text-[13px] font-medium text-ink-2"
             >
-              <ShieldCheck className="size-3.5 text-accent" aria-hidden="true" />
-              <span className="font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-ink-2">
-                Likeness rights registry
-              </span>
-            </motion.div>
+              <ShieldCheck className="size-4 text-accent" aria-hidden="true" />
+              Likeness rights registry
+            </motion.p>
 
             <motion.h1
               id="hero"
