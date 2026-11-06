@@ -69,13 +69,30 @@ const CONFIG: Record<
   },
 };
 
-export function StateBadge({ state, count }: { state: LikenessState; count?: number }) {
+export function StateBadge({
+  state,
+  count,
+  compact = false,
+}: {
+  state: LikenessState;
+  count?: number;
+  /**
+   * Denser chip for card footers. The default `px-3 py-3` measured 42px tall
+   * around 12px text, which is a button's bulk applied to a label; inside a
+   * 300px card it forced the row to wrap and cost vertical space the artwork
+   * needed. The compact variant keeps the same type and colour, and drops the
+   * padding to a label's.
+   */
+  compact?: boolean;
+}) {
   const c = CONFIG[state];
   const label = state === "disputed" && count && count > 1 ? `${c.label} ${count}` : c.label;
 
   return (
     <span
-      className="caption-4 inline-flex shrink-0 items-center gap-2 rounded-sm border px-3 py-3 font-mono uppercase tracking-[0.06em]"
+      className={`caption-4 inline-flex shrink-0 items-center rounded-sm border font-mono uppercase tracking-[0.06em] ${
+        compact ? "gap-1.5 px-2 py-1" : "gap-2 px-3 py-3"
+      }`}
       style={{
         color: c.fg,
         backgroundColor: `color-mix(in srgb, ${c.tint} 12%, transparent)`,
@@ -85,7 +102,7 @@ export function StateBadge({ state, count }: { state: LikenessState; count?: num
       <svg
         viewBox="0 0 16 16"
         aria-hidden="true"
-        className="size-2.5 shrink-0"
+        className={compact ? "size-2 shrink-0" : "size-2.5 shrink-0"}
         fill="none"
         stroke="currentColor"
         strokeWidth="1.7"

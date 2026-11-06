@@ -3,19 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { SEED_LIKENESSES } from "@/lib/seed";
-import { isLicensable, type LikenessState } from "@/lib/types";
+import { isLicensable } from "@/lib/types";
 import { StateBadge } from "./StateBadge";
 import { LikenessAvatar } from "./LikenessAvatar";
-
-/** Two words at most: a card states the state, the record page explains it. */
-const SHORT: Record<LikenessState, string> = {
-  active: "Available",
-  moved: "Available",
-  provisional: "Not yet",
-  disputed: "Challenged",
-  review: "In review",
-  revoked: "Revoked",
-};
 
 /**
  * A marquee: the registry scrolls continuously, in one direction, forever.
@@ -113,36 +103,38 @@ export function RegistryMarquee() {
                   tabIndex={repeat ? -1 : undefined}
                   className="press group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface3 hover:bg-surface4"
                 >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface2">
+                  <div className="relative aspect-square w-full overflow-hidden bg-surface2">
                     <LikenessAvatar
                       seed={l.id}
                       className="h-full w-full [&>svg]:h-full [&>svg]:w-full [&>svg]:object-contain"
                     />
                   </div>
 
-                  <div className="flex flex-1 flex-col p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="title-4 text-ink">{l.name}</p>
-                      <StateBadge state={l.state} />
-                    </div>
-                    <p className="caption-5 mt-2 font-mono text-ink3">
+                  {/* Dense card body. Three facts only: what it is, which
+                      record it is, and what one use costs. The state appears
+                      once, as the badge over the art; an earlier version also
+                      printed "Available" beside the price, so every licensable
+                      card said the same thing twice. */}
+                  <div className="flex flex-1 flex-col gap-1 p-4">
+                    <p className="title-4 truncate text-ink">{l.name}</p>
+                    <p className="caption-5 truncate font-mono text-ink2">
                       {l.ensName}
                     </p>
 
-                    <div className="mt-auto flex shrink-0 items-end justify-between gap-2 border-t border-line pt-3">
-                      <div>
-                        <p className="caption-5 text-ink3">Per use</p>
-                        <p className="tnum title-3 mt-2 font-mono text-ink">
-                          {l.pricePerUse > 0
-                            ? `${l.pricePerUse} HBAR`
-                            : "\u2014"}
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-3">
+                      {ok ? (
+                        <p className="tnum font-mono text-ink">
+                          <span className="title-3">{l.pricePerUse}</span>
+                          <span className="caption-5 ml-1.5 text-ink2">
+                            HBAR / use
+                          </span>
                         </p>
-                      </div>
-                      <p
-                        className={`caption-5 text-right ${ok ? "text-accent" : "text-ink3"}`}
-                      >
-                        {ok ? "Available" : SHORT[l.state]}
-                      </p>
+                      ) : (
+                        <p className="caption-5 font-mono uppercase tracking-[0.06em] text-ink2">
+                          Not licensable
+                        </p>
+                      )}
+                      <StateBadge state={l.state} compact />
                     </div>
                   </div>
                 </Link>

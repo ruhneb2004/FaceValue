@@ -86,7 +86,14 @@ export function LikenessAvatar({
     backgroundColor: ["transparent"],
   })
     .toString()
-    .replace(/viewboxMask/g, `viewboxMask-${uid}`);
+    .replace(/viewboxMask/g, `viewboxMask-${uid}`)
+    // Strip the RDF metadata block. Its text is part of the SVG, so inline it
+    // joins the parent link's accessible name and a screen reader reads
+    // "Pixel ArtDiceBearhttps://dicebear.com" before it reads the record.
+    // The style is CC0, so no attribution is required in the document.
+    .replace(/<metadata[\s\S]*?<\/metadata>/g, "")
+    // Also drop any <title>, which would be announced a second time.
+    .replace(/<title>[\s\S]*?<\/title>/g, "");
 
   return (
     <div
