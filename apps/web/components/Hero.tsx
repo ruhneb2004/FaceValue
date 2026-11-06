@@ -3,7 +3,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, ChevronDown, Search } from "lucide-react";
 import { Button } from "./Button";
-import { HeroScan } from "./HeroScan";
 
 export function Hero() {
   const reduce = useReducedMotion();
@@ -21,9 +20,31 @@ export function Hero() {
         };
 
   return (
-    <section aria-labelledby="hero" className="border-b border-line bg-sunken">
-      <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-6 md:py-10">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
+    <section
+      aria-labelledby="hero"
+      className="relative isolate overflow-hidden border-b border-line bg-sunken"
+    >
+      {/* Ambient scan behind the hero. Decorative: it carries no information,
+          so it is hidden from assistive tech and stops for reduced motion. */}
+      <video
+        className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-70 motion-reduce:hidden"
+        src="/video/hero-scan.mp4"
+        poster="/video/hero-poster.jpg"
+        autoPlay
+        loop
+        muted
+        playsInline
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+      {/* Flat scrim (no gradient): a solid wash that keeps text contrast over
+          the brightest part of the footage. */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-[var(--bg-quiet)]/80"
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto w-full max-w-[1440px] px-4 py-8 md:px-6 md:py-10">
+        <div className="max-w-[46rem]">
           <div>
             <motion.h1
               id="hero"
@@ -37,9 +58,9 @@ export function Hero() {
               {...rise(0.1)}
               className="mt-3.5 max-w-[48ch] text-[15px] leading-relaxed text-ink-2 md:text-base"
             >
-              Browse registered likenesses, clear one use at a time, and read the
-              bond behind every claim. A dispute is settled by a face match, not
-              a vote.
+              Browse registered likenesses, clear one use at a time, and read
+              the bond behind every claim. A dispute is settled by a face match,
+              not a vote.
             </motion.p>
 
             <motion.div
@@ -56,38 +77,6 @@ export function Hero() {
             </motion.div>
           </div>
 
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
-            className="card overflow-hidden"
-          >
-            <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
-              <span className="eyebrow">Match preview</span>
-              <span className="flex items-center gap-1.5 font-mono text-[11px] text-ink-3">
-                <span
-                  className="size-1.5 rounded-full bg-[var(--live)]"
-                  aria-hidden="true"
-                />
-                live
-              </span>
-            </div>
-            <HeroScan className="h-auto w-full" />
-            <div className="grid grid-cols-3 divide-x divide-[var(--line)] border-t border-line">
-              {[
-                ["Cosine", "0.91"],
-                ["Bond", "500 HBAR"],
-                ["Resolvers", "2 of 3"],
-              ].map(([k, v]) => (
-                <div key={k} className="px-3 py-2.5">
-                  <div className="eyebrow">{k}</div>
-                  <div className="tabular mt-0.5 font-mono text-sm font-medium text-ink">
-                    {v}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
 
         {/* Search bar: OpenSea's prominent, shortcut-hinted input. */}
