@@ -3,13 +3,12 @@
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { ArrowRight, ChevronDown, Search } from "lucide-react";
-import { Button } from "@/components/Button";
-import { HeroScan } from "@/components/HeroScan";
+import { HeroScan } from "./HeroScan";
 
 const STATS = [
-  { value: "6", label: "states, one machine" },
-  { value: "2 of 3", label: "resolvers on a close call" },
-  { value: "100%", label: "of stakes on chain" },
+  { value: "6", label: "states, one machine", bg: "var(--lime)" },
+  { value: "2 of 3", label: "resolvers on a close call", bg: "var(--lemon)" },
+  { value: "100%", label: "of stakes on chain", bg: "var(--cyan)" },
 ];
 
 export function Hero() {
@@ -18,39 +17,45 @@ export function Hero() {
     reduce
       ? {}
       : {
-          initial: { opacity: 0, y: 12 },
+          initial: { opacity: 0, y: 14 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.5, ease: [0.2, 0, 0, 1] as const, delay },
+          transition: { duration: 0.45, ease: [0.2, 0, 0, 1] as const, delay },
         };
 
   return (
     <section
       aria-labelledby="hero"
-      className="border-b border-line-subtle bg-gradient-to-b from-[var(--gold-50)] to-page"
+      className="border-b-[2.5px] border-ink bg-gradient-to-b from-[var(--lemon)] via-[var(--canvas)] to-[var(--canvas)]"
     >
-      <div className="mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 py-14 md:grid-cols-[1.05fr_0.95fr] md:gap-14 md:px-8 md:py-20">
+      <div className="mx-auto grid w-full max-w-[1200px] items-center gap-10 px-5 py-14 md:grid-cols-[1.05fr_0.95fr] md:gap-12 md:px-8 md:py-20">
         <div>
           <motion.p
             {...rise(0)}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-line-subtle bg-page/70 px-3 py-1 text-xs font-medium uppercase tracking-[0.08em] text-ink-2"
+            className="sticker mb-5 inline-flex items-center gap-2 bg-bubblegum px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.06em] text-ink"
           >
-            <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <span className="size-1.5 rounded-full bg-ink" aria-hidden="true" />
             Likeness rights registry
           </motion.p>
 
           <motion.h1
             id="hero"
             {...rise(0.06)}
-            className="max-w-[16ch] font-display text-4xl leading-[1.03] tracking-[-0.025em] text-ink sm:text-5xl md:text-6xl"
+            className="max-w-[15ch] font-display text-[2.75rem] font-extrabold leading-[0.95] tracking-[-0.02em] text-ink sm:text-6xl md:text-7xl"
           >
             Likeness rights,
             <br />
-            <span className="italic text-[var(--gold-800)]">cleared.</span>
+            <span className="relative inline-block">
+              <span className="relative z-10">cleared.</span>
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 bottom-1 z-0 h-4 -rotate-1 bg-lime"
+              />
+            </span>
           </motion.h1>
 
           <motion.p
             {...rise(0.12)}
-            className="mt-6 max-w-[52ch] text-base leading-relaxed text-ink-2"
+            className="mt-6 max-w-[52ch] text-lg font-semibold leading-relaxed text-ink-2"
           >
             Find a face. Licence it for one use. Every claim is backed by a bond
             anyone can read, and a dispute is settled in the open by a face
@@ -58,25 +63,33 @@ export function Hero() {
           </motion.p>
 
           <motion.div {...rise(0.18)} className="mt-8 flex flex-wrap gap-3">
-            <Button>
+            <a
+              href="#listings"
+              className="press cartoon-sm inline-flex min-h-12 items-center gap-2 bg-violet px-5 font-extrabold text-white"
+            >
               Browse likenesses
               <ArrowRight className="size-4" aria-hidden="true" />
-            </Button>
-            <Button variant="secondary">Register your likeness</Button>
+            </a>
+            <a
+              href="/register"
+              className="press cartoon-sm inline-flex min-h-12 items-center gap-2 bg-paper px-5 font-extrabold text-ink"
+            >
+              Register your likeness
+            </a>
           </motion.div>
 
-          <motion.dl
-            {...rise(0.24)}
-            className="mt-10 grid max-w-[30rem] grid-cols-3 gap-4 border-t border-line-subtle pt-6"
-          >
+          <motion.dl {...rise(0.24)} className="mt-10 grid max-w-[32rem] grid-cols-3 gap-3">
             {STATS.map((s) => (
-              <div key={s.label}>
+              <div key={s.label} className="cartoon-sm bg-paper px-3 py-3">
                 <dt className="sr-only">{s.label}</dt>
                 <dd>
-                  <span className="tabular block font-display text-2xl text-ink">
+                  <span
+                    className="tabular mb-1 inline-block rounded-md px-1.5 font-display text-2xl font-extrabold text-ink"
+                    style={{ backgroundColor: s.bg }}
+                  >
                     {s.value}
                   </span>
-                  <span className="mt-1 block text-xs leading-snug text-ink-3">
+                  <span className="block text-[11px] font-bold leading-snug text-ink-2">
                     {s.label}
                   </span>
                 </dd>
@@ -86,13 +99,13 @@ export function Hero() {
         </div>
 
         <motion.div
-          initial={reduce ? false : { opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.2, 0, 0, 1], delay: 0.1 }}
+          initial={reduce ? false : { opacity: 0, scale: 0.96, rotate: -1.5 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 0.5, ease: [0.2, 0, 0, 1], delay: 0.1 }}
           className="relative"
         >
-          <div className="surface-card rounded-card bg-surface p-6">
-            <div className="mb-4 flex items-center justify-between border-b border-line-subtle pb-4">
+          <div className="cartoon bg-paper p-5">
+            <div className="mb-4 flex items-center justify-between border-b-[2.5px] border-ink pb-3">
               <Image
                 src="/logo-light.png"
                 alt="facevalue"
@@ -100,14 +113,11 @@ export function Hero() {
                 height={297}
                 className="h-6 w-auto"
               />
-              <span className="text-xs uppercase tracking-[0.08em] text-ink-3">
+              <span className="sticker bg-cyan px-2 py-0.5 text-[10px] font-extrabold uppercase text-ink">
                 Ref · 001
               </span>
             </div>
             <HeroScan className="h-auto w-full" />
-            <p className="mt-4 text-center text-xs text-ink-3">
-              Capture → embed → match against the frozen reference
-            </p>
           </div>
         </motion.div>
       </div>
@@ -119,14 +129,14 @@ export function Hero() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-3"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink"
               aria-hidden="true"
             />
             <input
               id="q"
               type="search"
               placeholder="Search by listing name or ENS name"
-              className="h-11 w-full rounded-control border border-line bg-page pl-9 pr-3 text-sm text-ink placeholder:text-ink-3"
+              className="h-12 w-full rounded-control border-[2.5px] border-ink bg-paper pl-10 pr-3 text-sm font-semibold text-ink placeholder:text-ink-2"
             />
           </div>
           <div className="relative">
@@ -136,7 +146,7 @@ export function Hero() {
             <select
               id="state"
               defaultValue="all"
-              className="h-11 w-full appearance-none rounded-control border border-line bg-page pl-3 pr-10 text-sm text-ink sm:w-auto sm:min-w-[11rem]"
+              className="h-12 w-full appearance-none rounded-control border-[2.5px] border-ink bg-paper pl-3.5 pr-11 text-sm font-bold text-ink sm:w-auto sm:min-w-[11.5rem]"
             >
               <option value="all">All states</option>
               <option value="active">Licensable</option>
@@ -145,11 +155,10 @@ export function Hero() {
               <option value="review">Under review</option>
               <option value="moved">Moved</option>
             </select>
-            {/* Chevron inset 12px; the select reserves 40px so text never
-                collides with it. */}
             <ChevronDown
               aria-hidden="true"
-              className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink-3"
+              className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-ink"
+              strokeWidth={3}
             />
           </div>
         </div>

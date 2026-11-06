@@ -19,16 +19,19 @@ export default function Home() {
           aria-labelledby="listings"
           className="mx-auto w-full max-w-[1200px] px-5 py-12 md:px-8 md:py-16"
         >
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 id="listings" className="font-display text-2xl text-ink">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h2
+              id="listings"
+              className="font-display text-3xl font-extrabold text-ink"
+            >
               Listings
             </h2>
-            <p className="tabular text-sm text-ink-3">
-              {SEED_LIKENESSES.length} total · {licensable} licensable now
+            <p className="sticker bg-paper px-3 py-1 text-xs font-extrabold uppercase tracking-[0.04em] text-ink">
+              {SEED_LIKENESSES.length} total · {licensable} licensable
             </p>
           </div>
 
-          <ul className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {SEED_LIKENESSES.map((l, i) => (
               <li key={l.id}>
                 <LikenessCard likeness={l} index={i} />
@@ -38,8 +41,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Dark band: the reversed lockup is the only artwork that belongs here. */}
-      <footer className="bg-[#2f3841] text-[#e9e4d8]">
+      <footer className="border-t-[2.5px] border-ink bg-[var(--ink)] text-[var(--canvas)]">
         <div className="mx-auto w-full max-w-[1200px] px-5 py-12 md:px-8">
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-[34ch]">
@@ -50,15 +52,15 @@ export default function Home() {
                 height={343}
                 className="h-12 w-auto"
               />
-              <p className="mt-4 text-sm leading-relaxed text-[#b9bcc0]">
+              <p className="mt-4 text-sm font-semibold leading-relaxed text-[#c9c2e0]">
                 A registry interface for likeness rights. FaceValue is not a
                 party to any licence.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-10 text-sm">
+            <div className="flex flex-wrap gap-10 text-sm font-bold">
               <div>
-                <p className="mb-3 text-xs uppercase tracking-[0.08em] text-[#9aa0a6]">
+                <p className="mb-3 text-[11px] uppercase tracking-[0.08em] text-[#a99ed0]">
                   Integrations
                 </p>
                 <ul className="space-y-2">
@@ -68,7 +70,7 @@ export default function Home() {
                 </ul>
               </div>
               <div>
-                <p className="mb-3 text-xs uppercase tracking-[0.08em] text-[#9aa0a6]">
+                <p className="mb-3 text-[11px] uppercase tracking-[0.08em] text-[#a99ed0]">
                   Record
                 </p>
                 <ul className="space-y-2">

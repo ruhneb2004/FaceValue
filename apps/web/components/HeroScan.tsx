@@ -1,131 +1,79 @@
 /**
- * Hero illustration: a likeness being scanned and registered.
+ * Hero illustration: a likeness being scanned into the registry.
  *
- * Drawn in the same thin line-art language as the logo, using only palette
- * tokens so it recolours with the theme. Not a stock illustration: a face is
- * the product here, so the artwork has to be ours.
+ * Cartoon-futurist: bold fills, thick ink outlines, flat colour. Same visual
+ * language as the listing artwork and the logo, so the page has one voice.
  */
 export function HeroScan({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 420 340"
+      viewBox="0 0 420 320"
       role="img"
       aria-label="A likeness being scanned into the registry and issued a bond"
       className={className}
       fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
     >
       <defs>
-        <linearGradient id="scanFade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--gold-700)" stopOpacity="0" />
-          <stop offset="50%" stopColor="var(--gold-700)" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="var(--gold-700)" stopOpacity="0" />
-        </linearGradient>
         <clipPath id="faceClip">
-          <circle cx="150" cy="150" r="92" />
+          <circle cx="150" cy="150" r="88" />
         </clipPath>
       </defs>
 
-      {/* soft ground */}
-      <ellipse
-        cx="150"
-        cy="268"
-        rx="112"
-        ry="14"
-        fill="var(--taupe-300)"
-        opacity="0.45"
-      />
+      {/* burst behind the head */}
+      <g opacity="0.95">
+        <circle cx="150" cy="150" r="112" fill="var(--lemon)" />
+        <circle cx="150" cy="150" r="88" fill="var(--bubblegum)" />
+      </g>
 
-      {/* outer registration ring, dashed */}
+      <g clipPath="url(#faceClip)">
+        {/* head + shoulders, flat blocks */}
+        <path d="M150 74c30 0 50 22 50 52 0 30-20 52-50 52s-50-22-50-52c0-30 20-52 50-52Z" fill="#ffd7b0" />
+        <path d="M100 106c0-24 22-38 50-38s50 14 50 38c-10-10-28-16-50-16s-40 6-50 16Z" fill="var(--ink)" />
+        <path d="M96 210c8-26 28-38 54-38s46 12 54 38v20H96v-20Z" fill="var(--cyan)" />
+        {/* eyes */}
+        <circle cx="132" cy="140" r="5.5" fill="var(--ink)" />
+        <circle cx="170" cy="140" r="5.5" fill="var(--ink)" />
+        {/* smile */}
+        <path d="M136 166c6 7 22 7 28 0" stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" />
+        {/* scan band */}
+        <rect x="58" y="146" width="184" height="22" fill="var(--violet)" opacity="0.28" />
+        <line x1="58" y1="157" x2="242" y2="157" stroke="var(--violet)" strokeWidth="4" />
+      </g>
+
+      {/* thick rings, drawn after so they sit on top */}
+      <circle cx="150" cy="150" r="88" stroke="var(--ink)" strokeWidth="4" />
       <circle
         cx="150"
         cy="150"
-        r="118"
-        stroke="var(--taupe-400)"
-        strokeWidth="1.5"
-        strokeDasharray="2 7"
-        opacity="0.9"
+        r="112"
+        stroke="var(--ink)"
+        strokeWidth="3"
+        strokeDasharray="3 9"
       />
 
-      {/* primary ring */}
-      <circle cx="150" cy="150" r="92" stroke="var(--neutral-800)" strokeWidth="1.5" />
-
-      {/* corner ticks on the ring */}
+      {/* corner ticks */}
       {[
-        [150, 58, 150, 44],
-        [150, 242, 150, 256],
-        [58, 150, 44, 150],
-        [242, 150, 256, 150],
+        [150, 38, 150, 22],
+        [150, 262, 150, 278],
+        [38, 150, 22, 150],
+        [262, 150, 278, 150],
       ].map(([x1, y1, x2, y2], i) => (
-        <line
-          key={i}
-          x1={x1}
-          y1={y1}
-          x2={x2}
-          y2={y2}
-          stroke="var(--neutral-800)"
-          strokeWidth="1.5"
-        />
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" />
       ))}
 
-      <g clipPath="url(#faceClip)">
-        {/* head */}
-        <path
-          d="M150 96c26 0 44 20 44 47 0 12 3 20 6 26 3 7-2 12-8 13v10c0 6-5 10-11 10h-14"
-          stroke="var(--neutral-900)"
-          strokeWidth="2"
-        />
-        <path
-          d="M150 96c-26 0-44 20-44 47 0 12-3 20-6 26-3 7 2 12 8 13v10c0 6 5 10 11 10h14"
-          stroke="var(--neutral-900)"
-          strokeWidth="2"
-        />
-        {/* eyes */}
-        <path d="M132 142c3-3 8-3 11 0" stroke="var(--neutral-900)" strokeWidth="2" />
-        <path d="M157 142c3-3 8-3 11 0" stroke="var(--neutral-900)" strokeWidth="2" />
-        {/* nose + mouth */}
-        <path d="M150 146v18l-5 4" stroke="var(--neutral-800)" strokeWidth="1.75" />
-        <path d="M140 184c6 4 14 4 20 0" stroke="var(--neutral-800)" strokeWidth="1.75" />
-        {/* scan line */}
-        <rect x="58" y="146" width="184" height="26" fill="url(#scanFade)" />
-        <line
-          x1="58"
-          y1="159"
-          x2="242"
-          y2="159"
-          stroke="var(--gold-700)"
-          strokeWidth="2"
-        />
-      </g>
+      {/* bond token */}
+      <path d="M272 150h44" stroke="var(--ink)" strokeWidth="4" strokeDasharray="2 8" strokeLinecap="round" />
+      <circle cx="336" cy="150" r="28" fill="var(--lime)" stroke="var(--ink)" strokeWidth="4" />
+      <path d="M326 150l7.5 8 13-16" stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
 
-      {/* node graph to the right: the bond */}
-      <line
-        x1="268"
-        y1="150"
-        x2="316"
-        y2="150"
-        stroke="var(--taupe-400)"
-        strokeWidth="1.5"
-        strokeDasharray="3 4"
-      />
-      <circle cx="336" cy="150" r="26" stroke="var(--gold-700)" strokeWidth="2" />
-      <path
-        d="M326 150l7 7 13-15"
-        stroke="var(--gold-700)"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      {/* sticker chips */}
+      <rect x="298" y="196" width="78" height="12" rx="6" fill="var(--lemon)" stroke="var(--ink)" strokeWidth="3" />
+      <rect x="298" y="218" width="56" height="12" rx="6" fill="var(--paper)" stroke="var(--ink)" strokeWidth="3" />
 
-      {/* bond label bars */}
-      <rect x="310" y="196" width="72" height="6" rx="3" fill="var(--taupe-300)" />
-      <rect x="310" y="210" width="52" height="6" rx="3" fill="var(--taupe-200)" />
-      <rect x="310" y="224" width="60" height="6" rx="3" fill="var(--taupe-200)" />
-
-      {/* small floating dots */}
-      <circle cx="96" cy="66" r="3" fill="var(--gold-400)" />
-      <circle cx="228" cy="80" r="2.5" fill="var(--taupe-400)" />
-      <circle cx="72" cy="214" r="2.5" fill="var(--taupe-400)" />
+      {/* sparks */}
+      <path d="M84 58l6 12 12 6-12 6-6 12-6-12-12-6 12-6 6-12Z" fill="var(--lemon)" stroke="var(--ink)" strokeWidth="3" strokeLinejoin="round" />
+      <circle cx="232" cy="72" r="7" fill="var(--cyan)" stroke="var(--ink)" strokeWidth="3" />
+      <circle cx="70" cy="228" r="6" fill="var(--bubblegum)" stroke="var(--ink)" strokeWidth="3" />
     </svg>
   );
 }

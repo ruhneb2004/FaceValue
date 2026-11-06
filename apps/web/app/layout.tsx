@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Baloo_2, Nunito } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+/** Nunito for UI: rounded terminals, friendly but legible at 14px. */
+const nunito = Nunito({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const fraunces = Fraunces({
+/** Baloo 2 for display: chunky rounded weights, the cartoon register. */
+const baloo = Baloo_2({
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
@@ -24,12 +26,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${nunito.variable} ${baloo.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-page text-ink">
         <a
           href="#main"
-          className="sr-only rounded-control bg-accent px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+          className="sr-only rounded-control bg-accent px-4 py-2 font-semibold text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
         >
           Skip to content
         </a>
