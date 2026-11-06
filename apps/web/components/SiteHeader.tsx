@@ -54,7 +54,11 @@ export function SiteHeader() {
           <Link
             href="/"
             aria-label="FaceValue home"
-            className="press flex min-h-11 items-center gap-2 rounded-md pl-2 pr-2"
+            /* shrink-0: at 320px the connect capsule (whitespace-nowrap) won the
+               width fight and squeezed this group to zero, so the mark vanished
+               from the bar entirely. Pinning the brand makes the capsule give
+               way instead. */
+            className="press flex min-h-11 shrink-0 items-center gap-2 rounded-md pl-2 pr-2"
           >
             <Image
               src="/mark-inverse.png"
@@ -168,7 +172,16 @@ export function SiteHeader() {
                     outer capsule rather than pasted on the end. */}
                 <span className="flex items-center gap-2 whitespace-nowrap font-mono text-[0.8125rem] font-semibold uppercase tracking-[0.06em]">
                   <Wallet size={15} weight="fill" aria-hidden="true" />
-                  {connecting ? "Connecting" : "Connect wallet"}
+                  {/* At the narrowest width the label is shortened rather than
+                      allowed to push the brand off the bar. "Connect" still
+                      says what the control does; the sheet and the page CTAs
+                      carry the full wording. */}
+                  <span className="sm:hidden">
+                    {connecting ? "Connecting" : "Connect"}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {connecting ? "Connecting" : "Connect wallet"}
+                  </span>
                 </span>
                 <span
                   aria-hidden="true"
