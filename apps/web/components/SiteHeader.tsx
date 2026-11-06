@@ -128,7 +128,12 @@ export function SiteHeader() {
             </span>
           </p>
 
-          <div className="ml-2 flex shrink-0 items-center gap-2 lg:ml-4">
+          {/* ml-auto, not ml-2: below `lg` the link row is hidden, and that row
+              was the only thing with flex-1, so it was doing all the pushing.
+              With it gone the controls collapsed to the left and left ~457px of
+              dead space at 900px. ml-auto pins the group to the trailing edge at
+              every width, whether the links are present or not. */}
+          <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-4">
             {status === "connected" && address ? (
               <>
                 <button
