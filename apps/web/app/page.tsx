@@ -169,7 +169,7 @@ export default function Landing() {
                 <h2 className="heading-5 max-w-[24ch] text-ink">
                   Browse the registry before you commit to anything
                 </h2>
-                <p className="body-6 mt-3 max-w-[46ch] text-sub">
+                <p className="body-6 mt-3 max-w-[46ch] text-sublift">
                   Connecting a wallet shows prices, bonds and open challenges. It costs nothing and signs nothing.
                 </p>
               </div>

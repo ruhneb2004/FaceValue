@@ -62,18 +62,30 @@
   --line: rgba(255, 255, 255, 0.09);
   --line-strong: rgba(255, 255, 255, 0.16);
 
-  /* Subtext, tinted green, and dark.
+  /* Subtext, tinted green, and as dark as the contrast rule allows.
 
-     This sits at the floor of what is legible rather than at a shade picked by
-     eye. Body text needs 4.5:1 against its own background, and the lightest
-     surface it appears on is surface-3 (#191c0e). Sweeping every green ramp
-     against that surface gives #6f8b4c as the darkest value that still passes,
-     at 4.51:1. A shade darker and it fails: #5e6d3c measures 3.07:1, which is
-     under even the 3:1 large-text floor. So "very dark green" has a hard wall
-     here, and this is as dark as subtext can go without becoming unreadable.
+     Two values, because subtext sits on two different grounds and one shade
+     cannot serve both. Body text needs 4.5:1 against its own background, which
+     puts a floor under every colour: on a near-black surface the darkest usable
+     value is set by the surface, not by taste.
 
-     Ratios: 4.51:1 on surface-3, 4.84:1 on surface-2, 5.02:1 on surface-1. */
-  --text-sub: #6f8b4c;
+     Sweeping the green range against each surface gives:
+
+       --text-sub       #628839  five of seven subtext elements sit on surface-1
+                                (#0d0f08) or surface-2 (#121408). Measured
+                                4.68:1 and 4.52:1. This is a real step darker
+                                than the 5.03/4.85 it replaces.
+       --text-sub-lift  #6a8f40  for subtext on the elevated card ground,
+                                surface-3 (#191c0e). The dark value would land
+                                4.20:1 there and fail, so this is the same hue
+                                lifted just enough to measure 4.63:1.
+
+     The wall, recorded so it is not re-litigated: on surface-3 no colour of any
+     hue darker than roughly #6f8b4c passes 4.5:1 at all. #5e6d3c measures
+     3.07:1, under even the 3:1 large-text floor. Going darker still therefore
+     means changing the surfaces, not the green. */
+  --text-sub: #628839;
+  --text-sub-lift: #6a8f40;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -90,6 +102,7 @@
   --color-ink2: var(--text-2);
   --color-ink3: var(--text-3);
   --color-sub: var(--text-sub);
+  --color-sublift: var(--text-sub-lift);
   --color-accent: var(--accent);
   --color-accentink: var(--accent-ink);
   --color-accentsoft: var(--accent-soft);
