@@ -2,6 +2,25 @@
 
 Hackathon entry for [ETHGlobal Mumbai 2026](https://ethglobal.com/events/mumbai/prizes) (5–7 Nov 2026). Everything factual is traced to a numbered source in [`docs/sources.md`](docs/sources.md); design choices with no source are labelled `⟨ours⟩`.
 
+## Deployed contract
+
+`FaceValueBond` — the dispute escrow — is live on **Hedera EVM testnet (chain 296)**.
+
+| | |
+|---|---|
+| Contract | `0xa5201c0c7252354b485637eec562ba4ed149bf86` |
+| Deploy tx | `0x7aff529d229f4d3a687946b4e65538cd6c30c1a21f9a4829ed5e90654bb8565d` |
+| Resolved tx | `0xd5aa3cf18dbaa4a96e2baadb2bedeb47c845592a1fed037883a8053ecc06cf87` |
+| Withdrawn tx | `0x560a0ef10d5becbc92ea79211b1643b6733bfae403173393d33235140d6dbe7a` |
+| Source | [`contracts/src/FaceValueBond.sol`](contracts/src/FaceValueBond.sol) |
+| Tests | 17 passing (`forge test` in `contracts/`) |
+
+The contract holds stakes and moves money. **It never decides identity** — its only input about a face is a `bool`, so "the face decides, not a vote" holds even though the money is on-chain.
+
+There is no owner-withdraw, no sweep and no upgrade path. A key that can empty the pot is the centralisation this contract exists to remove.
+
+**Trust boundary, stated plainly:** `MATCHER_ROLE` is trusted for exactly one boolean and can therefore settle the wrong way. The guarantee against that is off-chain — deterministic thresholds and a logged `cos` per call — not the contract.
+
 ## The idea
 
 Your face becomes a licensed API. A human registers a likeness, an AI agent pays per use through a licensed generator, and a platform can check any upload against the registry in one call.
