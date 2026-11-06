@@ -111,26 +111,26 @@ export function SiteHeader() {
                 type="button"
                 onClick={connect}
                 disabled={connecting}
-                className="press group relative inline-flex min-h-11 items-stretch overflow-hidden rounded-md bg-accent text-accentink disabled:opacity-45"
+                className="press group relative inline-flex min-h-11 items-stretch overflow-hidden rounded-md border border-accentink/85 bg-accent text-accentink shadow-[0_0_0_1px_rgba(204,255,0,0.25),0_2px_0_0_#7a9900,0_6px_20px_-6px_rgba(204,255,0,0.55)] transition-[box-shadow,transform] duration-200 hover:shadow-[0_0_0_1px_rgba(204,255,0,0.45),0_2px_0_0_#7a9900,0_8px_28px_-4px_rgba(204,255,0,0.75)] hover:brightness-[1.04] active:translate-y-px active:shadow-[0_0_0_1px_rgba(204,255,0,0.35),0_1px_0_0_#7a9900,0_3px_10px_-6px_rgba(204,255,0,0.5)] disabled:opacity-45 motion-reduce:transition-none"
               >
-                {/* Two-part construction rather than one pill with an icon in
-                    it. The label block and the arrow block are separate
-                    surfaces with a hairline between them, which is the shape
-                    that reads as an action rather than a tag. The arrow block
-                    is a solid ink square, so the arrow is the highest-contrast
-                    thing in the bar and does not need a circle drawn round it. */}
-                <span className="flex items-center gap-2 pl-4 pr-3 font-mono text-[0.8125rem] font-medium uppercase tracking-[0.06em]">
+                {/* Three layers give it weight a flat fill cannot: a hard ink
+                    outline so the edge is defined rather than fading into the
+                    dark bar, a solid 2px lower edge that makes it a physical
+                    plate rather than a painted label, and a lime glow that ties
+                    it to the accent. On press the plate drops one pixel and the
+                    lowest shadow shortens, so it reads as being pushed in. */}
+                <span className="flex items-center gap-2 pl-3.5 pr-3 font-mono text-[0.8125rem] font-semibold uppercase tracking-[0.06em]">
                   <Wallet size={15} weight="fill" aria-hidden="true" />
                   {connecting ? "Connecting" : "Connect wallet"}
                 </span>
                 <span
                   aria-hidden="true"
-                  className="grid w-10 place-items-center border-l border-accentink/20 transition-colors duration-300 group-hover:bg-accentink group-hover:text-accent motion-reduce:transition-none"
+                  className="grid w-9 place-items-center border-l border-accentink/30 bg-accentink text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-accentink motion-reduce:transition-none"
                 >
                   <ArrowRight
                     size={14}
                     weight="bold"
-                    className="transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                    className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
                   />
                 </span>
               </button>
