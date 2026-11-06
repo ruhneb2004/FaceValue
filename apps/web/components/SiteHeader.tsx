@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
 import { Button } from "./Button";
 
 /** Opaque chrome: never translucent, never blurred. */
@@ -36,23 +36,18 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          {/* Chain indicator: the network this registry is anchored on. */}
-          <div
-            className="hidden items-center gap-2 rounded-chip border border-line px-2.5 py-1.5 md:flex"
-            aria-label="Network: Hedera testnet"
-          >
+          {/* Where the records live. Plain text, not a control: there is only
+              one chain, so a bordered chip with a chevron promised a menu that
+              does not and cannot exist. */}
+          <p className="hidden items-center gap-1.5 md:flex">
             <span
               className="size-1.5 rounded-full bg-[var(--live)]"
               aria-hidden="true"
             />
-            <span className="font-mono text-[11px] font-medium text-ink-2">
-              Hedera · 296
+            <span className="font-mono text-[11px] text-ink-3">
+              Hedera testnet
             </span>
-            <ChevronDown
-              className="size-3 text-ink-3"
-              aria-hidden="true"
-            />
-          </div>
+          </p>
 
           <Button size="md" variant="secondary">
             <Wallet className="size-4" aria-hidden="true" />
