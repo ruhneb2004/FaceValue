@@ -12,6 +12,7 @@
     "@dicebear/collection": "9.4.2",
     "@dicebear/core": "9.4.3",
     "@phosphor-icons/react": "^2.1.10",
+    "@types/three": "0.180.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
@@ -20,7 +21,8 @@
     "next": "16.4.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.0",
+    "three": "0.180.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

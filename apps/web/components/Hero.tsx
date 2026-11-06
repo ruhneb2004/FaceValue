@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { HeadCanvas } from "@/components/three/HeadCanvas";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 
@@ -54,30 +55,28 @@ export function Hero({
       {video && (
         <>
           {/*
-            The footage was full bleed behind the copy, which crowded the
-            headline and gave the hero a congested, noisy right edge. It is now
-            a contained panel occupying the right half, faded out at its left
-            edge so it meets the text without a seam.
+            The hero visual is a live 3D head that tracks the cursor, replacing
+            the footage. It is both more informative (a head under a scan bar
+            is literally what this product does) and lighter: the video was
+            1.2 MB of opaque pixels behind the copy, this is a few hundred
+            kilobytes of geometry that responds to the reader.
+
+            Hidden below lg, where a 44% column would be too narrow to read as
+            a head, and the copy needs the full width anyway.
           */}
-          <div
-            className="pointer-events-none absolute inset-y-6 right-6 -z-10 hidden w-[44%] overflow-hidden rounded-xl border border-line md:block"
-            aria-hidden="true"
-          >
-            <video
-              className="h-full w-full object-cover opacity-80 motion-reduce:hidden"
-              src="/video/hero-scan.mp4"
-              poster="/video/hero-poster.jpg"
-              autoPlay
-              loop
-              muted
-              playsInline
-              tabIndex={-1}
-            />
-            {/* Flat scrim over the footage, plus a hard edge hidden behind the
-                text column. No gradient anywhere: the panel simply stops
-                before the headline and the surface colour carries the join. */}
-            <div className="absolute inset-0 bg-surface2/35" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[46%] lg:block">
+            <HeadCanvas className="h-full w-full" />
           </div>
+          {/* Calibration ticks down the right edge. Flat rules, one element
+              each, so this costs no draw calls and no gradients. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-16 right-6 -z-10 hidden w-px bg-line lg:block"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-6 top-1/2 -z-10 hidden size-1.5 -translate-x-[2px] -translate-y-1/2 rounded-full bg-accent lg:block"
+          />
         </>
       )}
 
