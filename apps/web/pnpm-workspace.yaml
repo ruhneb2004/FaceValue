@@ -2,10 +2,12 @@ allowBuilds:
   bufferutil: true
   keccak: true
   utf-8-validate: true
+  better-sqlite3: true
 onlyBuiltDependencies:
   - bufferutil
   - keccak
   - utf-8-validate
+  - better-sqlite3
 
 overrides:
   "@solana/kit": "8.6.0"

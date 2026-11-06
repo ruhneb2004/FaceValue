@@ -9,3 +9,8 @@ dist/
 .DS_Store
 /tmp/
 tmp-shots/
+
+# app database (local sqlite)
+.data/
+*.db
+app/data/
