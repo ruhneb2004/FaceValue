@@ -114,7 +114,11 @@ async function LikenessBody({ params }: { params: Promise<{ id: string }> }) {
             {/* Portrait and provenance. On mobile this sits under the action. */}
             <div className="order-2 min-w-0 lg:order-1">
               <div className="overflow-hidden rounded-lg border border-line bg-surface3">
-                <div className="relative aspect-square w-full">
+                {/* Capped, not full-column: at full width the portrait was ~736px
+                    tall on a laptop, which pushed the name and provenance below
+                    the fold. The name is the heading — it should be visible on
+                    arrival, not after a scroll past the art. */}
+                <div className="relative aspect-square w-full max-w-[420px]">
                   <LikenessAvatar
                     seed={likeness.id}
                     className="h-full w-full [&>svg]:h-full [&>svg]:w-full"
