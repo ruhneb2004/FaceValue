@@ -7,8 +7,8 @@ import { RegistryMarquee } from "@/components/RegistryMarquee";
 import { RegistrySample } from "@/components/RegistrySample";
 import { DisputeRecord } from "@/components/DisputeRecord";
 import { Faq } from "@/components/Faq";
-import { Reveal } from "@/components/Reveal";
 import { HowItWorks } from "@/components/HowItWorks";
+import { Benefits } from "@/components/Benefits";
 import { Button } from "@/components/Button";
 import { Footer } from "@/components/Footer";
 
@@ -33,25 +33,6 @@ const STEPS = [
     n: "3",
     t: "Challenge if it is wrong",
     d: "Post a bond against a claim you believe is false. The face decides and the stake follows it.",
-  },
-];
-
-const BENEFITS = [
-  {
-    t: "One use at a time",
-    d: "A licence names the use and the date. It never hands over the face, so a brief cannot quietly widen into a campaign.",
-  },
-  {
-    t: "Refusals in words",
-    d: "An entry that cannot be licensed says why, on the page. No greyed out button and no guessing.",
-  },
-  {
-    t: "Bonded claims",
-    d: "A challenge costs money to file. That keeps the dispute queue short and the claims worth reading.",
-  },
-  {
-    t: "Hashes on chain, images off it",
-    d: "The reference face never leaves the device. Only a hash, the terms and the bond reach the ledger.",
   },
 ];
 
@@ -95,27 +76,8 @@ export default function Landing() {
         </section>
 
         <section aria-labelledby="benefits" className="border-y border-line bg-surface1">
-          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-12">
-              <div>
-                <h2 id="benefits" className="heading-5 text-ink">
-                  What the licence actually does
-                </h2>
-                <p className="body-6 mt-3 max-w-[42ch] text-ink2">
-                  Four things a buyer can rely on before paying, and four a registrant can rely on after.
-                </p>
-              </div>
-              {/* Rows, not a 2x2 grid: the left column is two short paragraphs,
-                  so a grid left a visible hole under the heading. */}
-              <ul className="mt-8 divide-y divide-line border-y border-line">
-                {BENEFITS.map((b, i) => (
-                  <Reveal as="li" key={b.t} delay={i * 0.05} className="grid gap-1 py-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:gap-8">
-                    <h3 className="title-4 text-ink">{b.t}</h3>
-                    <p className="body-6 text-ink2">{b.d}</p>
-                  </Reveal>
-                ))}
-              </ul>
-            </div>
+          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-24 md:py-36">
+            <Benefits />
           </div>
         </section>
 

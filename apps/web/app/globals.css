@@ -103,6 +103,11 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* The header floats 70px over the page. Without this an anchor jump parks
+       its target underneath it: measured, #benefits landed at y=138 against a
+       nav bottom of 86, which cleared by only 52px on a tall heading. Reserving
+       the header height plus a small gap makes every jump land clear. */
+    scroll-padding-top: 6rem;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -348,6 +353,27 @@
     }
   }
 
+  /* Accordion. Radix exposes data-state, so the height animation is pure CSS
+     and needs no JS measurement. --radix-accordion-content-height is published
+     by Radix itself. */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
   .marquee-track {
     animation-name: marquee-scroll;
     animation-timing-function: linear;
@@ -356,6 +382,13 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    /* The panel still opens and closes, it just arrives instantly. Motion is
+       additive here: the chevron rotation and the open content carry the state
+       change, so nothing is lost when the animation does not run. */
+    [data-slot="accordion-content"] {
+      animation: none !important;
+    }
+
     .marquee-track {
       animation: none;
       /* Without the animation the track must become a normal scrollable row,

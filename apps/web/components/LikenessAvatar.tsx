@@ -60,6 +60,17 @@ export function LikenessAvatar({
   seed: string;
   className?: string;
 }) {
+  /**
+   * DiceBear hardcodes `id="viewboxMask"` in every avatar it emits, and the
+   * marquee renders the track twice, so sixteen copies of that id ended up on
+   * one page. Duplicate ids are invalid HTML and make every `url(#...)`
+   * reference ambiguous, which browsers resolve to the first match.
+   *
+   * The id is namespaced per seed instead. The seed is alphanumeric, so it is
+   * safe inside an attribute value.
+   */
+  const uid = seed.replace(/[^a-zA-Z0-9_-]/g, "");
+
   const svg = createAvatar(pixelArt, {
     seed,
     size: 128,
@@ -73,7 +84,9 @@ export function LikenessAvatar({
     // the top edge on the taller variants.
     scale: 90,
     backgroundColor: ["transparent"],
-  }).toString();
+  })
+    .toString()
+    .replace(/viewboxMask/g, `viewboxMask-${uid}`);
 
   return (
     <div
