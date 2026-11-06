@@ -152,17 +152,29 @@ export default function Landing() {
           className="border-y border-line bg-surface1"
         >
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-16">
-              <div>
-                <h2 id="faq" className="heading-5 text-ink">
-                  Questions before you pay
-                </h2>
-                <p className="body-6 mt-3 max-w-[36ch] text-ink2">
-                  If something is unclear, it is cheaper to ask than to licence
-                  the wrong thing.
-                </p>
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1.38fr)] lg:items-start lg:gap-16">
+              {/* Same treatment as the dispute intro: the heading and the line
+                  under it get the column, a larger scale and a sticky hold, so
+                  the copy stays with the reader while eight rows scroll past
+                  instead of sitting as a caption at the top. */}
+              <div className="lg:self-stretch">
+                <div className="lg:sticky lg:top-28">
+                  <h2
+                    id="faq"
+                    className="text-[2rem] leading-[1.1] font-medium tracking-[-0.02em] text-ink text-balance md:text-[2.75rem]"
+                  >
+                    Questions before you pay
+                  </h2>
+                  <p className="mt-6 border-t border-line pt-6 text-[1.125rem] leading-[1.65] text-ink2">
+                    If something is unclear, it is cheaper to ask than to
+                    licence the wrong thing.
+                  </p>
+                </div>
               </div>
-              <Faq />
+
+              <div className="min-w-0">
+                <Faq />
+              </div>
             </div>
           </div>
         </section>

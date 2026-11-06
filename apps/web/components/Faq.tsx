@@ -50,30 +50,62 @@ export function Faq() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="divide-y divide-line border-y border-line">
+    <div className="border-t border-line">
       {FAQS.map((f, i) => {
         const isOpen = open === i;
         return (
-          <div key={f.q}>
+          <div
+            key={f.q}
+            className={`border-b border-line transition-colors duration-200 ${
+              isOpen ? "bg-surface2" : "hover:bg-surface2/50"
+            }`}
+          >
             <h3>
               <button
                 type="button"
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
                 aria-controls={`faq-${i}`}
-                className="press flex w-full items-center justify-between gap-2 py-3 text-left"
+                className="press group flex w-full items-start gap-4 px-4 py-5 text-left sm:gap-6 sm:px-6"
               >
-                <span className="body-2 text-ink">{f.q}</span>
+                {/* Numbering gives each row an identity, so the list stops
+                    reading as nine interchangeable bars. The active row's
+                    number turns accent, which is the section's only colour. */}
+                <span
+                  className={`mt-0.5 shrink-0 font-mono text-[0.75rem] tabular-nums transition-colors duration-200 ${
+                    isOpen ? "text-accent" : "text-ink3 group-hover:text-ink2"
+                  }`}
+                  aria-hidden="true"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                <span
+                  className={`min-w-0 flex-1 text-[1.0625rem] leading-snug transition-colors duration-200 sm:text-[1.25rem] ${
+                    isOpen ? "text-accent" : "text-ink group-hover:text-ink"
+                  }`}
+                >
+                  {f.q}
+                </span>
+
+                {/* The control reads its own state rather than relying on the
+                    panel below it: a plus that becomes a minus, in accent when
+                    open. Colour is never the only cue; the glyph changes too. */}
                 <motion.span
                   animate={{ rotate: isOpen ? 45 : 0 }}
                   transition={{ duration: 0.3, ease: EASE }}
-                  className="shrink-0 text-ink3"
+                  className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border transition-colors duration-200 ${
+                    isOpen
+                      ? "border-accent text-accent"
+                      : "border-linestrong text-ink2 group-hover:border-ink3 group-hover:text-ink"
+                  }`}
                   aria-hidden="true"
                 >
-                  <Plus size={16} />
+                  <Plus size={14} weight="bold" />
                 </motion.span>
               </button>
             </h3>
+
             <AnimatePresence initial={false}>
               {isOpen && (
                 <motion.div
@@ -84,7 +116,11 @@ export function Faq() {
                   transition={{ duration: 0.3, ease: EASE }}
                   className="overflow-hidden"
                 >
-                  <p className="body-6 max-w-[68ch] pb-2 text-ink2">{f.a}</p>
+                  {/* Indented to the question text, not the number, so the
+                      answer sits in one column with what it answers. */}
+                  <p className="max-w-[62ch] pr-4 pb-6 pl-10 text-[1rem] leading-relaxed text-ink2 sm:pl-13">
+                    {f.a}
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
