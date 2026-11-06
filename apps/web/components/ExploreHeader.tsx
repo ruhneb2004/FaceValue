@@ -1,63 +1,114 @@
 "use client";
 
-import { Search, ChevronDown } from "lucide-react";
+import { MagnifyingGlass, X } from "@phosphor-icons/react/ssr";
+import { cn } from "@/lib/cn";
+import type { LikenessState } from "@/lib/types";
 
 /**
- * The marketplace header: title plus search and filter.
+ * Marketplace controls: search, a state filter, and a live result count.
  *
- * Lives inside the gate on purpose. Above the gate, the search box invited an
- * action that could not do anything, because there were no results to filter.
+ * Every control here does something. An earlier version of this file imported
+ * `Search` from `lucide-react` and styled itself with classes that do not exist
+ * in this project (`bg-sunken`, `font-display`), so the box rendered with no
+ * icon and no fill and the two inputs filtered nothing. The header was also
+ * pinned above the gate, where there were no results to filter.
+ *
+ * The controls are controlled from the page so the grid and the count read the
+ * same state. Nothing is filtered here; this only raises the input.
  */
-export function ExploreHeader() {
-  return (
-    <section className="border-b border-line bg-sunken">
-      <div className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
-        <h1 className="font-display text-2xl font-semibold tracking-[-0.02em] text-ink md:text-3xl">
-          Explore likenesses
-        </h1>
-        <p className="mt-2 max-w-[52ch] text-sm text-ink2">
-          Every listing states one price per use and the bond behind the claim.
-        </p>
 
-        <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-          <div className="relative flex-1">
-            <label htmlFor="q" className="sr-only">
-              Search likenesses
-            </label>
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink3"
-              aria-hidden="true"
-            />
-            <input
-              id="q"
-              type="search"
-              placeholder="Search by name, ENS or collection"
-              className="h-11 w-full rounded-md border border-line bg-surface3 pl-2 pr-2 body-3 text-ink placeholder:text-ink3 focus:border-line-strong"
-            />
-          </div>
-          <div className="relative">
-            <label htmlFor="state" className="sr-only">
-              Filter by state
-            </label>
-            <select
-              id="state"
-              defaultValue="all"
-              className="h-11 w-full appearance-none rounded-md border border-line bg-surface3 pl-2 pr-2 body-3 text-ink focus:border-line-strong sm:w-auto sm:min-w-[11rem]"
-            >
-              <option value="all">All states</option>
-              <option value="active">Licensable</option>
-              <option value="provisional">Provisional</option>
-              <option value="disputed">Challenge open</option>
-              <option value="review">Under review</option>
-              <option value="moved">Moved</option>
-            </select>
-            <ChevronDown
-              aria-hidden="true"
-              className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink2"
-            />
-          </div>
-        </div>
+export const STATE_OPTIONS: { value: "all" | LikenessState; label: string }[] = [
+  { value: "all", label: "All states" },
+  { value: "active", label: "Licensable" },
+  { value: "moved", label: "Moved" },
+  { value: "provisional", label: "Provisional" },
+  { value: "disputed", label: "Challenge open" },
+  { value: "review", label: "Under review" },
+  { value: "revoked", label: "Revoked" },
+];
+
+export function ExploreHeader({
+  query,
+  onQuery,
+  state,
+  onState,
+  total,
+  shown,
+}: {
+  query: string;
+  onQuery: (v: string) => void;
+  state: "all" | LikenessState;
+  onState: (v: "all" | LikenessState) => void;
+  total: number;
+  shown: number;
+}) {
+  const filtering = query.trim() !== "" || state !== "all";
+
+  return (
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      {/* Search */}
+      <div className="relative w-full lg:max-w-[26rem]">
+        <label htmlFor="q" className="sr-only">
+          Search likenesses
+        </label>
+        <MagnifyingGlass
+          size={16}
+          aria-hidden="true"
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink3"
+        />
+        <input
+          id="q"
+          type="search"
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+          placeholder="Search by name or ENS"
+          className="press h-11 w-full rounded-full border border-line bg-surface3 pl-10 pr-10 body-5 text-ink placeholder:text-ink3 transition-[border-color,background-color] duration-200 hover:border-linestrong focus:border-accent [&::-webkit-search-cancel-button]:hidden"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => onQuery("")}
+            aria-label="Clear search"
+            className="absolute right-3 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-full text-ink3 hover:bg-surface4 hover:text-ink"
+          >
+            <X size={12} weight="bold" aria-hidden="true" />
+          </button>
+        )}
       </div>
-    </section>
+
+      {/* State filter, as pill toggles rather than a native select: the states
+          are a small fixed set and the row reads as a filter bar the way the
+          grid does. A real select would hide five of six options behind a
+          click for no gain. */}
+      <div className="flex flex-wrap items-center gap-2">
+        {STATE_OPTIONS.map((o) => {
+          const active = state === o.value;
+          return (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => onState(o.value)}
+              aria-pressed={active}
+              className={cn(
+                "press inline-flex min-h-9 items-center rounded-full border px-3 font-mono text-[0.6875rem] uppercase tracking-[0.06em] transition-[color,background-color,border-color] duration-200",
+                active
+                  ? "border-accent bg-accent text-accentink"
+                  : "border-line bg-surface3 text-ink2 hover:border-linestrong hover:text-ink",
+              )}
+            >
+              {o.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Result count. One number, and it says what it is counting. */}
+      <p
+        aria-live="polite"
+        className="tnum shrink-0 font-mono text-[0.75rem] uppercase tracking-[0.08em] text-ink3"
+      >
+        {filtering ? `${shown} of ${total} shown` : `${total} registered`}
+      </p>
+    </div>
   );
 }

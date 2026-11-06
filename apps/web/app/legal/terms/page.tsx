@@ -1,13 +1,10 @@
-import { SiteHeader } from "@/components/SiteHeader";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata = { title: "Terms | FaceValue" };
 
 export default function Terms() {
   return (
-    <>
-      <SiteHeader />
-      <LegalPage
+    <LegalPage
         title="Terms"
         updated="6 November 2026"
         sections={[
@@ -29,6 +26,5 @@ export default function Terms() {
           },
         ]}
       />
-    </>
   );
 }

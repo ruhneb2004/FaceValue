@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Check, Scales, X } from "@phosphor-icons/react/ssr";
+import { ArrowUpRight, Check, Scales, X } from "@phosphor-icons/react/ssr";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Footer } from "@/components/Footer";
+import { PageIntro } from "@/components/PageIntro";
 import { Button } from "@/components/Button";
 import { ConnectGate } from "@/components/ConnectGate";
 
@@ -40,31 +41,20 @@ export default function Review() {
     <>
       <SiteHeader />
       <main id="main" className="flex-1">
-        <div className="mx-auto w-full max-w-[860px] px-6 pb-24 pt-8 md:px-8 md:pt-12">
-          <Link
-            href="/explore"
-            className="body-5 press inline-flex min-h-11 items-center gap-1.5 text-ink2 hover:text-ink"
+        <PageIntro
+          eyebrow="Resolver"
+          title="Review a disputed likeness"
+          intro="Three resolvers read each challenge independently, against the frozen reference. Readings are recorded, not voted on."
+          backHref="/explore"
+        />
+
+        <div className="mx-auto w-full max-w-[860px] px-6 py-10 md:px-12 md:py-14">
+          <ConnectGate
+            title="Connect a resolver wallet to review"
+            reason="Only the three addresses holding this dispute can record a reading."
           >
-            <ArrowLeft size={14} aria-hidden="true" />
-            Back to the registry
-          </Link>
-
-          <h1 className="heading-3 mt-2 text-ink text-balance">
-            Review a disputed likeness
-          </h1>
-          <p className="body-4 mt-3 max-w-[62ch] text-ink2">
-            Three resolvers read each challenge independently, against the frozen
-            reference. Readings are recorded, not voted on.
-          </p>
-
-          <div className="mt-8">
-            <ConnectGate
-              title="Connect a resolver wallet to review"
-              reason="Only the three addresses holding this dispute can record a reading."
-            >
-              <ReviewBody />
-            </ConnectGate>
-          </div>
+            <ReviewBody />
+          </ConnectGate>
         </div>
       </main>
       <Footer />

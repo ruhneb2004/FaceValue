@@ -56,20 +56,33 @@ const GLASSES = ["2b1d14", "4a2d1a", "2f6f8f", "7a3b6b"];
 export function LikenessAvatar({
   seed,
   className = "",
+  instanceId,
 }: {
   seed: string;
   className?: string;
+  /**
+   * Distinguishes two renders of the SAME avatar. The marquee shows every
+   * record twice (the seam trick), so seed alone is not unique on the page and
+   * the internal ids collided. Defaults to the seed, which is unique whenever
+   * an avatar appears once.
+   */
+  instanceId?: string;
 }) {
   /**
-   * DiceBear hardcodes `id="viewboxMask"` in every avatar it emits, and the
-   * marquee renders the track twice, so sixteen copies of that id ended up on
-   * one page. Duplicate ids are invalid HTML and make every `url(#...)`
-   * reference ambiguous, which browsers resolve to the first match.
+   * DiceBear hardcodes ids inside every avatar it emits — `viewboxMask`, plus a
+   * per-hair-style `<mask>` such as `beardVariant01-a`. The marquee renders the
+   * track twice, so those ids landed on one page two or more times. Duplicate
+   * ids are invalid HTML and make every `url(#...)` reference ambiguous, which
+   * browsers resolve to the first match.
    *
-   * The id is namespaced per seed instead. The seed is alphanumeric, so it is
-   * safe inside an attribute value.
+   * The first fix namespaced `viewboxMask` only, on the assumption it was the
+   * sole id DiceBear emitted. It was not: rendering every seed and collecting
+   * the ids showed the hair masks collide too. Every id and every `#ref`
+   * pointing at one is now rewritten in a single pass.
+   *
+   * The seed is alphanumeric, so it is safe inside an attribute value.
    */
-  const uid = seed.replace(/[^a-zA-Z0-9_-]/g, "");
+  const uid = (instanceId ?? seed).replace(/[^a-zA-Z0-9_-]/g, "");
 
   const svg = createAvatar(pixelArt, {
     seed,
@@ -86,7 +99,13 @@ export function LikenessAvatar({
     backgroundColor: ["transparent"],
   })
     .toString()
-    .replace(/viewboxMask/g, `viewboxMask-${uid}`)
+    // Namespace every id first, so no id survives untouched to collide with
+    // another instance of the same avatar.
+    .replace(/\bid="([^"]+)"/g, (_m, id) => `id="${id}-${uid}"`)
+    // Then point every reference at the namespaced form. Both `#x` (masks,
+    // filters, clip paths in `url(#x)`) and bare ids in `href`/`xlink:href`
+    // are covered by matching the id inside the parens or quotes.
+    .replace(/url\(#([^\)]+)\)/g, (_m, id) => `url(#${id}-${uid})`)
     // Strip the RDF metadata block. Its text is part of the SVG, so inline it
     // joins the parent link's accessible name and a screen reader reads
     // "Pixel ArtDiceBearhttps://dicebear.com" before it reads the record.

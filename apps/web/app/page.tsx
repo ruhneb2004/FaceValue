@@ -4,7 +4,6 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Hero } from "@/components/Hero";
 import { TaglineReveal } from "@/components/TaglineReveal";
 import { RegistryMarquee } from "@/components/RegistryMarquee";
-import { RegistrySample } from "@/components/RegistrySample";
 import { DisputeRecord } from "@/components/DisputeRecord";
 import { Faq } from "@/components/Faq";
 import { HowItWorks } from "@/components/HowItWorks";

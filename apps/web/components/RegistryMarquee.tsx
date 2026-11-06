@@ -106,6 +106,7 @@ export function RegistryMarquee() {
                   <div className="relative aspect-square w-full overflow-hidden bg-surface2">
                     <LikenessAvatar
                       seed={l.id}
+                      instanceId={`${l.id}-${i}`}
                       className="h-full w-full [&>svg]:h-full [&>svg]:w-full [&>svg]:object-contain"
                     />
                   </div>

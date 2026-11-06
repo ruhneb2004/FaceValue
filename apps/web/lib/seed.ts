@@ -30,7 +30,7 @@ export const SEED_LIKENESSES: Likeness[] = [
   },
   {
     id: "lc-003",
-    name: "Campaign still",
+    name: "Campaign portrait",
     pricePerUse: 60,
     state: "provisional",
     ensName: "ref-003.faceref.eth",

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Scales, ShieldCheck } from "@phosphor-icons/react/ssr";
+import { Scales, ShieldCheck } from "@phosphor-icons/react/ssr";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Footer } from "@/components/Footer";
-import { Field, TextInput } from "@/components/Field";
+import { PageIntro } from "@/components/PageIntro";
+import { Field } from "@/components/Field";
 import { Button } from "@/components/Button";
 import { ConnectGate } from "@/components/ConnectGate";
 import { StateBadge } from "@/components/StateBadge";
@@ -28,32 +28,20 @@ export default function Challenge() {
     <>
       <SiteHeader />
       <main id="main" className="flex-1">
-        <div className="mx-auto w-full max-w-[760px] px-6 pb-24 pt-8 md:px-8 md:pt-12">
-          <Link
-            href="/explore"
-            className="body-5 press inline-flex min-h-11 items-center gap-1.5 text-ink2 hover:text-ink"
+        <PageIntro
+          eyebrow="Dispute"
+          title="Challenge a likeness"
+          intro="A challenge claims that a registered likeness belongs to someone else. You post a bond. The reference decides, and whoever it identifies takes the stake."
+          backHref="/explore"
+        />
+
+        <div className="mx-auto w-full max-w-[860px] px-6 py-10 md:px-12 md:py-14">
+          <ConnectGate
+            title="Connect a wallet to challenge"
+            reason="A challenge posts a bond from your address. Connecting costs nothing and signs nothing."
           >
-            <ArrowLeft size={14} aria-hidden="true" />
-            Back to the registry
-          </Link>
-
-          <h1 className="heading-3 mt-2 text-ink text-balance">
-            Challenge a likeness
-          </h1>
-          <p className="body-4 mt-3 max-w-[62ch] text-ink2">
-            A challenge claims that a registered likeness belongs to someone
-            else. You post a bond. The reference decides, and whoever it
-            identifies takes the stake.
-          </p>
-
-          <div className="mt-8">
-            <ConnectGate
-              title="Connect a wallet to challenge"
-              reason="A challenge posts a bond from your address. Connecting costs nothing and signs nothing."
-            >
-              <ChallengeForm />
-            </ConnectGate>
-          </div>
+            <ChallengeForm />
+          </ConnectGate>
         </div>
       </main>
       <Footer />
