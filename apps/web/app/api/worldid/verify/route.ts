@@ -50,7 +50,15 @@ export async function POST(req: Request) {
 
   let res: Response;
   try {
-    res = await fetch(`https://developer.world.org/api/v4/verify/${rpId}`, {
+    // A simulator proof is issued by the staging verifier, and the two verifiers
+    // do not share a database — sending a staging proof to the production host is
+    // rejected. So the verify host has to match the bridge the proof came from.
+    const verifyHost =
+      process.env.WORLDID_VERIFY_HOST ||
+      (process.env.NEXT_PUBLIC_WORLDID_ENV === "staging"
+        ? "staging-developer.world.org"
+        : "developer.world.org");
+    res = await fetch(`https://${verifyHost}/api/v4/verify/${rpId}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload),
@@ -78,20 +86,41 @@ export async function POST(req: Request) {
 
   const data = (await res.json().catch(() => null)) as {
     success?: boolean;
+    // The docs disagree on this name — one snippet reads `nullifier_hash`, another
+    // `nullifier`. Accept either rather than betting the integration on a doc.
     nullifier_hash?: string;
+    nullifier?: string;
     environment?: string;
   } | null;
 
-  if (!data?.success || !data.nullifier_hash) {
+  const nullifier = data?.nullifier_hash ?? data?.nullifier;
+
+  if (!data?.success || !nullifier) {
+    // Log the actual body. The first version of this check assumed
+    // `{ success, nullifier_hash }` and swallowed every other shape into one
+    // unhelpful message, which is exactly the sort of guessing that hides a
+    // working integration.
+    console.error(
+      "[worldid/verify] unexpected verify response",
+      JSON.stringify({ status: res.status, body: data }).slice(0, 600),
+    );
+    const hint =
+      data && typeof data === "object" && "detail" in data
+        ? String((data as { detail: unknown }).detail)
+        : null;
     return NextResponse.json(
-      { error: "World did not confirm the proof." },
+      {
+        error:
+          "World did not confirm the proof." +
+          (hint ? ` (${hint})` : " See the server log for the full response."),
+      },
       { status: 400 },
     );
   }
 
   return NextResponse.json({
     verified: true,
-    nullifier: data.nullifier_hash,
+    nullifier,
     // Passed back so the UI and the debrief can state which environment the proof
     // came from. The plan requires proofs be labelled honestly; this is the field
     // that makes that possible rather than guessed.
