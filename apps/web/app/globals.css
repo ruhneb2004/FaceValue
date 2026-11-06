@@ -21,29 +21,43 @@
 
 :root {
   /* B4 — the only six dark surfaces permitted. */
+  /* Warm-shifted so the lime accent sits on a surface that belongs to it.
+     Cold grey under #ccff00 reads as a clash rather than a contrast. */
   --surface-0: #000000;
-  --surface-1: #131209;
-  --surface-2: #181818;
-  --surface-3: #1f1f1f;
-  --surface-4: #272727;
-  --surface-5: #313131;
+  --surface-1: #0d0f08;
+  --surface-2: #121408;
+  --surface-3: #191c0e;
+  --surface-4: #222616;
+  --surface-5: #2c3120;
 
   --text-1: #ffffff;
   --text-2: #a8a8a8;
   --text-3: #7d7d7d;
 
-  /* Measured, not chosen: white on a bright blue fails at 3.13:1, dark ink on
-     this blue measures 8.04:1. Accent fills always carry --accent-ink. */
-  --accent: #73a6ff;
-  --accent-ink: #000000;
-  --accent-soft: #1a2436;
+  /* Measured, not chosen.
+     Lime #ccff00 measures 15.83:1 on surface-2, so it is usable as text as well
+     as fill, and black ink on it measures 17.87:1, so every accent fill carries
+     --accent-ink rather than white.
 
-  --state-active: #8fd6b4;
-  --state-provisional: #d8c78a;
-  --state-review: #b9a8e0;
-  --state-disputed: #e8a08a;
-  --state-moved: #8fc6d8;
-  --state-revoked: #9a9a9a;
+     The palette has two brights, lime #ccff00 and yellow #ffff00, but they
+     measure only 1.09:1 against each other: to the eye they are effectively the
+     same colour. They therefore serve one accent family, not two meanings.
+     Lime is the accent; yellow is reserved for the single highest-emphasis
+     moment (the hero heading gradient) and #dfff00 is unused on purpose, since
+     a third bright within 1.03:1 of the other two adds noise, not information. */
+  --accent: #ccff00;
+  --accent-ink: #000000;
+  --accent-soft: #1c2408;
+  --accent-warm: #ffff00;
+
+  /* Each re-measured against the new surface-2. Revoked was 3.91:1 after the
+     swap, below the 4.5 needed for text, and was lifted to 5.65:1. */
+  --state-active: #ccff00;
+  --state-provisional: #c9b47a;
+  --state-review: #9db4d8;
+  --state-disputed: #e89a6a;
+  --state-moved: #7fd4c0;
+  --state-revoked: #8a9080;
 
   --line: rgba(255, 255, 255, 0.09);
   --line-strong: rgba(255, 255, 255, 0.16);
@@ -65,6 +79,7 @@
   --color-accent: var(--accent);
   --color-accentink: var(--accent-ink);
   --color-accentsoft: var(--accent-soft);
+  --color-accentwarm: var(--accent-warm);
 
   --color-line: var(--line);
   --color-linestrong: var(--line-strong);
@@ -273,7 +288,11 @@
 
   /* B5 — the only gradient in the product. */
   .heading-gradient {
-    background-image: linear-gradient(to right, #ffffff 0%, #9b9b9b 100%);
+    /* The one permitted gradient (B5). Lime into the palette's yellow: both
+       supplied brights, one readable sweep, and black ink is not needed
+       because the text is drawn on a dark surface where both ends exceed
+       15:1. */
+    background-image: linear-gradient(to right, #ccff00 0%, #ffff00 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

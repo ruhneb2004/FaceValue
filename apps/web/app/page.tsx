@@ -83,7 +83,7 @@ export default function Landing() {
 
         <section aria-labelledby="how" className="border-y border-line bg-surface1">
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-            <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+            <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
               <HowItWorks />
               <div className="hidden lg:block">
                 <div className="rounded-lg border border-line bg-surface3 p-6">
@@ -117,18 +117,18 @@ export default function Landing() {
 
         <section aria-labelledby="benefits" className="border-y border-line bg-surface1">
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-            <div className="grid gap-2 lg:grid-cols-[0.85fr_1.15fr] lg:gap-2">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-12">
               <div>
                 <h2 id="benefits" className="heading-5 text-ink">
                   What the licence actually does
                 </h2>
-                <p className="body-6 mt-2 max-w-[42ch] text-ink2">
+                <p className="body-6 mt-3 max-w-[42ch] text-ink2">
                   Four things a buyer can rely on before paying, and four a registrant can rely on after.
                 </p>
               </div>
               {/* Rows, not a 2x2 grid: the left column is two short paragraphs,
                   so a grid left a visible hole under the heading. */}
-              <ul className="divide-y divide-line border-y border-line">
+              <ul className="mt-8 divide-y divide-line border-y border-line">
                 {BENEFITS.map((b, i) => (
                   <Reveal as="li" key={b.t} delay={i * 0.05} className="grid gap-1 py-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:gap-8">
                     <h3 className="title-4 text-ink">{b.t}</h3>
@@ -144,21 +144,21 @@ export default function Landing() {
           <h2 id="proof" className="heading-5 text-ink">
             A licence is one use, one price
           </h2>
-          <p className="body-6 mt-2 max-w-[58ch] text-ink2">
+          <p className="body-6 mt-3 max-w-[58ch] text-ink2">
             An entry can be licensed only while it is active or moved. Anything else says why not, in words.
           </p>
-          <div className="mt-2">
+          <div className="mt-8">
             <RegistrySample />
           </div>
 
-          <div className="mt-2 grid gap-2 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-2">
+          <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-16">
             <div>
               <h3 className="heading-6 text-ink">The face decides, not the count</h3>
-              <p className="body-6 mt-2 max-w-[46ch] text-ink2">
+              <p className="body-6 mt-3 max-w-[46ch] text-ink2">
                 Three resolvers each answer one question against a frozen reference: whose face is this. Two of
                 three must agree, so one resolver cannot move a dispute alone.
               </p>
-              <p className="body-6 mt-2 max-w-[46ch] text-ink2">
+              <p className="body-6 mt-3 max-w-[46ch] text-ink2">
                 Whoever the face turns out to be takes every stake. That is why challengers only file when they
                 are confident.
               </p>
@@ -169,12 +169,12 @@ export default function Landing() {
 
         <section aria-labelledby="faq" className="border-y border-line bg-surface1">
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-            <div className="grid gap-2 lg:grid-cols-[0.7fr_1.3fr] lg:gap-2">
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-16">
               <div>
                 <h2 id="faq" className="heading-5 text-ink">
                   Questions before you pay
                 </h2>
-                <p className="body-6 mt-2 max-w-[36ch] text-ink2">
+                <p className="body-6 mt-3 max-w-[36ch] text-ink2">
                   If something is unclear, it is cheaper to ask than to licence the wrong thing.
                 </p>
               </div>
@@ -184,21 +184,25 @@ export default function Landing() {
         </section>
 
         <section className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-20 md:py-28">
-          <div className="rounded-xl border border-line bg-surface3 p-3 md:p-3">
-            <h2 className="heading-5 max-w-[24ch] text-ink">
-              Browse the registry before you commit to anything
-            </h2>
-            <p className="body-6 mt-2 max-w-[52ch] text-ink2">
-              Connecting a wallet shows prices, bonds and open challenges. It costs nothing and signs nothing.
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Button href="/explore" size="lg">
-                Explore likenesses
-                <ArrowRight size={18} aria-hidden="true" />
-              </Button>
-              <Button href="/register" size="lg" variant="secondary">
-                Register a likeness
-              </Button>
+          <div className="rounded-xl border border-line bg-surface3 px-6 py-10 md:px-10 md:py-12">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
+              <div>
+                <h2 className="heading-5 max-w-[24ch] text-ink">
+                  Browse the registry before you commit to anything
+                </h2>
+                <p className="body-6 mt-3 max-w-[46ch] text-ink2">
+                  Connecting a wallet shows prices, bonds and open challenges. It costs nothing and signs nothing.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 lg:justify-end">
+                <Button href="/explore" size="lg">
+                  Explore likenesses
+                  <ArrowRight size={18} aria-hidden="true" />
+                </Button>
+                <Button href="/register" size="lg" variant="secondary">
+                  Register a likeness
+                </Button>
+              </div>
             </div>
           </div>
         </section>

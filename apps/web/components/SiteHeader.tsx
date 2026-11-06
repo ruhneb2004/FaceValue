@@ -45,7 +45,7 @@ export function SiteHeader() {
   return (
     <>
       <header className="pointer-events-none sticky top-4 z-50 flex justify-center px-3">
-        <div className="pointer-events-auto flex w-full max-w-[1440px] items-center gap-2 rounded-xl border border-linestrong bg-surface2/55 px-3 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+        <div className="pointer-events-auto flex w-full max-w-[1312px] items-center gap-2 rounded-xl border border-linestrong bg-surface2/55 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
           <Link
             href="/"
             aria-label="FaceValue home"

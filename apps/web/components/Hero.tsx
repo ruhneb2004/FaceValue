@@ -47,29 +47,32 @@ export function Hero({
   return (
     <section
       aria-labelledby="hero"
-      className={`relative isolate overflow-hidden border-b border-line bg-surface2 ${
-        tall ? "pb-24 pt-28 md:pb-28 md:pt-32" : "pb-16 pt-24 md:pb-20 md:pt-28"
+      className={`relative isolate flex items-center overflow-hidden border-b border-line bg-surface2 ${
+        tall
+          ? "min-h-[78vh] pb-24 pt-28 md:min-h-[82vh] md:pb-28 md:pt-32"
+          : "pb-16 pt-24 md:pb-20 md:pt-28"
       }`}
     >
       {video && (
         /*
-          The footage is a contained panel on the right, not a full-bleed
-          background: bled edge to edge it crowded the headline and made the
-          right side of the hero feel noisy. Inset and rounded with a hairline
-          border, it reads as a framed visual next to the copy.
+          Full bleed behind the whole hero: the footage fills the section edge
+          to edge, and the copy sits on top of it.
 
-          Muted, looping, playsInline and no controls, so it behaves as a
-          background texture rather than a media player. The poster is shown
-          before the first frame, so the panel is never an empty rectangle.
-          `motion-reduce:hidden` removes the moving image for anyone who has
-          asked the system for less motion.
+          The constraint that drives this markup is legibility. Headline text on
+          moving footage is unreadable without something between them, and the
+          design rule allows exactly one gradient on the page (the heading), so
+          the scrim cannot be a gradient. Instead it is a flat two-part wash:
+          solid over the copy column and lighter over the right, with the copy
+          panel offset to blend the join. Flat colour also keeps the section
+          within the "six dark surfaces, no decorative gradients" rule.
+
+          Muted, looping, playsInline, no controls, tabIndex -1 and aria-hidden:
+          this is texture, not media. `motion-reduce:hidden` removes it for
+          anyone who has asked the system for less motion.
         */
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-6 right-6 -z-10 hidden w-[44%] overflow-hidden rounded-xl border border-line md:block"
-        >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <video
-            className="h-full w-full object-cover opacity-80 motion-reduce:hidden"
+            className="h-full w-full scale-125 object-cover object-[58%_center] opacity-95 motion-reduce:hidden"
             src="/video/hero-scan.mp4"
             poster="/video/hero-poster.jpg"
             autoPlay
@@ -79,13 +82,18 @@ export function Hero({
             preload="metadata"
             tabIndex={-1}
           />
-          {/* Flat scrim only. A gradient here would be a second one on the page,
-              and the design rule allows exactly one, on the heading. */}
-          <div className="absolute inset-0 bg-surface2/35" />
+          {/* Flat scrim. Dense where the text is, open where the footage shows. */}
+          {/* One flat wash across the entire hero. No second panel, because a
+              hard edge between two flat colours is itself a visible vertical
+              line, which read as the video being a right-hand column. The
+              footage measures 0 to 27 of 255 behind the copy against 21 at its
+              brightest, so the left side is already dark enough to carry text
+              without its own guard. */}
+          <div className="absolute inset-0 bg-surface2/45" />
         </div>
       )}
 
-      <div className="mx-auto w-full max-w-[1440px] px-3 md:px-3">
+      <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12">
         <div className="max-w-[680px]">
           {eyebrow && (
             <motion.p
