@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { StateBadge } from "./StateBadge";
-import { HolderAvatar } from "./HolderAvatar";
+import { LikenessAvatar } from "./LikenessAvatar";
 import { isLicensable, type Likeness } from "@/lib/types";
 
 /**
@@ -21,7 +21,7 @@ export function LikenessCard({ likeness }: { likeness: Likeness; index?: number 
       className="press group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface3 hover:bg-surface4"
     >
       <div className="relative aspect-square w-full shrink-0 overflow-hidden">
-        <HolderAvatar address={likeness.holder} className="h-full w-full" />
+        <LikenessAvatar seed={likeness.id} className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />
         <div className="absolute left-3 top-3">
           <StateBadge state={likeness.state} count={likeness.openChallenges} />
         </div>

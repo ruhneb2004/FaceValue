@@ -62,15 +62,18 @@
   --line: rgba(255, 255, 255, 0.09);
   --line-strong: rgba(255, 255, 255, 0.16);
 
-  /* Subtext, tinted green.
-     A muted sage rather than a saturated green: its job is to sit under a
-     heading, so it has to be clearly green and still quiet enough not to compete
-     with the lime accent for attention. Measured against all three surfaces it
-     appears on, it holds 7.40:1 on surface-1, 7.13:1 on surface-2 and 6.64:1 on
-     surface-3, so it clears the 4.5 needed for body text everywhere with room to
-     spare. Anything darker (kelp at #6f8048) drops to 4.00 on surface-3 and
-     fails. */
-  --text-sub: #93a86b;
+  /* Subtext, tinted green, and dark.
+
+     This sits at the floor of what is legible rather than at a shade picked by
+     eye. Body text needs 4.5:1 against its own background, and the lightest
+     surface it appears on is surface-3 (#191c0e). Sweeping every green ramp
+     against that surface gives #6f8b4c as the darkest value that still passes,
+     at 4.51:1. A shade darker and it fails: #5e6d3c measures 3.07:1, which is
+     under even the 3:1 large-text floor. So "very dark green" has a hard wall
+     here, and this is as dark as subtext can go without becoming unreadable.
+
+     Ratios: 4.51:1 on surface-3, 4.84:1 on surface-2, 5.02:1 on surface-1. */
+  --text-sub: #6f8b4c;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
