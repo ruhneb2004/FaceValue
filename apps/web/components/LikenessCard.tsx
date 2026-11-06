@@ -18,48 +18,44 @@ export function LikenessCard({
 
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 10 }}
+      initial={reduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.3,
-        ease: [0.2, 0, 0, 1],
-        delay: Math.min(index * 0.04, 0.24),
+        ease: [0.22, 1, 0.36, 1],
+        delay: Math.min(index * 0.035, 0.21),
       }}
       className="h-full"
     >
       <Link
         href={`/likeness/${likeness.id}`}
-        className="cartoon press group flex h-full flex-col overflow-hidden bg-paper"
+        className="card press group flex h-full flex-col overflow-hidden"
       >
-        <div className="relative aspect-square w-full border-b-[2.5px] border-ink">
-          <div className="absolute inset-0 transition-transform duration-300 ease-out group-hover:scale-[1.05]">
-            <ListingArt
-              id={likeness.id}
-              state={likeness.state}
-              className="h-full w-full"
-            />
-          </div>
+        <div className="relative aspect-square w-full overflow-hidden border-b border-line">
+          <ListingArt
+            id={likeness.id}
+            state={likeness.state}
+            className="h-full w-full"
+          />
           <div className="absolute left-3 top-3">
             <StateBadge state={likeness.state} count={likeness.openChallenges} />
           </div>
         </div>
 
         <div className="flex flex-1 flex-col gap-1 p-4">
-          <h3 className="font-display text-lg font-extrabold leading-tight text-ink">
+          <h3 className="text-[15px] font-semibold leading-snug text-ink">
             {likeness.name}
           </h3>
 
           {licensable ? (
             <p className="tabular text-sm text-ink-2">
-              <span className="font-extrabold text-ink">
+              <span className="font-semibold text-ink">
                 {likeness.pricePerUse.toFixed(2)} HBAR
               </span>{" "}
               per use
             </p>
           ) : (
-            <p className="text-sm font-semibold text-ink-2">
-              {reasonShort(likeness)}
-            </p>
+            <p className="text-sm text-ink-3">{reasonShort(likeness)}</p>
           )}
         </div>
       </Link>

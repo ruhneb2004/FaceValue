@@ -1,91 +1,86 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   FaceValue — cartoon-futurist system
+   FaceValue — flat cartoon system
 
-   Direction: bright saturated fills, dark violet ink, thick outlines and
-   hard offset shadows. The web3/NFT register, not an editorial one.
+   Reference: Magic Eden's light tokens (cream canvas #fdfaf3, ink #0c0c0c,
+   one magenta accent), which is the closest thing to a "simple but
+   futuristic" web3 marketplace. Deliberately restrained: ONE accent colour
+   for actions, colour elsewhere means STATE and nothing else.
 
-   Contrast note: white text FAILS on cyan, lime, tangerine, bubblegum and
-   lemon (1.35–2.94:1). Dark ink passes on all of them (6.06–13.18:1), so the
-   rule throughout is INK ON BRIGHT, and only violet carries white labels.
-   Every pairing below was measured; see docs/design-tokens.md §9.
+   No gradients. No transparency on chrome. Flat fills, hairline borders,
+   one soft shadow at most.
+
+   Every pair below was measured. White on Magic Eden's own #e42575 fails at
+   4.36:1, so the accent is deepened to #d31f6b (5.03:1 with white).
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* ink + surfaces */
-  --ink: #1a1330;
-  --ink-soft: #4a3f6b;
-  --canvas: #fff8ef;
-  --paper: #ffffff;
+  /* surfaces — cream, flat */
+  --bg: #fdfaf3;
+  --bg-strong: #fff8eb;
+  --bg-deep: #f4ead4;
+  --card: #ffffff;
 
-  /* brights */
-  --violet: #8a4af5;
-  --violet-deep: #6b2fd6;
-  --cyan: #00c1d7;
-  --lime: #a0da3e;
-  --tangerine: #ff6600;
-  --bubblegum: #fc65b6;
-  --lemon: #ffdc3a;
+  /* ink */
+  --text: #0c0c0c;        /* 18.77:1 on bg */
+  --text-body: #3a3a3a;   /* 10.91:1 */
+  --text-muted: #6b6b6b;  /*  5.11:1 */
 
-  /* state fills — all pass ink text >= 6.2:1 */
-  --state-active-bg: #81e86a;
-  --state-provisional-bg: #fbd530;
-  --state-disputed-bg: #ff694d;
-  --state-review-bg: #ab97ff;
-  --state-moved-bg: #55c4fe;
-  --state-revoked-bg: #bdbcca;
-  --state-text: var(--ink);
+  /* one accent: actions only */
+  --brand: #d31f6b;        /* white 5.03:1, on bg 4.82:1 */
+  --brand-hover: #b81758;
+  --brand-soft: #fdecf3;
 
-  /* semantic */
-  --color-bg-page: var(--canvas);
-  --color-bg-surface: var(--paper);
-  --color-bg-sunken: #f2e9dc;
+  /* state fills — ink text, all >= 6.4:1 */
+  --state-active-bg: #3eb489;
+  --state-provisional-bg: #f4b942;
+  --state-disputed-bg: #ef6b5e;
+  --state-review-bg: #a78bfa;
+  --state-moved-bg: #7cc4f0;
+  --state-revoked-bg: #c9c4bb;
+  --state-ink: #0c0c0c;
 
-  --color-text-primary: var(--ink);
-  --color-text-secondary: var(--ink-soft);
-  --color-text-muted: var(--ink-soft);
+  /* lines */
+  --border: #e8dfc7;
+  --border-strong: #cdbf99;
+
+  /* semantic aliases */
+  --color-bg-page: var(--bg);
+  --color-bg-surface: var(--card);
+  --color-bg-sunken: var(--bg-deep);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--text-body);
+  --color-text-muted: var(--text-muted);
   --color-text-on-accent: #ffffff;
-
-  --color-accent-solid: var(--violet);
-  --color-accent-hover: var(--violet-deep);
-  --color-accent-text: var(--violet-deep);
-
-  --color-border: var(--ink);
-  --color-border-subtle: #e3d6c6;
-  --color-focus-ring: var(--violet-deep);
-
-  /* cartoon structure */
-  --line: 2.5px;
-  --line-thin: 2px;
-  --shadow-hard: 5px 5px 0 var(--ink);
-  --shadow-hard-sm: 3px 3px 0 var(--ink);
-  --shadow-hard-lg: 8px 8px 0 var(--ink);
+  --color-accent-solid: var(--brand);
+  --color-accent-hover: var(--brand-hover);
+  --color-accent-text: var(--brand);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border);
+  --color-focus-ring: var(--brand);
 }
 
 @theme inline {
   --color-page: var(--color-bg-page);
   --color-surface: var(--color-bg-surface);
   --color-sunken: var(--color-bg-sunken);
+  --color-card: var(--card);
+  --color-strong: var(--bg-strong);
   --color-ink: var(--color-text-primary);
   --color-ink-2: var(--color-text-secondary);
   --color-ink-3: var(--color-text-muted);
   --color-accent: var(--color-accent-solid);
   --color-accent-hover: var(--color-accent-hover);
+  --color-accent-soft: var(--brand-soft);
   --color-line: var(--color-border);
-  --color-line-subtle: var(--color-border-subtle);
-  --color-violet: var(--violet);
-  --color-cyan: var(--cyan);
-  --color-lime: var(--lime);
-  --color-tangerine: var(--tangerine);
-  --color-bubblegum: var(--bubblegum);
-  --color-lemon: var(--lemon);
+  --color-line-strong: var(--border-strong);
 
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display), ui-rounded, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
 
-  --radius-control: 12px;
-  --radius-card: 22px;
+  --radius-control: 10px;
+  --radius-card: 16px;
 }
 
 html {
@@ -93,64 +88,70 @@ html {
 }
 
 body {
-  background-color: var(--canvas);
-  /* faint dot grid, the cartoon-futurist backdrop */
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(26, 19, 48, 0.07) 1px,
-    transparent 0
-  );
-  background-size: 22px 22px;
-  color: var(--ink);
+  background-color: var(--bg);
+  color: var(--text);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* better-typography: keep a lone word off the last line; balance headings only. */
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2 {
+  text-wrap: balance;
+}
+
+/* Long ids, ENS names and addresses must not escape their box. */
+.breakable {
+  overflow-wrap: break-word;
 }
 
 :focus-visible {
-  outline: 3px solid var(--violet-deep);
-  outline-offset: 3px;
-  border-radius: 6px;
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* ── cartoon surfaces ─────────────────────────────────────── */
-
-.cartoon {
-  border: var(--line) solid var(--ink);
-  box-shadow: var(--shadow-hard);
+/* One soft shadow, used only on cards that sit on the canvas. */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgba(12, 12, 12, 0.04);
+  transition-property: box-shadow, transform, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.cartoon-sm {
-  border: var(--line-thin) solid var(--ink);
-  box-shadow: var(--shadow-hard-sm);
-  border-radius: var(--radius-control);
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 8px rgba(12, 12, 12, 0.07);
+  }
 }
 
-/* Press pushes the card into its own shadow */
 .press {
-  transition-property: transform, box-shadow, background-color;
-  transition-duration: 120ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  transition-property: transform, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .press:active:not(:disabled) {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0 var(--ink);
-}
-
-.press:disabled {
-  transform: none;
+  transform: scale(0.97);
 }
 
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Chunky sticker badge */
-.sticker {
-  border: var(--line-thin) solid var(--ink);
-  box-shadow: 2px 2px 0 var(--ink);
-  border-radius: 999px;
+/* Sticky chrome must be opaque, never see-through. */
+.chrome {
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--border);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -160,7 +161,6 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
   .press:active:not(:disabled) {
     transform: none;

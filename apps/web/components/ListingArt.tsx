@@ -13,15 +13,12 @@ import type { LikenessState } from "@/lib/types";
 
 const STYLES = [notionists, adventurer, bigSmile, openPeeps] as const;
 
-/** Sticker-ish ground per state, so the grid reads as varied artwork. */
-const GROUND: Record<LikenessState, string> = {
-  active: "var(--state-active-bg)",
-  provisional: "var(--state-provisional-bg)",
-  disputed: "var(--state-disputed-bg)",
-  review: "var(--state-review-bg)",
-  moved: "var(--state-moved-bg)",
-  revoked: "var(--state-revoked-bg)",
-};
+/**
+ * Ground is ONE neutral for every listing. State is already carried by the
+ * badge, and six vivid backgrounds turned the grid into a rainbow, which
+ * fights the single-accent rule.
+ */
+const GROUND = "var(--bg-deep)";
 
 const OPTS = {
   // scale < 100 shrinks the artwork inside its viewBox, leaving headroom so a
@@ -81,7 +78,7 @@ export function ListingArt({
   return (
     <div
       className={`relative overflow-hidden ${className}`}
-      style={{ backgroundColor: GROUND[state] }}
+      style={{ backgroundColor: GROUND }}
       aria-hidden="true"
     >
       {/* position:absolute + inset-0 gives the SVG a definite box to fill;

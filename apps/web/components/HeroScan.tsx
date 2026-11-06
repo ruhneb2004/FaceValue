@@ -1,79 +1,84 @@
 /**
- * Hero illustration: a likeness being scanned into the registry.
+ * Hero illustration: a likeness being matched into the registry.
  *
- * Cartoon-futurist: bold fills, thick ink outlines, flat colour. Same visual
- * language as the listing artwork and the logo, so the page has one voice.
+ * Flat fills, hairline strokes, no gradients and no outline-as-decoration.
+ * One accent (the scan line and the bond tick) to match the interface.
  */
 export function HeroScan({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 420 320"
+      viewBox="0 0 400 300"
       role="img"
-      aria-label="A likeness being scanned into the registry and issued a bond"
+      aria-label="A captured likeness being matched against a registered reference"
       className={className}
       fill="none"
     >
-      <defs>
-        <clipPath id="faceClip">
-          <circle cx="150" cy="150" r="88" />
-        </clipPath>
-      </defs>
+      {/* two frames: reference and capture, comparing */}
+      <rect x="18" y="34" width="150" height="196" rx="14" fill="var(--bg-deep)" />
+      <rect x="232" y="34" width="150" height="196" rx="14" fill="var(--bg-deep)" />
+      <rect x="18" y="34" width="150" height="196" rx="14" stroke="var(--border-strong)" />
+      <rect x="232" y="34" width="150" height="196" rx="14" stroke="var(--border-strong)" />
 
-      {/* burst behind the head */}
-      <g opacity="0.95">
-        <circle cx="150" cy="150" r="112" fill="var(--lemon)" />
-        <circle cx="150" cy="150" r="88" fill="var(--bubblegum)" />
-      </g>
+      {/* left head */}
+      <circle cx="93" cy="118" r="34" fill="#e9dcc6" />
+      <path
+        d="M93 92c13 0 22 9 22 22 0 4 1 7 2 10 1 3-1 5-3 5v4c0 2-2 4-4 4H76c-2 0-4-2-4-4v-4c-2 0-4-2-3-5 1-3 2-6 2-10 0-13 9-22 22-22Z"
+        fill="var(--text-body)"
+      />
+      <rect x="59" y="168" width="68" height="62" rx="22" fill="var(--border-strong)" />
 
-      <g clipPath="url(#faceClip)">
-        {/* head + shoulders, flat blocks */}
-        <path d="M150 74c30 0 50 22 50 52 0 30-20 52-50 52s-50-22-50-52c0-30 20-52 50-52Z" fill="#ffd7b0" />
-        <path d="M100 106c0-24 22-38 50-38s50 14 50 38c-10-10-28-16-50-16s-40 6-50 16Z" fill="var(--ink)" />
-        <path d="M96 210c8-26 28-38 54-38s46 12 54 38v20H96v-20Z" fill="var(--cyan)" />
-        {/* eyes */}
-        <circle cx="132" cy="140" r="5.5" fill="var(--ink)" />
-        <circle cx="170" cy="140" r="5.5" fill="var(--ink)" />
-        {/* smile */}
-        <path d="M136 166c6 7 22 7 28 0" stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" />
-        {/* scan band */}
-        <rect x="58" y="146" width="184" height="22" fill="var(--violet)" opacity="0.28" />
-        <line x1="58" y1="157" x2="242" y2="157" stroke="var(--violet)" strokeWidth="4" />
-      </g>
+      {/* right head, mirrored silhouette */}
+      <circle cx="307" cy="118" r="34" fill="#e9dcc6" />
+      <path
+        d="M307 92c13 0 22 9 22 22 0 4 1 7 2 10 1 3-1 5-3 5v4c0 2-2 4-4 4h-34c-2 0-4-2-4-4v-4c-2 0-4-2-3-5 1-3 2-6 2-10 0-13 9-22 22-22Z"
+        fill="var(--text-body)"
+      />
+      <rect x="273" y="168" width="68" height="62" rx="22" fill="var(--border-strong)" />
 
-      {/* thick rings, drawn after so they sit on top */}
-      <circle cx="150" cy="150" r="88" stroke="var(--ink)" strokeWidth="4" />
-      <circle
-        cx="150"
-        cy="150"
-        r="112"
-        stroke="var(--ink)"
-        strokeWidth="3"
-        strokeDasharray="3 9"
+      {/* scan line across the capture frame */}
+      <rect x="232" y="150" width="150" height="18" fill="var(--brand-soft)" />
+      <line x1="232" y1="159" x2="382" y2="159" stroke="var(--brand)" strokeWidth="2" />
+
+      {/* comparison link */}
+      <line
+        x1="176"
+        y1="132"
+        x2="224"
+        y2="132"
+        stroke="var(--border-strong)"
+        strokeDasharray="3 5"
+        strokeLinecap="round"
+      />
+      <circle cx="200" cy="132" r="13" fill="var(--card)" stroke="var(--border-strong)" />
+      <path
+        d="M195 132l4 4 7-8"
+        stroke="var(--brand)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
 
-      {/* corner ticks */}
-      {[
-        [150, 38, 150, 22],
-        [150, 262, 150, 278],
-        [38, 150, 22, 150],
-        [262, 150, 278, 150],
-      ].map(([x1, y1, x2, y2], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" />
-      ))}
-
-      {/* bond token */}
-      <path d="M272 150h44" stroke="var(--ink)" strokeWidth="4" strokeDasharray="2 8" strokeLinecap="round" />
-      <circle cx="336" cy="150" r="28" fill="var(--lime)" stroke="var(--ink)" strokeWidth="4" />
-      <path d="M326 150l7.5 8 13-16" stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-
-      {/* sticker chips */}
-      <rect x="298" y="196" width="78" height="12" rx="6" fill="var(--lemon)" stroke="var(--ink)" strokeWidth="3" />
-      <rect x="298" y="218" width="56" height="12" rx="6" fill="var(--paper)" stroke="var(--ink)" strokeWidth="3" />
-
-      {/* sparks */}
-      <path d="M84 58l6 12 12 6-12 6-6 12-6-12-12-6 12-6 6-12Z" fill="var(--lemon)" stroke="var(--ink)" strokeWidth="3" strokeLinejoin="round" />
-      <circle cx="232" cy="72" r="7" fill="var(--cyan)" stroke="var(--ink)" strokeWidth="3" />
-      <circle cx="70" cy="228" r="6" fill="var(--bubblegum)" stroke="var(--ink)" strokeWidth="3" />
+      {/* result rows */}
+      <rect x="18" y="252" width="120" height="8" rx="4" fill="var(--border-strong)" />
+      <rect x="232" y="252" width="86" height="8" rx="4" fill="var(--border)" />
+      <text
+        x="18"
+        y="284"
+        fill="var(--text-muted)"
+        fontSize="11"
+        fontFamily="var(--font-sans)"
+      >
+        registered reference
+      </text>
+      <text
+        x="232"
+        y="284"
+        fill="var(--text-muted)"
+        fontSize="11"
+        fontFamily="var(--font-sans)"
+      >
+        live capture
+      </text>
     </svg>
   );
 }

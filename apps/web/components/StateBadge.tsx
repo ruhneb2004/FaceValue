@@ -1,8 +1,8 @@
 import type { LikenessState } from "@/lib/types";
 
 /**
- * State sticker. Bright fill + dark ink + thick outline, always with an icon
- * and a word. Ink on every state fill measures >= 6.2:1.
+ * State pill. Flat fill + ink text + icon + word, never colour alone.
+ * Ink on every state fill measures >= 6.4:1.
  */
 const CONFIG: Record<
   LikenessState,
@@ -86,8 +86,8 @@ export function StateBadge({
 
   return (
     <span
-      className="sticker inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.04em]"
-      style={{ color: "var(--state-text)", backgroundColor: c.bg }}
+      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em]"
+      style={{ color: "var(--state-ink)", backgroundColor: c.bg }}
     >
       {c.icon}
       {label}
