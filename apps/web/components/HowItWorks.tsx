@@ -54,7 +54,7 @@ export function HowItWorks() {
         <h2 id="how" className="heading-3 text-ink">
           How it works
         </h2>
-        <p className="body-2 mt-4 max-w-[46ch] mx-auto text-sub">
+        <p className="body-2 mt-4 max-w-[46ch] mx-auto text-ink2">
           Three steps, in order. A licence is only ever for one named use, and
           anyone can challenge it.
         </p>
