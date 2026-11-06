@@ -5,6 +5,7 @@ import { ArrowRight, Check, SealCheck } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 import { PriceRow } from "./PriceRow";
 import { isLicensable, type Likeness } from "@/lib/types";
+import { useWallet } from "@/lib/wallet";
 
 /**
  * The clearance action for a licensable likeness.
@@ -20,9 +21,45 @@ import { isLicensable, type Likeness } from "@/lib/types";
  * this leaves behind what was bought, for how much, and the licence reference.
  */
 export function ActionPanel({ likeness }: { likeness: Likeness }) {
+  const { address } = useWallet();
   const [stage, setStage] = useState<"idle" | "confirm" | "done">("idle");
+  const [licenseId, setLicenseId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   if (!isLicensable(likeness.state)) return null;
+
+  /**
+   * The licence is written by the server, not faked in the client. A 409 here
+   * means the record changed state between the page load and the click - the
+   * state machine has the final say and its reason is shown verbatim.
+   */
+  async function pay() {
+    if (!address) {
+      setError("Connect a wallet before clearing a use.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/licence", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ likenessId: likeness.id, buyer: address }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setError(data?.error ?? "The licence could not be written.");
+        return;
+      }
+      setLicenseId(data.licenseId);
+      setStage("done");
+    } catch {
+      setError("The registry did not respond. Nothing was charged.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   if (stage === "done") {
     return (
@@ -50,7 +87,7 @@ export function ActionPanel({ likeness }: { likeness: Likeness }) {
           <div className="flex items-baseline justify-between gap-4 px-3 py-2.5">
             <dt className="caption-5 text-ink2">Licence</dt>
             <dd className="tnum font-mono text-[0.8125rem] text-ink">
-              LV-{likeness.id.slice(-3).toUpperCase()}-0001
+              {licenseId ?? `LV-${likeness.id.slice(-3).toUpperCase()}-0001`}
             </dd>
           </div>
           <div className="flex items-baseline justify-between gap-4 px-3 py-2.5">
@@ -110,17 +147,25 @@ export function ActionPanel({ likeness }: { likeness: Likeness }) {
             here; a refund is a dispute.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Button onClick={() => setStage("done")} size="sm">
-              Confirm and pay
+            <Button onClick={pay} disabled={busy} size="sm">
+              {busy ? "Writing the licence" : "Confirm and pay"}
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setStage("idle")}
+              onClick={() => {
+                setError(null);
+                setStage("idle");
+              }}
             >
               Cancel
             </Button>
           </div>
+          {error && (
+            <p role="alert" className="body-6 mt-3 text-[var(--state-disputed)]">
+              {error}
+            </p>
+          )}
         </div>
       )}
     </section>

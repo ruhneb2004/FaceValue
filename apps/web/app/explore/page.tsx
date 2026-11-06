@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Footer } from "@/components/Footer";
 import { PageIntro } from "@/components/PageIntro";
@@ -9,7 +9,7 @@ import { LikenessCard } from "@/components/LikenessCard";
 import { ConnectGate } from "@/components/ConnectGate";
 import { Button } from "@/components/Button";
 import { SEED_LIKENESSES } from "@/lib/seed";
-import { isLicensable, type LikenessState } from "@/lib/types";
+import { isLicensable, type Likeness, type LikenessState } from "@/lib/types";
 import { MagnifyingGlass } from "@phosphor-icons/react/ssr";
 
 /**
@@ -29,12 +29,33 @@ export default function Explore() {
   const [query, setQuery] = useState("");
   const [state, setState] = useState<"all" | LikenessState>("all");
 
-  const licensable = SEED_LIKENESSES.filter((l) => isLicensable(l.state)).length;
-  const challenges = SEED_LIKENESSES.reduce((n, l) => n + l.openChallenges, 0);
+  // The grid reads the live registry, not the seed constant: a licence or a
+  // challenge has to show up on the next load, and the seed is only the shape
+  // the server starts from. The seed is the initial value so the first paint is
+  // never empty, then the API replaces it.
+  const [rows, setRows] = useState<Likeness[]>(SEED_LIKENESSES);
+  useEffect(() => {
+    let live = true;
+    fetch("/api/likenesses")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (live && d?.likenesses) setRows(d.likenesses as Likeness[]);
+      })
+      .catch(() => {
+        // Offline or the endpoint is down: keep the seed rather than an empty
+        // grid, since a blank registry reads as "nothing exists".
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const licensable = rows.filter((l) => isLicensable(l.state)).length;
+  const challenges = rows.reduce((n, l) => n + l.openChallenges, 0);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return SEED_LIKENESSES.filter((l) => {
+    return rows.filter((l) => {
       if (state !== "all" && l.state !== state) return false;
       if (!q) return true;
       return (
@@ -42,7 +63,7 @@ export default function Explore() {
         (l.ensName ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, state]);
+  }, [rows, query, state]);
 
   const clear = () => {
     setQuery("");
@@ -60,7 +81,7 @@ export default function Explore() {
           aside={
             <dl className="grid grid-cols-3 divide-x divide-line rounded-xl border border-line bg-surface2">
               {[
-                { k: "Entries", v: SEED_LIKENESSES.length },
+                { k: "Entries", v: rows.length },
                 { k: "Licensable", v: licensable },
                 { k: "Challenges", v: challenges },
               ].map((s) => (
@@ -91,7 +112,7 @@ export default function Explore() {
               onQuery={setQuery}
               state={state}
               onState={setState}
-              total={SEED_LIKENESSES.length}
+              total={rows.length}
               shown={filtered.length}
             />
 
@@ -115,7 +136,7 @@ export default function Explore() {
                 </p>
                 <p className="body-5 mt-2 max-w-[42ch] text-ink2">
                   The demo registry holds{" "}
-                  <span className="tnum text-ink">{SEED_LIKENESSES.length}</span>{" "}
+                  <span className="tnum text-ink">{rows.length}</span>{" "}
                   records. Try a different name, or clear the filters to see them all.
                 </p>
                 <Button variant="secondary" size="sm" className="mt-6" onClick={clear}>

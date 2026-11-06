@@ -26,7 +26,7 @@ export function bandOf(cos: number): Band {
 }
 
 /** Tier a challenge lands in, given its cosine. T1 auto, T2/T3 review. */
-export function tierOf(cos: number): 1 | 2 | 3 {
+export function tierOf(cos: number): 1 | 3 {
   return bandOf(cos) === "review" ? 3 : 1;
 }
 
