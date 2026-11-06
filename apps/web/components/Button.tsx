@@ -18,7 +18,7 @@ const button = cva(
     variants: {
       variant: {
         primary:
-          "border-accentink/85 bg-accent text-accentink shadow-[0_0_0_1px_rgba(204,255,0,0.25),0_2px_0_0_#7a9900,0_6px_20px_-6px_rgba(204,255,0,0.55)] hover:brightness-[1.04] hover:shadow-[0_0_0_1px_rgba(204,255,0,0.45),0_2px_0_0_#7a9900,0_8px_28px_-4px_rgba(204,255,0,0.75)] active:translate-y-px active:shadow-[0_0_0_1px_rgba(204,255,0,0.35),0_1px_0_0_#7a9900,0_3px_10px_-6px_rgba(204,255,0,0.5)]",
+          "border-accentink/85 bg-accent text-accentink shadow-[0_1px_2px_rgba(0,0,0,0.4),0_2px_0_0_#7a9900] hover:brightness-[1.04] hover:shadow-[0_1px_3px_rgba(0,0,0,0.45),0_2px_0_0_#7a9900] active:translate-y-px active:shadow-[0_1px_1px_rgba(0,0,0,0.35),0_1px_0_0_#7a9900]",
         secondary:
           "border-linestrong bg-surface3 text-ink shadow-[0_2px_0_0_rgba(0,0,0,0.6)] hover:bg-surface4 hover:border-ink3",
         ghost: "border-transparent bg-transparent text-ink2 hover:bg-surface3 hover:text-ink",
