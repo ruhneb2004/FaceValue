@@ -42,7 +42,6 @@ export default function Landing() {
       <SiteHeader />
       <main id="main" className="flex-1">
         <Hero
-
           lines={["Clear one use of a face,", "not the face itself."]}
           body="A likeness licence names the use, the price and the expiry. Every claim is bonded, and a challenge is settled by a face match against a frozen reference."
           primaryHref="/explore"
@@ -53,48 +52,65 @@ export default function Landing() {
         />
 
         {/* B11 tagline moment, as its own section. */}
-        <section aria-labelledby="tagline" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-20 md:py-28">
+        <section
+          aria-labelledby="tagline"
+          className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-20 md:py-28"
+        >
           <h2 id="tagline" className="sr-only">
             What FaceValue is for
           </h2>
           <div className="max-w-[680px]">
-            <TaglineReveal lines={["A stock photo is cleared for any use.", "A face is cleared for one."]} />
+            <TaglineReveal
+              lines={[
+                "A stock photo is cleared for any use.",
+                "A face is cleared for one.",
+              ]}
+            />
           </div>
         </section>
 
-        <section aria-labelledby="how" className="border-b border-line bg-surface1">
+        <section
+          aria-labelledby="how"
+          className="border-b border-line bg-surface1"
+        >
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-24 md:py-36">
             <HowItWorks />
           </div>
         </section>
 
-        <section aria-labelledby="recent" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
+        <section
+          aria-labelledby="recent"
+          className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24"
+        >
           {/* The heading, and its id, live inside RegistryMarquee. An sr-only
               duplicate used to sit here as well, giving the page two elements
               with id="recent". */}
           <RegistryMarquee />
         </section>
 
-        <section aria-labelledby="benefits" className="border-y border-line bg-surface1">
+        <section
+          aria-labelledby="benefits"
+          className="border-y border-line bg-surface1"
+        >
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-24 md:py-36">
             <StatusStages />
           </div>
         </section>
 
-        <section aria-labelledby="registry" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-          <h2 id="registry" className="heading-5 text-ink">
-            The registry, as it stands
-          </h2>
-          <p className="body-6 mt-3 max-w-[58ch] text-ink2">
-            An entry can be licensed only while it is active or moved. Anything else says why not, in words.
-          </p>
-          <div className="mt-8">
-            <RegistrySample />
-          </div>
-
-          <div aria-labelledby="face" className="mt-20 grid gap-10 border-t border-line pt-16 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-16">
-            <div>
-              <h2 id="face" className="text-[1.75rem] leading-tight font-medium tracking-[-0.01em] text-ink text-balance">
+        <section
+          aria-labelledby="face"
+          className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24"
+        >
+          {/* The record sits LEFT and the heading and intro sit RIGHT, mirroring
+              the block above it. The source order stays heading-first so the h2
+              is announced before the record, and the visual swap is done with
+              grid placement rather than by moving the copy down the DOM. */}
+          <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(0,0.72fr)] lg:items-start lg:gap-16">
+            <div className="lg:col-start-2 lg:row-start-1">
+              <h2
+                id="face"
+                className="text-[1.75rem] leading-tight font-medium tracking-[-0.01em] text-ink text-balance"
+              >
                 The face decides, not the count
               </h2>
               <p className="body-2 mt-4 max-w-[42ch] text-ink2">
@@ -107,11 +123,17 @@ export default function Landing() {
                 challengers only file when they are confident.
               </p>
             </div>
-            <DisputeRecord />
+
+            <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+              <DisputeRecord />
+            </div>
           </div>
         </section>
 
-        <section aria-labelledby="faq" className="border-y border-line bg-surface1">
+        <section
+          aria-labelledby="faq"
+          className="border-y border-line bg-surface1"
+        >
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-16">
               <div>
@@ -119,7 +141,8 @@ export default function Landing() {
                   Questions before you pay
                 </h2>
                 <p className="body-6 mt-3 max-w-[36ch] text-ink2">
-                  If something is unclear, it is cheaper to ask than to licence the wrong thing.
+                  If something is unclear, it is cheaper to ask than to licence
+                  the wrong thing.
                 </p>
               </div>
               <Faq />
@@ -135,7 +158,8 @@ export default function Landing() {
                   Browse the registry before you commit to anything
                 </h2>
                 <p className="body-6 mt-3 max-w-[46ch] text-ink2">
-                  Connecting a wallet shows prices, bonds and open challenges. It costs nothing and signs nothing.
+                  Connecting a wallet shows prices, bonds and open challenges.
+                  It costs nothing and signs nothing.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 lg:justify-end">
