@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, ChevronDown, Search, ShieldCheck } from "lucide-react";
+import { ArrowRight, ChevronDown, Search } from "lucide-react";
 import { Button } from "./Button";
 import { HeroScan } from "./HeroScan";
 
@@ -25,17 +25,9 @@ export function Hero() {
       <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-6 md:py-10">
         <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <div>
-            <motion.p
-              {...rise(0)}
-              className="mb-4 flex items-center gap-2 text-[13px] font-medium text-ink-2"
-            >
-              <ShieldCheck className="size-4 text-accent" aria-hidden="true" />
-              Likeness rights registry
-            </motion.p>
-
             <motion.h1
               id="hero"
-              {...rise(0.05)}
+              {...rise(0)}
               className="max-w-[18ch] font-display text-[2.25rem] font-semibold leading-[1.05] tracking-[-0.035em] text-ink sm:text-5xl lg:text-[3.5rem]"
             >
               Licence a face. Prove it on chain.
