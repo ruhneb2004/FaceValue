@@ -3,7 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Hero } from "@/components/Hero";
 import { TaglineReveal } from "@/components/TaglineReveal";
-import { RegistryCarousel } from "@/components/RegistryCarousel";
+import { RegistryMarquee } from "@/components/RegistryMarquee";
 import { RegistrySample } from "@/components/RegistrySample";
 import { DisputeRecord } from "@/components/DisputeRecord";
 import { Faq } from "@/components/Faq";
@@ -112,7 +112,7 @@ export default function Landing() {
           <h2 id="recent" className="sr-only">
             Recently registered
           </h2>
-          <RegistryCarousel />
+          <RegistryMarquee />
         </section>
 
         <section aria-labelledby="benefits" className="border-y border-line bg-surface1">

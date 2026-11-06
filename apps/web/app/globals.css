@@ -329,6 +329,47 @@
 
   /* Reveal animation. Applied by JS only to elements confirmed below the fold,
      so a missing observer costs the animation and never the content (B7). */
+  /* Marquee. The track holds the records twice and shifts by exactly half its
+     width; at the reset the second copy sits where the first began, so there is
+     no visible seam. Driven by CSS so it keeps a steady rate regardless of
+     frame timing, and paused through animation-play-state. */
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-track {
+    animation-name: marquee-scroll;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+      /* Without the animation the track must become a normal scrollable row,
+         or half the records are unreachable. `width: 100%` alone loses to
+         Tailwind's w-max utility, which is why this needs !important: the track
+         stays at its content width and never overflows, so there is nothing to
+         scroll. */
+      width: 100% !important;
+      min-width: 0 !important;
+      flex-wrap: nowrap;
+      overflow-x: auto !important;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .marquee-track > * {
+      scroll-snap-align: start;
+    }
+  }
+
   .reveal-pending {
     opacity: 0;
     transform: translateY(28px);
