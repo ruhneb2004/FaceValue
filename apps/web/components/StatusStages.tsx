@@ -112,12 +112,12 @@ function StageRow({ stage, index }: { stage: Stage; index: number }) {
   return (
     <div
       ref={ref}
-      className="grid grid-cols-1 items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:gap-14"
+      className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-14"
     >
       {/* Card cell. Placed first in the DOM on every row so reading order is
           card then copy; on flipped rows the grid puts it in column 2. */}
       <motion.div
-        className={flipped ? "min-w-0 md:col-start-2" : "min-w-0 md:col-start-1"}
+        className={flipped ? "min-w-0 md:col-start-2 md:row-start-1" : "min-w-0 md:col-start-1 md:row-start-1"}
         animate={{
           opacity: hidden ? 0 : 1,
           x: hidden ? (flipped ? from : -from) : 0,
@@ -129,7 +129,7 @@ function StageRow({ stage, index }: { stage: Stage; index: number }) {
 
       {/* Copy cell. */}
       <motion.div
-        className={flipped ? "min-w-0 md:col-start-1" : "min-w-0 md:col-start-2"}
+        className={flipped ? "min-w-0 md:col-start-1 md:row-start-1" : "min-w-0 md:col-start-2 md:row-start-1"}
         animate={{
           opacity: hidden ? 0 : 1,
           x: hidden ? (flipped ? -from : from) : 0,
@@ -169,7 +169,7 @@ function StageRow({ stage, index }: { stage: Stage; index: number }) {
 function StatusCard({ stage }: { stage: Stage }) {
   return (
     <div className="overflow-hidden rounded-xl border border-line bg-surface2">
-      <div className="aspect-square bg-surface3 p-6">
+      <div className="aspect-[4/3] bg-surface3 p-5">
         <LikenessAvatar
           seed={stage.state}
           className="size-full [&>svg]:size-full"
