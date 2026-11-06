@@ -59,7 +59,9 @@ export function SiteHeader() {
               priority
               className="h-6 w-auto"
             />
-            <span className="title-4 hidden text-ink sm:block">FaceValue</span>
+            <span className="hidden font-mono text-[0.8125rem] font-medium uppercase tracking-[0.14em] text-ink sm:block">
+              Face<span className="text-accent">Value</span>
+            </span>
           </Link>
 
           <nav aria-label="Main" className="ml-2 hidden items-center lg:flex">
@@ -109,18 +111,27 @@ export function SiteHeader() {
                 type="button"
                 onClick={connect}
                 disabled={connecting}
-                className="press group inline-flex min-h-11 items-center gap-2 rounded-full bg-accent pl-4 pr-2.5 font-semibold text-accentink transition-[background-color,gap,opacity] duration-300 hover:gap-2.5 hover:bg-[#b8e600] disabled:opacity-45 motion-reduce:transition-none"
+                className="press group relative inline-flex min-h-11 items-stretch overflow-hidden rounded-md bg-accent text-accentink disabled:opacity-45"
               >
-                <Wallet size={16} aria-hidden="true" />
-                <span>{connecting ? "Connecting" : "Connect wallet"}</span>
-                {/* The arrow is the affordance: it slides on hover and is the
-                    only thing that moves, so the label never shifts position
-                    under the pointer. */}
+                {/* Two-part construction rather than one pill with an icon in
+                    it. The label block and the arrow block are separate
+                    surfaces with a hairline between them, which is the shape
+                    that reads as an action rather than a tag. The arrow block
+                    is a solid ink square, so the arrow is the highest-contrast
+                    thing in the bar and does not need a circle drawn round it. */}
+                <span className="flex items-center gap-2 pl-4 pr-3 font-mono text-[0.8125rem] font-medium uppercase tracking-[0.06em]">
+                  <Wallet size={15} weight="fill" aria-hidden="true" />
+                  {connecting ? "Connecting" : "Connect wallet"}
+                </span>
                 <span
                   aria-hidden="true"
-                  className="grid size-7 place-items-center rounded-full bg-accentink/10 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                  className="grid w-10 place-items-center border-l border-accentink/20 transition-colors duration-300 group-hover:bg-accentink group-hover:text-accent motion-reduce:transition-none"
                 >
-                  <ArrowRight size={13} weight="bold" />
+                  <ArrowRight
+                    size={14}
+                    weight="bold"
+                    className="transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                  />
                 </span>
               </button>
             )}
@@ -217,17 +228,20 @@ function NavLink({ href, current, children }: { href: string; current?: boolean;
     <Link
       href={href}
       aria-current={current ? "page" : undefined}
-      className={`press title-4 relative grid min-h-11 place-items-center rounded-lg px-3.5 transition-colors ${
+      className={`press relative grid min-h-11 place-items-center rounded-md px-3 font-mono text-[0.8125rem] uppercase tracking-[0.08em] transition-colors ${
         current
-          ? "bg-surface3 font-semibold text-ink ring-1 ring-line ring-inset"
-          : "font-medium text-ink2 hover:bg-surface3/60 hover:text-ink"
+          ? "text-accent"
+          : "text-ink2 hover:bg-surface3/60 hover:text-ink"
       }`}
     >
       {children}
+      {/* A short rule under the active label. It is the block element that
+          carries state in greyscale; the accent colour is the second signal,
+          not the only one. */}
       <span
         aria-hidden="true"
-        className={`absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent transition-all duration-300 ${
-          current ? "scale-100 opacity-100" : "scale-0 opacity-0"
+        className={`absolute inset-x-3 bottom-0 h-px origin-left bg-accent transition-transform duration-300 ${
+          current ? "scale-x-100" : "scale-x-0"
         } motion-reduce:transition-none`}
       />
     </Link>

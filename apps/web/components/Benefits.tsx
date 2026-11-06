@@ -11,22 +11,18 @@ const BENEFITS = [
   {
     t: "One use at a time",
     d: "A licence names the use and the date. It never hands over the face, so a brief cannot quietly widen into a campaign.",
-    meta: ["Named use", "Dated", "Non-transferable"],
   },
   {
     t: "Refusals in words",
     d: "An entry that cannot be licensed says why, on the page. No greyed out button and no guessing.",
-    meta: ["Stated reason", "No dead ends"],
   },
   {
     t: "Bonded claims",
     d: "A challenge costs money to file. That keeps the dispute queue short and the claims worth reading.",
-    meta: ["Bond required", "Spam resistant"],
   },
   {
     t: "Hashes on chain, images off it",
     d: "The reference face never leaves the device. Only a hash, the terms and the bond reach the ledger.",
-    meta: ["Hash only", "No image on chain"],
   },
 ];
 
@@ -76,16 +72,6 @@ export function Benefits() {
 
             <AccordionContent>
               <p className="body-2 max-w-[58ch] text-ink2">{b.d}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {b.meta.map((m) => (
-                  <span
-                    key={m}
-                    className="caption-4 rounded-sm border border-line bg-surface2 px-2.5 py-1 text-ink2"
-                  >
-                    {m}
-                  </span>
-                ))}
-              </div>
             </AccordionContent>
           </AccordionItem>
         ))}
