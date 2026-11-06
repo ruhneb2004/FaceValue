@@ -1,10 +1,39 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Wallet } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Check, Copy, LogOut, Wallet } from "lucide-react";
+import { useState } from "react";
 import { Button } from "./Button";
+import { shortAddress, useWallet } from "@/lib/wallet";
+
+const NAV = [
+  { href: "/explore", label: "Explore" },
+  { href: "/register", label: "Register" },
+  { href: "/challenge", label: "Challenge" },
+  { href: "/admin/review", label: "Resolve" },
+];
 
 /** Opaque chrome: never translucent, never blurred. */
 export function SiteHeader() {
+  const pathname = usePathname();
+  const { status, address, connect, disconnect } = useWallet();
+  const [copied, setCopied] = useState(false);
+
+  const connecting = status === "connecting";
+
+  async function copyAddress() {
+    if (!address) return;
+    try {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard blocked; the address is still visible on screen.
+    }
+  }
+
   return (
     <header className="chrome sticky top-0 z-40">
       <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center gap-3 px-4 md:px-6">
@@ -27,12 +56,15 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Main" className="ml-2 hidden items-center gap-0.5 lg:flex">
-          <HeaderLink href="/" current>
-            Explore
-          </HeaderLink>
-          <HeaderLink href="/register">Register</HeaderLink>
-          <HeaderLink href="/challenge">Challenge</HeaderLink>
-          <HeaderLink href="/admin/review">Resolve</HeaderLink>
+          {NAV.map((n) => (
+            <HeaderLink
+              key={n.href}
+              href={n.href}
+              current={pathname === n.href || pathname.startsWith(n.href + "/")}
+            >
+              {n.label}
+            </HeaderLink>
+          ))}
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -49,11 +81,45 @@ export function SiteHeader() {
             </span>
           </p>
 
-          <Button size="md" variant="secondary">
-            <Wallet className="size-4" aria-hidden="true" />
-            <span className="hidden sm:inline">Connect wallet</span>
-            <span className="sm:hidden">Connect</span>
-          </Button>
+          {status === "connected" && address ? (
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={copyAddress}
+                className="press inline-flex min-h-11 items-center gap-2 rounded-control border border-line bg-card px-3 font-mono text-xs text-ink-2 hover:bg-soft hover:text-ink"
+                aria-label={`Copy wallet address ${address}`}
+              >
+                <span
+                  className="size-1.5 rounded-full bg-[var(--live)]"
+                  aria-hidden="true"
+                />
+                {shortAddress(address)}
+                {copied ? (
+                  <Check className="size-3.5 text-accent" aria-hidden="true" />
+                ) : (
+                  <Copy className="size-3.5" aria-hidden="true" />
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={disconnect}
+                aria-label="Disconnect wallet"
+                className="press grid size-11 place-items-center rounded-control text-ink-3 hover:bg-soft hover:text-ink"
+              >
+                <LogOut className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <Button size="md" variant="secondary" onClick={connect} disabled={connecting}>
+              <Wallet className="size-4" aria-hidden="true" />
+              <span className="hidden sm:inline">
+                {connecting ? "Connecting…" : "Connect wallet"}
+              </span>
+              <span className="sm:hidden">
+                {connecting ? "…" : "Connect"}
+              </span>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -62,12 +128,15 @@ export function SiteHeader() {
         aria-label="Main"
         className="mx-auto flex w-full max-w-[1440px] items-center gap-0.5 overflow-x-auto px-4 pb-2 lg:hidden md:px-6"
       >
-        <HeaderLink href="/" current>
-          Explore
-        </HeaderLink>
-        <HeaderLink href="/register">Register</HeaderLink>
-        <HeaderLink href="/challenge">Challenge</HeaderLink>
-        <HeaderLink href="/admin/review">Resolve</HeaderLink>
+        {NAV.map((n) => (
+          <HeaderLink
+            key={n.href}
+            href={n.href}
+            current={pathname === n.href || pathname.startsWith(n.href + "/")}
+          >
+            {n.label}
+          </HeaderLink>
+        ))}
       </nav>
     </header>
   );

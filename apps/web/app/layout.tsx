@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { WalletProvider } from "@/lib/wallet";
 
 /** Geist: the grotesque OpenSea uses for UI text. */
 const geist = Geist({
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geist.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
     >
+      <WalletProvider>
       <body className="flex min-h-full flex-col bg-page text-ink">
         <a
           href="#main"
@@ -44,6 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {children}
       </body>
+      </WalletProvider>
     </html>
   );
 }
