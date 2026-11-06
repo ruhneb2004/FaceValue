@@ -1,8 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { CheckCircle, Fingerprint, Warning } from "@phosphor-icons/react/ssr";
-import { IDKitRequestWidget, proofOfHuman, type IDKitResult } from "@worldcoin/idkit";
+import {
+  IDKitRequestWidget,
+  deviceLegacy,
+  proofOfHuman,
+  selfieCheck,
+  type IDKitResult,
+  type Preset,
+} from "@worldcoin/idkit";
 import { Button } from "./Button";
 
 /**
@@ -25,6 +32,60 @@ import { Button } from "./Button";
  * own message rather than a generic failure.
  */
 
+/**
+ * Proof of Human requires an **Orb-verified** World ID. Without one, World App
+ * refuses the request outright ("you need to be verified"), which looks like our
+ * bug but is not — there is simply no credential to prove with.
+ *
+ * So the gate offers what actually exists, strongest first, and says plainly what
+ * each one proves. The track rewards explaining why a credential is the minimum
+ * sufficient assurance, which is easier to do honestly when the choice is visible
+ * rather than hardcoded.
+ */
+type CredentialChoice = {
+  id: "orb" | "selfie" | "device";
+  label: string;
+  /** What this credential actually establishes — not marketing copy. */
+  proves: string;
+  build: (signal: string) => Preset | null;
+};
+
+const CREDENTIALS: CredentialChoice[] = [
+  {
+    id: "orb",
+    label: "Orb (strongest)",
+    proves:
+      "One person, one credential. Uniqueness is guaranteed globally — this is the assurance the registry wants, and the only one that makes 'one likeness per human' literally true.",
+    build: (signal) => proofOfHuman({ signal }),
+  },
+  {
+    id: "selfie",
+    label: "Selfie Check",
+    proves:
+      "A live human plus a government document matched inside World. Strong, but uniqueness leans on the document rather than the Orb.",
+    build: (signal) => {
+      try {
+        return selfieCheck({ signal });
+      } catch {
+        return null;
+      }
+    },
+  },
+  {
+    id: "device",
+    label: "Device (weakest)",
+    proves:
+      "Only that a device exists. It does not establish a unique human, so the nullifier here is a weaker barrier against one person claiming twice.",
+    build: (signal) => {
+      try {
+        return deviceLegacy({ signal });
+      } catch {
+        return null;
+      }
+    },
+  },
+];
+
 export type WorldIdProof = {
   nullifier: string;
   /** True only when World's backend confirmed the proof. */
@@ -34,6 +95,32 @@ export type WorldIdProof = {
 };
 
 const APP_ID = process.env.NEXT_PUBLIC_WORLDID_APP_ID ?? "";
+
+/**
+ * World ID environment. Defaults to production, where a proof of human needs an
+ * Orb-verified credential — the blockchain being a testnet does not change that,
+ * because the credential lives in World App, not on our chain.
+ *
+ * Set NEXT_PUBLIC_WORLDID_ENV=staging to point at the simulator instead. That is
+ * the documented way to exercise the real flow without a real credential: the
+ * request, consent, proof generation and server-side verification all run for
+ * real, against a simulated human. It is not a mock of our own code.
+ */
+const ENVIRONMENT = (process.env.NEXT_PUBLIC_WORLDID_ENV ?? "production") as
+  | "production"
+  | "staging"
+  | "sandbox";
+
+/**
+ * The bridge the request is actually posted to.
+ *
+ * This SDK's `environment` field is stored but never used to choose a bridge —
+ * the request builder resolves `bridge_url ?? "https://bridge.worldcoin.org"`.
+ * Verified in the shipped bundle, after the simulator request kept landing on
+ * production while `environment` said staging. So `environment` alone is not
+ * enough to test against the simulator; the bridge is the real switch.
+ */
+const BRIDGE_URL = process.env.NEXT_PUBLIC_WORLDID_BRIDGE_URL || undefined;
 
 /** Plain-language reasons, because "generic_error" tells a user nothing. */
 const ERROR_COPY: Record<string, string> = {
@@ -73,6 +160,17 @@ export function WorldIdGate({
   const [rpContext, setRpContext] = useState<RpContext | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [choice, setChoice] = useState<CredentialChoice>(CREDENTIALS[0]);
+
+  // The simulator ignores the credential strength question entirely — it fakes a
+  // verified human — so the picker only makes sense on production. Showing it in
+  // staging would imply a choice that changes nothing.
+  const isSimulator = ENVIRONMENT !== "production";
+
+  // Build the preset once per render. If a credential is unavailable in this
+  // IDKit build it returns null and the button is disabled rather than opening a
+  // request World App cannot satisfy.
+  const preset = choice.build(signal);
 
   // Fetch a fresh signed context each time the widget opens. The signature covers
   // a nonce and a five-minute window, so reusing one would be rejected as stale —
@@ -126,7 +224,7 @@ export function WorldIdGate({
       if (!data.verified || !data.nullifier) {
         throw new Error("The proof did not verify.");
       }
-      onProof({ nullifier: data.nullifier, verified: true, credential: "proofOfHuman" });
+      onProof({ nullifier: data.nullifier, verified: true, credential: choice.label });
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -183,8 +281,70 @@ export function WorldIdGate({
         </div>
       </div>
 
+      {/* Credential choice. The default needs an Orb-verified World ID; without
+          one World App simply refuses, which reads as our failure unless we say
+          so up front and offer the weaker paths. */}
+      {/* Credential choice. Only meaningful on production: in the simulator the
+          human is fake, so picking a weaker credential would change nothing and
+          would misrepresent what was tested. */}
+      <fieldset className={`mt-4 ${isSimulator ? "hidden" : ""}`}>
+        <legend className="caption-5 font-mono uppercase tracking-[0.08em] text-ink3">
+          Credential
+        </legend>
+        <div className="mt-2 space-y-1.5">
+          {CREDENTIALS.map((c) => {
+            const available = c.build(signal) !== null;
+            return (
+              <label
+                key={c.id}
+                className={`flex cursor-pointer items-start gap-2.5 rounded-md border px-3 py-2 transition-colors ${
+                  choice.id === c.id
+                    ? "border-accent bg-surface4"
+                    : "border-line bg-surface2 hover:bg-surface4"
+                } ${available ? "" : "cursor-not-allowed opacity-50"}`}
+              >
+                <input
+                  type="radio"
+                  name="worldid-credential"
+                  value={c.id}
+                  checked={choice.id === c.id}
+                  disabled={!available}
+                  onChange={() => {
+                    setChoice(c);
+                    setError(null);
+                  }}
+                  className="mt-0.5 accent-[var(--accent)]"
+                />
+                <span className="min-w-0">
+                  <span className="block body-6 text-ink">{c.label}</span>
+                  <span className="block body-6 text-ink3">{c.proves}</span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      {choice.id === "orb" && !isSimulator && (
+        <p className="body-6 mt-2 text-ink3">
+          No Orb-verified World ID? World App will refuse this request. Pick a
+          lower credential above, or have an Orb-verified person scan instead.
+        </p>
+      )}
+
+      {isSimulator && (
+        <p className="body-6 mt-3 rounded-md border border-line bg-surface2 px-3 py-2 text-ink2">
+          <span className="font-mono uppercase tracking-[0.06em] text-ink3">
+            {ENVIRONMENT} environment
+          </span>{" "}
+          — this proof comes from World's simulator, not a real credential. The
+          request and the server-side verification are real; the human behind it
+          is simulated. Never present this as a verified real person.
+        </p>
+      )}
+
       <div className="mt-4">
-        <Button size="sm" onClick={prepare} disabled={verifying || !signal}>
+        <Button size="sm" onClick={prepare} disabled={verifying || !signal || !preset}>
           <Fingerprint size={15} aria-hidden="true" />
           {verifying ? "Verifying with World…" : "Verify with World ID"}
         </Button>
@@ -204,7 +364,7 @@ export function WorldIdGate({
 
       {/* Rendered only once a signed context exists: the widget cannot request a
           proof without one, and mounting it early would show a dead modal. */}
-      {open && rpContext && (
+      {open && rpContext && preset && (
         <IDKitRequestWidget
           open={open}
           onOpenChange={setOpen}
@@ -212,7 +372,9 @@ export function WorldIdGate({
           action={action}
           rp_context={rpContext}
           allow_legacy_proofs
-          preset={proofOfHuman({ signal })}
+          environment={ENVIRONMENT}
+          {...(BRIDGE_URL ? { bridge_url: BRIDGE_URL } : {})}
+          preset={preset}
           handleVerify={async () => {
             // Real verification is server-side in handleSuccess; this callback
             // only needs to not throw, or IDKit shows its own error screen.
