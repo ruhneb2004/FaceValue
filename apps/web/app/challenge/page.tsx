@@ -14,6 +14,8 @@ import { isLicensable } from "@/lib/types";
 import { ReferenceCapture, type CapturedReference } from "@/components/ReferenceCapture";
 import { WorldIdGate, type WorldIdProof } from "@/components/WorldIdGate";
 import { useWallet } from "@/lib/wallet";
+import { BondButton } from "@/components/BondButton";
+import { DEFAULT_BOND_HBAR } from "@/lib/bond";
 
 /**
  * Challenge a likeness.
@@ -235,10 +237,21 @@ function ChallengeForm() {
       </div>
 
       {opened && (
-        <p role="status" className="body-5 mt-4 rounded-md border border-line bg-surface3 px-4 py-3 text-ink">
-          Challenge <span className="font-mono">{opened.id}</span> opened at tier {""}
-          {opened.tier}. The bond is recorded against your address.
-        </p>
+        <div className="mt-4 rounded-md border border-line bg-surface3 px-4 py-3">
+          <p role="status" className="body-5 text-ink">
+            Challenge <span className="font-mono">{opened.id}</span> recorded at tier{" "}
+            {opened.tier}. Now post the bond — it goes to the contract from your
+            own wallet, not to us.
+          </p>
+          <div className="mt-3">
+            <BondButton
+              kind="challenge"
+              likenessId={target}
+              challengeId={opened.id}
+              amountHbar={DEFAULT_BOND_HBAR}
+            />
+          </div>
+        </div>
       )}
       {submitError && (
         <p role="alert" className="body-5 mt-4 text-[var(--state-disputed)]">

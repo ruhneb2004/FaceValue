@@ -10,6 +10,7 @@ import {
   type Hex,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { bondAbi, toBytes32 } from "./bond.ts";
 
 /**
  * On-chain settlement for FaceValueBond.
@@ -36,79 +37,6 @@ export const hederaTestnet = defineChain({
   },
   testnet: true,
 });
-
-/** Minimal ABI: only what the server actually calls. */
-export const bondAbi = [
-  {
-    type: "function",
-    name: "stake",
-    stateMutability: "payable",
-    inputs: [{ name: "likenessId", type: "bytes32" }],
-    outputs: [],
-  },
-  {
-    type: "function",
-    name: "challenge",
-    stateMutability: "payable",
-    inputs: [
-      { name: "likenessId", type: "bytes32" },
-      { name: "challengeId", type: "bytes32" },
-    ],
-    outputs: [],
-  },
-  {
-    type: "function",
-    name: "resolveTier1",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "likenessId", type: "bytes32" },
-      { name: "challengeId", type: "bytes32" },
-      { name: "faceWins", type: "bool" },
-    ],
-    outputs: [],
-  },
-  {
-    type: "function",
-    name: "approveReview",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "challengeId", type: "bytes32" },
-      { name: "verdict", type: "bool" },
-    ],
-    outputs: [],
-  },
-  {
-    type: "function",
-    name: "resolveReview",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "challengeId", type: "bytes32" }],
-    outputs: [],
-  },
-  {
-    type: "function",
-    name: "withdraw",
-    stateMutability: "nonpayable",
-    inputs: [],
-    outputs: [],
-  },
-  {
-    type: "function",
-    name: "credit",
-    stateMutability: "view",
-    inputs: [{ name: "who", type: "address" }],
-    outputs: [{ name: "", type: "uint256" }],
-  },
-  {
-    type: "function",
-    name: "stakes",
-    stateMutability: "view",
-    inputs: [{ name: "likenessId", type: "bytes32" }],
-    outputs: [
-      { name: "registrant", type: "uint256" },
-      { name: "challengerPool", type: "uint256" },
-    ],
-  },
-] as const;
 
 export function onchainEnabled(): boolean {
   return process.env.ONCHAIN_SETTLEMENT === "true" && Boolean(bondAddress()) && Boolean(matcherKey());
@@ -142,14 +70,6 @@ function matcherWallet() {
     }),
     address,
   };
-}
-
-/** Deterministic bytes32 id so the same record maps to one on-chain slot. */
-export function toBytes32(id: string): Hex {
-  // Right-pad the UTF-8 bytes. Ids are short and ASCII, so this is unambiguous
-  // and keeps the mapping readable on HashScan.
-  const hex = Buffer.from(id, "utf8").toString("hex").padEnd(64, "0");
-  return `0x${hex.slice(0, 64)}` as Hex;
 }
 
 export type ChainResult =

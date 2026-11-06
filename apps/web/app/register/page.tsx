@@ -21,6 +21,8 @@ import { LikenessAvatar } from "@/components/LikenessAvatar";
 import { StateBadge } from "@/components/StateBadge";
 import { ReferenceCapture, type CapturedReference } from "@/components/ReferenceCapture";
 import { WorldIdGate, type WorldIdProof } from "@/components/WorldIdGate";
+import { BondButton } from "@/components/BondButton";
+import { DEFAULT_BOND_HBAR } from "@/lib/bond";
 import { useWallet } from "@/lib/wallet";
 
 /**
@@ -103,6 +105,7 @@ function RegisterFlow() {
   const [ensName, setEnsName] = useState("");
   const [touched, setTouched] = useState(false);
   const [done, setDone] = useState(false);
+  const [createdId, setCreatedId] = useState<string | null>(null);
   const [reference, setReference] = useState<CapturedReference | null>(null);
   const [proof, setProof] = useState<WorldIdProof | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -130,6 +133,23 @@ function RegisterFlow() {
             is now provisional for 24 hours. It becomes licensable when the
             settlement window closes, unless a challenge is raised first.
           </p>
+
+          {/* The bond is the claim's backing. Asking for it here, after the
+              record exists, is where the user can see what they are putting up
+              and against which record. */}
+          {createdId && (
+            <div className="mt-5 rounded-md border border-line bg-surface3 p-4">
+              <p className="body-4 text-ink">Back the claim with a bond</p>
+              <p className="body-6 mt-1 max-w-[52ch] text-ink2">
+                A bond is what makes a squat cost something. It is held by the
+                contract, returns to you if the record settles, and goes to a
+                challenger only if their face matches the reference.
+              </p>
+              <div className="mt-3">
+                <BondButton kind="stake" likenessId={createdId} amountHbar={DEFAULT_BOND_HBAR} />
+              </div>
+            </div>
+          )}
           <div className="mt-6 flex flex-wrap gap-3">
             <Button href="/explore">
               See it in the registry
@@ -341,10 +361,13 @@ function RegisterFlow() {
                       nullifier: proof?.nullifier,
                     }),
                   });
-                  if (!res.ok) {
-                    const data = (await res.json().catch(() => ({}))) as { error?: string };
-                    throw new Error(data.error ?? "Registration failed.");
-                  }
+                  const data = (await res.json().catch(() => ({}))) as {
+                    error?: string;
+                    likeness?: { id?: string };
+                  };
+                  if (!res.ok) throw new Error(data.error ?? "Registration failed.");
+                  // Keep the new id so the bond can be posted against it.
+                  if (data.likeness?.id) setCreatedId(data.likeness.id);
                   setDone(true);
                 } catch (err) {
                   setSubmitError((err as Error).message);
