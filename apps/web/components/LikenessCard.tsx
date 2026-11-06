@@ -3,8 +3,18 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { StateBadge } from "./StateBadge";
-import { CardArt } from "./CardArt";
+import { ListingArt } from "./ListingArt";
 import { isLicensable, type Likeness } from "@/lib/types";
+
+/** Warm tint per state, so the grid reads as varied artwork, not repetition. */
+const TINT: Record<string, string> = {
+  active: "var(--gold-50)",
+  provisional: "var(--gold-100)",
+  disputed: "var(--state-disputed-bg)",
+  review: "var(--state-review-bg)",
+  moved: "var(--taupe-100)",
+  revoked: "var(--neutral-100)",
+};
 
 /**
  * A marketplace card.
@@ -36,9 +46,12 @@ export function LikenessCard({
         href={`/likeness/${likeness.id}`}
         className="surface-card group flex h-full flex-col overflow-hidden rounded-card bg-surface"
       >
-        <div className="relative aspect-square w-full overflow-hidden bg-sunken">
+        <div
+          className="relative aspect-square w-full overflow-hidden"
+          style={{ backgroundColor: TINT[likeness.state] ?? "var(--gold-50)" }}
+        >
           <div className="absolute inset-0 transition-transform duration-300 ease-out group-hover:scale-[1.04]">
-            <CardArt id={likeness.id} />
+            <ListingArt id={likeness.id} className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />
           </div>
           <div className="absolute left-3 top-3">
             <StateBadge state={likeness.state} count={likeness.openChallenges} />

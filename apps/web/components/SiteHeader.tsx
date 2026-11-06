@@ -13,19 +13,19 @@ export function SiteHeader() {
         <Link
           href="/"
           aria-label="FaceValue home"
-          className="press flex min-h-11 items-center gap-2 rounded-[4px]"
+          className="press flex min-h-11 items-center rounded-[4px]"
         >
+          {/* Textless mark only. The wordmark lives in the hero and footer
+              lockups, so the navbar stays quiet and the glyph reads clearly
+              at 28px. */}
           <Image
             src="/mark.png"
-            alt=""
+            alt="FaceValue"
             width={212}
             height={256}
             priority
-            className="h-7 w-auto"
+            className="h-8 w-auto"
           />
-          <span className="font-display text-lg tracking-[-0.01em] text-ink">
-            facevalue
-          </span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-1 sm:flex">

@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, ChevronDown, Search } from "lucide-react";
 import { Button } from "@/components/Button";
 import { HeroScan } from "@/components/HeroScan";
 
@@ -129,18 +129,29 @@ export function Hero() {
               className="h-11 w-full rounded-control border border-line bg-page pl-9 pr-3 text-sm text-ink placeholder:text-ink-3"
             />
           </div>
-          <select
-            aria-label="Filter by state"
-            defaultValue="all"
-            className="h-11 rounded-control border border-line bg-page px-3 text-sm text-ink"
-          >
-            <option value="all">All states</option>
-            <option value="active">Licensable</option>
-            <option value="provisional">Provisional</option>
-            <option value="disputed">Challenge open</option>
-            <option value="review">Under review</option>
-            <option value="moved">Moved</option>
-          </select>
+          <div className="relative">
+            <label htmlFor="state" className="sr-only">
+              Filter by state
+            </label>
+            <select
+              id="state"
+              defaultValue="all"
+              className="h-11 w-full appearance-none rounded-control border border-line bg-page pl-3 pr-10 text-sm text-ink sm:w-auto sm:min-w-[11rem]"
+            >
+              <option value="all">All states</option>
+              <option value="active">Licensable</option>
+              <option value="provisional">Provisional</option>
+              <option value="disputed">Challenge open</option>
+              <option value="review">Under review</option>
+              <option value="moved">Moved</option>
+            </select>
+            {/* Chevron inset 12px; the select reserves 40px so text never
+                collides with it. */}
+            <ChevronDown
+              aria-hidden="true"
+              className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink-3"
+            />
+          </div>
         </div>
       </div>
     </section>
