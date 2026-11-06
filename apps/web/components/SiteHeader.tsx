@@ -9,6 +9,11 @@ import { ArrowRight, ArrowUpRight, Copy, Check, SignOut, Wallet } from "@phospho
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 import { shortAddress, useWallet } from "@/lib/wallet";
+import { SEED_LIKENESSES } from "@/lib/seed";
+import { isLicensable } from "@/lib/types";
+
+/** Counted from the seed so the bar cannot disagree with /explore. */
+const licensableCount = SEED_LIKENESSES.filter((l) => isLicensable(l.state)).length;
 
 const NAV = [
   { href: "/explore", label: "Explore" },
@@ -64,7 +69,15 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav aria-label="Main" className="ml-2 hidden items-center lg:flex">
+          {/* The divider that closes the brand group. Previously the links began
+              16px after the wordmark with nothing between them, so the bar read
+              as two loose fragments. */}
+          <span
+            aria-hidden="true"
+            className="mx-3 hidden h-5 w-px shrink-0 bg-linestrong lg:block"
+          />
+
+          <nav aria-label="Main" className="ml-1 hidden min-w-0 flex-1 justify-between items-center px-6 lg:flex">
             {NAV.map((n) => (
               <NavLink
                 key={n.href}
@@ -76,7 +89,42 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2">
+
+          {/* The middle: what the registry currently holds. This occupies the
+              space that used to be empty and answers the first question a
+              visitor has before they connect, instead of leaving a trough of
+              nothing between the links and the call to action. */}
+          <p className="hidden min-w-0 items-center gap-4 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-ink2 xl:flex">
+            <span className="flex items-center gap-1.5">
+              <span className="tnum text-ink" aria-hidden="true">
+                {SEED_LIKENESSES.length}
+              </span>
+              <span className="text-ink2" aria-hidden="true">
+                entries
+              </span>
+            </span>
+            <span aria-hidden="true" className="h-3 w-px bg-linestrong" />
+            <span className="flex items-center gap-1.5">
+              <span
+                className="inline-block size-1.5 rounded-full bg-accent"
+                aria-hidden="true"
+              />
+              <span className="tnum text-ink" aria-hidden="true">
+                {licensableCount}
+              </span>
+              <span className="text-ink2" aria-hidden="true">
+                licensable
+              </span>
+            </span>
+            {/* One readable sentence for assistive tech, in place of the
+                fragments above that concatenate without spaces. */}
+            <span className="sr-only">
+              {SEED_LIKENESSES.length} entries registered, {licensableCount} of
+              them licensable
+            </span>
+          </p>
+
+          <div className="ml-2 flex shrink-0 items-center gap-2 lg:ml-4">
             {status === "connected" && address ? (
               <>
                 <button
@@ -118,7 +166,7 @@ export function SiteHeader() {
                     in a circular ink well inset from the right edge by the same
                     4px as the vertical padding, so it is concentric with the
                     outer capsule rather than pasted on the end. */}
-                <span className="flex items-center gap-2 font-mono text-[0.8125rem] font-semibold uppercase tracking-[0.06em]">
+                <span className="flex items-center gap-2 whitespace-nowrap font-mono text-[0.8125rem] font-semibold uppercase tracking-[0.06em]">
                   <Wallet size={15} weight="fill" aria-hidden="true" />
                   {connecting ? "Connecting" : "Connect wallet"}
                 </span>
@@ -227,10 +275,10 @@ function NavLink({ href, current, children }: { href: string; current?: boolean;
     <Link
       href={href}
       aria-current={current ? "page" : undefined}
-      className={`press relative grid min-h-11 place-items-center rounded-md px-3 font-mono text-[0.8125rem] uppercase tracking-[0.08em] transition-colors ${
+      className={`press relative grid min-h-11 place-items-center rounded-md px-3.5 pb-1.5 font-mono text-[0.8125rem] uppercase tracking-[0.06em] transition-[color,background-color] ${
         current
           ? "text-accent"
-          : "text-ink2 hover:bg-surface3/60 hover:text-ink"
+          : "text-ink2 hover:bg-surface3 hover:text-ink"
       }`}
     >
       {children}
@@ -239,7 +287,7 @@ function NavLink({ href, current, children }: { href: string; current?: boolean;
           not the only one. */}
       <span
         aria-hidden="true"
-        className={`absolute inset-x-3 bottom-0 h-px origin-left bg-accent transition-transform duration-300 ${
+        className={`absolute inset-x-2 bottom-1 h-0.5 origin-left rounded-full bg-accent transition-transform duration-300 ${
           current ? "scale-x-100" : "scale-x-0"
         } motion-reduce:transition-none`}
       />
