@@ -8,7 +8,7 @@ import { RegistrySample } from "@/components/RegistrySample";
 import { DisputeRecord } from "@/components/DisputeRecord";
 import { Faq } from "@/components/Faq";
 import { HowItWorks } from "@/components/HowItWorks";
-import { Benefits } from "@/components/Benefits";
+import { StatusStages } from "@/components/StatusStages";
 import { Button } from "@/components/Button";
 import { Footer } from "@/components/Footer";
 
@@ -77,7 +77,7 @@ export default function Landing() {
 
         <section aria-labelledby="benefits" className="border-y border-line bg-surface1">
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-24 md:py-36">
-            <Benefits />
+            <StatusStages />
           </div>
         </section>
 
