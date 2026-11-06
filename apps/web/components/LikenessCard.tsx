@@ -1,60 +1,68 @@
+"use client";
+
 import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
 import { StateBadge } from "./StateBadge";
+import { CardArt } from "./CardArt";
 import { isLicensable, type Likeness } from "@/lib/types";
 
 /**
  * A marketplace card.
- *
- * A card that cannot be licensed never shows a blank or zero price: it states
- * the reason in words. See docs/design-spec.md §6.1.
+ * Shadow for elevation, transparent border for forced-colors (better-ui).
+ * Non-licensable cards state the reason in words, never a blank price.
  */
-export function LikenessCard({ likeness }: { likeness: Likeness }) {
+export function LikenessCard({
+  likeness,
+  index = 0,
+}: {
+  likeness: Likeness;
+  index?: number;
+}) {
   const licensable = isLicensable(likeness.state);
+  const reduce = useReducedMotion();
 
   return (
-    <Link
-      href={`/likeness/${likeness.id}`}
-      className="group flex flex-col overflow-hidden rounded-card border border-line-subtle bg-surface transition-colors duration-150 hover:border-line"
+    <motion.div
+      initial={reduce ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.35,
+        ease: [0.2, 0, 0, 1],
+        delay: Math.min(index * 0.05, 0.3),
+      }}
+      className="h-full"
     >
-      <div className="relative aspect-square w-full bg-sunken">
-        {/* Placeholder face area. Real capture art is not shipped for seed
-            data: we do not put invented photographs of people in a product
-            about likeness rights. */}
-        <div className="absolute inset-0 grid place-items-center">
-          <svg
-            viewBox="0 0 64 64"
-            aria-hidden="true"
-            className="size-16 text-[var(--taupe-400)]"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <circle cx="32" cy="24" r="11" />
-            <path d="M12 56c0-11 9-18 20-18s20 7 20 18" strokeLinecap="round" />
-          </svg>
+      <Link
+        href={`/likeness/${likeness.id}`}
+        className="surface-card group flex h-full flex-col overflow-hidden rounded-card bg-surface"
+      >
+        <div className="relative aspect-square w-full overflow-hidden bg-sunken">
+          <div className="absolute inset-0 transition-transform duration-300 ease-out group-hover:scale-[1.04]">
+            <CardArt id={likeness.id} />
+          </div>
+          <div className="absolute left-3 top-3">
+            <StateBadge state={likeness.state} count={likeness.openChallenges} />
+          </div>
         </div>
-        <div className="absolute left-3 top-3">
-          <StateBadge state={likeness.state} count={likeness.openChallenges} />
+
+        <div className="flex flex-1 flex-col gap-1 p-4">
+          <h3 className="text-base font-semibold leading-snug text-ink">
+            {likeness.name}
+          </h3>
+
+          {licensable ? (
+            <p className="tabular text-sm text-ink-2">
+              <span className="font-medium text-ink">
+                {likeness.pricePerUse.toFixed(2)} HBAR
+              </span>{" "}
+              per use
+            </p>
+          ) : (
+            <p className="text-sm text-ink-3">{reasonShort(likeness)}</p>
+          )}
         </div>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-1 p-4">
-        <h3 className="text-base font-semibold leading-snug text-ink">
-          {likeness.name}
-        </h3>
-
-        {licensable ? (
-          <p className="tabular text-sm text-ink-2">
-            <span className="font-medium text-ink">
-              {likeness.pricePerUse.toFixed(2)} HBAR
-            </span>{" "}
-            per use
-          </p>
-        ) : (
-          <p className="text-sm text-ink-3">{reasonShort(likeness)}</p>
-        )}
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }
 
