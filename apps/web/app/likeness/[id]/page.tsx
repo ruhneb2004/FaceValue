@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ArrowLeft, ArrowUpRight, ShieldCheck } from "@phosphor-icons/react/ssr";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -9,7 +11,7 @@ import { StateBadge } from "@/components/StateBadge";
 import { ActionPanel } from "@/components/ActionPanel";
 import { ReasonPanel } from "@/components/ReasonPanel";
 import { ConnectGate } from "@/components/ConnectGate";
-import { SEED_LIKENESSES } from "@/lib/seed";
+import { getLikeness } from "@/lib/repo";
 import { isLicensable } from "@/lib/types";
 
 /**
@@ -23,15 +25,20 @@ import { isLicensable } from "@/lib/types";
  * Either `ActionPanel` or `ReasonPanel` renders, never both — a licensable
  * record has no refusal and a refused record has no buy button. That choice is
  * made by the same `isLicensable()` the grid uses.
+ *
+ * The record is read from the same repository the rest of the app uses, not from
+ * the seed array. Reading the seed here meant anything registered through
+ * /api/register lived in SQLite but was invisible to this page, so a freshly
+ * registered likeness 404'd on its own profile — the grid listed it and its
+ * detail page denied it existed.
  */
 
-function getLikeness(id: string) {
-  return SEED_LIKENESSES.find((l) => l.id === id);
-}
-
-export function generateStaticParams() {
-  return SEED_LIKENESSES.map((l) => ({ id: l.id }));
-}
+/**
+ * Records are created at runtime, so the id set is not known at build time and
+ * generateStaticParams cannot enumerate it. `await connection()` in the component
+ * below opts this route out of prerendering under cacheComponents — `export const
+ * dynamic` is rejected when cacheComponents is on.
+ */
 
 export async function generateMetadata({
   params,
@@ -44,12 +51,44 @@ export async function generateMetadata({
   return { title: `${likeness.name} — FaceValue` };
 }
 
-export default async function LikenessPage({
+export default function LikenessPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  // The record is read at request time, which cacheComponents treats as runtime
+  // data: it has to sit inside a Suspense boundary or the whole route is forced
+  // to block. The shell renders immediately and the record streams in.
+  return (
+    <Suspense fallback={<LikenessShell />}>
+      <LikenessBody params={params} />
+    </Suspense>
+  );
+}
+
+/** The frame shown while the record is fetched. Same shape, no content. */
+/**
+ * The frame shown while the record is fetched. Deliberately renders no
+ * `SiteHeader`: the header calls `usePathname()`, and under cacheComponents that
+ * is URL data which cannot be read outside a Suspense boundary — putting it in
+ * the fallback moved the problem rather than solving it. A bare loading line is
+ * enough here, and the real header arrives with the record.
+ */
+function LikenessShell() {
+  return (
+    <main id="main" className="flex-1">
+      <div className="mx-auto w-full max-w-[1440px] px-6 pb-20 pt-8 md:px-12 md:pt-12">
+        <span className="body-5 inline-flex min-h-11 items-center gap-1.5 text-ink3">
+          Loading likeness…
+        </span>
+      </div>
+    </main>
+  );
+}
+
+async function LikenessBody({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await connection();
   const likeness = getLikeness(id);
 
   // An unknown id is a 404, not an empty page. Silently rendering a blank
