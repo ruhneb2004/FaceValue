@@ -88,9 +88,9 @@ export default function Landing() {
         </section>
 
         <section aria-labelledby="recent" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-          <h2 id="recent" className="sr-only">
-            Recently registered
-          </h2>
+          {/* The heading, and its id, live inside RegistryMarquee. An sr-only
+              duplicate used to sit here as well, giving the page two elements
+              with id="recent". */}
           <RegistryMarquee />
         </section>
 
@@ -101,7 +101,7 @@ export default function Landing() {
                 <h2 id="benefits" className="heading-5 text-ink">
                   What the licence actually does
                 </h2>
-                <p className="body-6 mt-3 max-w-[42ch] text-ink2">
+                <p className="body-6 mt-3 max-w-[42ch] text-sub">
                   Four things a buyer can rely on before paying, and four a registrant can rely on after.
                 </p>
               </div>
@@ -123,7 +123,7 @@ export default function Landing() {
           <h2 id="proof" className="heading-5 text-ink">
             A licence is one use, one price
           </h2>
-          <p className="body-6 mt-3 max-w-[58ch] text-ink2">
+          <p className="body-6 mt-3 max-w-[58ch] text-sub">
             An entry can be licensed only while it is active or moved. Anything else says why not, in words.
           </p>
           <div className="mt-8">
@@ -133,7 +133,7 @@ export default function Landing() {
           <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-16">
             <div>
               <h3 className="heading-6 text-ink">The face decides, not the count</h3>
-              <p className="body-6 mt-3 max-w-[46ch] text-ink2">
+              <p className="body-6 mt-3 max-w-[46ch] text-sub">
                 Three resolvers each answer one question against a frozen reference: whose face is this. Two of
                 three must agree, so one resolver cannot move a dispute alone.
               </p>
@@ -153,7 +153,7 @@ export default function Landing() {
                 <h2 id="faq" className="heading-5 text-ink">
                   Questions before you pay
                 </h2>
-                <p className="body-6 mt-3 max-w-[36ch] text-ink2">
+                <p className="body-6 mt-3 max-w-[36ch] text-sub">
                   If something is unclear, it is cheaper to ask than to licence the wrong thing.
                 </p>
               </div>
@@ -169,7 +169,7 @@ export default function Landing() {
                 <h2 className="heading-5 max-w-[24ch] text-ink">
                   Browse the registry before you commit to anything
                 </h2>
-                <p className="body-6 mt-3 max-w-[46ch] text-ink2">
+                <p className="body-6 mt-3 max-w-[46ch] text-sub">
                   Connecting a wallet shows prices, bonds and open challenges. It costs nothing and signs nothing.
                 </p>
               </div>

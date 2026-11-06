@@ -31,9 +31,18 @@ const STEPS = [
  * How it works, as a connected sequence rather than three equal boxes.
  *
  * The steps happen in order and depend on each other, so the layout says so:
- * a rule runs between the markers and the active step expands. Selection is by
- * click and by keyboard, and it is never carried by motion alone: the active
- * row also changes colour and weight.
+ * a rule runs between the markers and the steps share one column.
+ *
+ * Every description is always visible. The previous version expanded only the
+ * selected step and hid the other two at opacity 0, which measured as rows of
+ * 166px beside rows of 79px: the result read as one finished step followed by
+ * two empty lines, and a reader had to click to learn what steps two and three
+ * even said. Emphasis now does the work instead of visibility. Clicking promotes
+ * a step to full contrast and opens its list of terms; the others stay readable,
+ * just quieter.
+ *
+ * Selection is by click and by keyboard, and it is never carried by motion or by
+ * colour alone: the active step also changes weight and reveals its terms.
  */
 export function HowItWorks() {
   const [active, setActive] = useState(0);
@@ -41,24 +50,24 @@ export function HowItWorks() {
 
   return (
     <div>
-      <div className="mx-auto mb-10 max-w-[720px] text-center">
-        <h2 id="how" className="heading-4 text-ink">
+      <div className="mx-auto mb-16 max-w-[760px] text-center">
+        <h2 id="how" className="heading-3 text-ink">
           How it works
         </h2>
-        <p className="caption-3 mt-3 font-mono text-ink3">
-          Step {active + 1} of 3
+        <p className="body-2 mt-4 max-w-[46ch] mx-auto text-sub">
+          Three steps, in order. A licence is only ever for one named use, and
+          anyone can challenge it.
         </p>
       </div>
 
-      <ol className="relative mx-auto max-w-[720px] text-left" role="list">
+      <ol className="relative mx-auto max-w-[760px] text-left" role="list">
         {STEPS.map((s, i) => {
           const isActive = i === active;
           return (
             <li key={s.n} className="relative">
-              {/* The connecting rule: from this marker down to the next. */}
               {i < STEPS.length - 1 && (
                 <span
-                  className="absolute left-[19px] top-[56px] h-[calc(100%-34px)] w-px bg-line"
+                  className="absolute left-[23px] top-[72px] h-[calc(100%-44px)] w-px bg-line"
                   aria-hidden="true"
                 />
               )}
@@ -68,13 +77,13 @@ export function HowItWorks() {
                 onClick={() => setActive(i)}
                 aria-expanded={isActive}
                 aria-controls={`step-${i}`}
-                className="press group grid w-full grid-cols-[40px_1fr] items-start gap-5 rounded-lg px-3 py-5 text-left hover:bg-surface3"
+                className="press group grid w-full grid-cols-[48px_1fr] items-start gap-6 rounded-lg px-3 py-6 text-left"
               >
                 <span
-                  className={`grid size-[39px] place-items-center rounded-full border font-mono text-sm transition-colors ${
+                  className={`mt-0.5 grid size-[47px] place-items-center rounded-full border font-mono text-base transition-colors ${
                     isActive
                       ? "border-accent bg-accent text-accentink"
-                      : "border-line bg-surface3 text-ink3 group-hover:border-linestrong"
+                      : "border-line bg-surface2 text-ink2 group-hover:border-linestrong"
                   }`}
                 >
                   {s.n}
@@ -82,32 +91,34 @@ export function HowItWorks() {
 
                 <span>
                   <span
-                    className={`title-2 block transition-colors ${
-                      isActive ? "text-ink" : "text-ink2"
+                    className={`block text-[1.375rem] leading-8 transition-colors ${
+                      isActive ? "font-semibold text-ink" : "font-medium text-ink2"
                     }`}
                   >
                     {s.t}
                   </span>
 
+                  {/* Always present. Never zero height, never opacity 0. */}
+                  <span id={`step-${i}`} className="body-3 mt-2 block max-w-[56ch] text-ink2">
+                    {s.d}
+                  </span>
+
+                  {/* The terms are the only part that toggles: they are extra
+                      detail, not the step's meaning, so hiding them costs a
+                      reader nothing. */}
                   <motion.span
-                    id={`step-${i}`}
                     initial={false}
-                    animate={{
-                      opacity: isActive ? 1 : 0,
-                      height: isActive ? "auto" : 0,
-                    }}
+                    animate={{ opacity: isActive ? 1 : 0, height: isActive ? "auto" : 0 }}
                     transition={{ duration: 0.3, ease: EASE }}
                     className="block overflow-hidden"
                     style={reduce ? { opacity: 1, height: "auto" } : undefined}
+                    aria-hidden={isActive ? undefined : "true"}
                   >
-                    <span className="body-3 mt-3 block max-w-[58ch] text-ink2">
-                      {s.d}
-                    </span>
-                    <span className="mt-3 flex flex-wrap gap-2">
+                    <span className="mt-4 flex flex-wrap gap-2">
                       {s.meta.map((m) => (
                         <span
                           key={m}
-                          className="caption-4 rounded-sm border border-line bg-surface2 px-2 py-1 text-ink3"
+                          className="caption-4 rounded-sm border border-line bg-surface2 px-2.5 py-1 text-ink2"
                         >
                           {m}
                         </span>
@@ -121,7 +132,7 @@ export function HowItWorks() {
         })}
       </ol>
 
-      <div className="mx-auto mt-10 max-w-[720px] text-center">
+      <div className="mx-auto mt-14 max-w-[760px] text-center">
         <a
           href="/explore"
           className="press caption-1 inline-flex items-center gap-1.5 text-accent hover:underline"

@@ -130,7 +130,7 @@ export function Hero({
 
           <motion.p
             {...rise(1)}
-            className="body-1 mt-5 max-w-[52ch] text-ink2"
+            className="body-1 mt-5 max-w-[52ch] text-sub"
           >
             {body}
           </motion.p>
