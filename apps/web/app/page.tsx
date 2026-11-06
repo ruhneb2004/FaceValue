@@ -81,9 +81,9 @@ export default function Landing() {
           </div>
         </section>
 
-        <section aria-labelledby="proof" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-          <h2 id="proof" className="heading-5 text-ink">
-            A licence is one use, one price
+        <section aria-labelledby="registry" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
+          <h2 id="registry" className="heading-5 text-ink">
+            The registry, as it stands
           </h2>
           <p className="body-6 mt-3 max-w-[58ch] text-ink2">
             An entry can be licensed only while it is active or moved. Anything else says why not, in words.
@@ -92,16 +92,19 @@ export default function Landing() {
             <RegistrySample />
           </div>
 
-          <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-16">
+          <div aria-labelledby="face" className="mt-20 grid gap-10 border-t border-line pt-16 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-16">
             <div>
-              <h3 className="heading-6 text-ink">The face decides, not the count</h3>
-              <p className="body-6 mt-3 max-w-[46ch] text-ink2">
-                Three resolvers each answer one question against a frozen reference: whose face is this. Two of
-                three must agree, so one resolver cannot move a dispute alone.
+              <h2 id="face" className="text-[1.75rem] leading-tight font-medium tracking-[-0.01em] text-ink text-balance">
+                The face decides, not the count
+              </h2>
+              <p className="body-2 mt-4 max-w-[42ch] text-ink2">
+                Three resolvers each answer one question against a frozen
+                reference: whose face is this. Two of three must agree, so one
+                resolver cannot move a dispute alone.
               </p>
-              <p className="body-6 mt-3 max-w-[46ch] text-ink2">
-                Whoever the face turns out to be takes every stake. That is why challengers only file when they
-                are confident.
+              <p className="body-2 mt-3 max-w-[42ch] text-ink2">
+                Whoever the face turns out to be takes every stake. That is why
+                challengers only file when they are confident.
               </p>
             </div>
             <DisputeRecord />

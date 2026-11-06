@@ -13,14 +13,14 @@ import { LikenessAvatar } from "@/components/LikenessAvatar";
  * columns of equal weight say "here are some fields", not "one of these three
  * people was overruled".
  *
- * So each resolver is a card of their own, laid out like the reading it is: who
- * they are, the score they produced, where that score sat against the threshold,
- * and the verdict it led to. The dissenter is not styled as an error — it is
- * styled as a minority reading, which is what it is. The final row states whose
- * face it turned out to be, because that is the outcome the section promises.
+ * Each resolver is a row of their own: the reading on the left, the face they
+ * were reading on the right. The rows run in the opposite direction to the
+ * licence section above, where the card leads — here the argument leads and the
+ * face is the evidence it rests on, so the copy comes first and the portraits
+ * sit in a consistent right-hand column.
  *
- * Laid out on the same alternating two-column rhythm as the licence section, and
- * animated the same way, so the two parts of the page read as one argument.
+ * Type and card sizes match that section rather than being smaller, so the two
+ * blocks carry equal weight on the page.
  */
 
 const THRESHOLD = 0.65;
@@ -59,7 +59,6 @@ function ReadingRow({
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-12% 0px -12% 0px" });
   const reduced = useReducedMotion();
-  const flipped = index % 2 === 1;
 
   // Additive motion only: the reading is visible unless we have confirmed on the
   // client that it can animate and that it starts below the fold.
@@ -71,70 +70,49 @@ function ReadingRow({
     setArmed(true);
   }, [reduced]);
 
-  const from = reduced ? 0 : 20;
+  const from = reduced ? 0 : 24;
   const hidden = armed && !inView;
 
   return (
     <div
       ref={ref}
-      className="grid grid-cols-1 items-center gap-6 md:grid-cols-[auto_minmax(0,1fr)] md:gap-10"
+      className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-14"
     >
-      {/* The face this resolver was reading. */}
+      {/* The reading. First in the DOM and first in the grid, so the argument
+          leads on both mobile and desktop. */}
       <motion.div
         className="min-w-0 md:col-start-1 md:row-start-1"
         animate={{ opacity: hidden ? 0 : 1, x: hidden ? -from : 0 }}
-        transition={{ duration: 0.5, ease: [0.2, 0, 0, 1] }}
+        transition={{ duration: 0.55, ease: [0.2, 0, 0, 1] }}
       >
-        <div className="flex items-center gap-3 md:w-[168px] md:flex-col md:items-start md:gap-2">
-          <span className="size-14 shrink-0 overflow-hidden rounded-lg border border-line bg-surface3 md:size-[168px] md:rounded-xl">
-            <LikenessAvatar
-              seed={r.seed}
-              className="size-full [&>svg]:size-full"
-            />
-          </span>
-          <p className="font-mono text-[0.75rem] text-ink2 md:mt-1">{r.name}</p>
-        </div>
-      </motion.div>
-
-      {/* The reading itself. */}
-      <motion.div
-        className="min-w-0 md:col-start-2 md:row-start-1"
-        animate={{
-          opacity: hidden ? 0 : 1,
-          x: hidden ? (flipped ? from : 0) : 0,
-        }}
-        transition={{
-          duration: 0.5,
-          delay: hidden || reduced ? 0 : 0.06,
-          ease: [0.2, 0, 0, 1],
-        }}
-      >
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span
-            className={`inline-flex items-center gap-1.5 font-mono text-[0.75rem] uppercase tracking-[0.08em] ${
+            className={`inline-flex items-center gap-1.5 font-mono text-[0.8125rem] uppercase tracking-[0.08em] ${
               r.match ? "text-accent" : "text-ink2"
             }`}
           >
             {r.match ? (
-              <Check size={13} weight="bold" aria-hidden="true" />
+              <Check size={15} weight="bold" aria-hidden="true" />
             ) : (
-              <X size={13} weight="bold" aria-hidden="true" />
+              <X size={15} weight="bold" aria-hidden="true" />
             )}
             {r.match ? "Match" : "No match"}
           </span>
-          <span className="tnum font-mono text-[0.8125rem] text-ink">
-            {r.cos.toFixed(2)}
-          </span>
-          <span className="font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-ink2">
+          <span className="font-mono text-[0.8125rem] text-ink2">{r.name}</span>
+        </div>
+
+        <h3 className="mt-4 text-[1.5rem] leading-tight font-medium tracking-[-0.01em] text-ink">
+          <span className="tnum font-mono">{r.cos.toFixed(2)}</span>
+          <span className="ml-2 font-mono text-[0.9375rem] font-normal text-ink2">
             vs {THRESHOLD}
           </span>
-        </div>
+        </h3>
 
         {/* The score as a position on a scale, not a number to interpret. The
             threshold sits at its real place, so 0.91 and 0.31 read as one above
             and one well below without the reader doing arithmetic. */}
         <div
-          className="relative mt-3 h-1.5 w-full max-w-[280px] rounded-full bg-surface4"
+          className="relative mt-4 h-1.5 w-full max-w-[320px] rounded-full bg-surface4"
           role="img"
           aria-label={`Cosine ${r.cos.toFixed(2)}, threshold ${THRESHOLD}, ${
             r.match ? "above" : "below"
@@ -152,9 +130,27 @@ function ReadingRow({
           />
         </div>
 
-        <p className="mt-3 max-w-[42ch] text-[0.875rem] leading-relaxed text-ink2">
-          {r.note}
-        </p>
+        <p className="body-2 mt-4 max-w-[42ch] text-ink2">{r.note}</p>
+      </motion.div>
+
+      {/* The face this resolver was reading. Trails in the DOM so the reading is
+          announced first, and sits in column 2 on every row so the portraits
+          form one consistent edge down the right side. */}
+      <motion.div
+        className="min-w-0 md:col-start-2 md:row-start-1"
+        animate={{ opacity: hidden ? 0 : 1, x: hidden ? from : 0 }}
+        transition={{
+          duration: 0.55,
+          delay: hidden || reduced ? 0 : 0.08,
+          ease: [0.2, 0, 0, 1],
+        }}
+      >
+        <div className="aspect-[4/3] overflow-hidden rounded-xl border border-line bg-surface3 p-5">
+          <LikenessAvatar
+            seed={r.seed}
+            className="size-full [&>svg]:size-full"
+          />
+        </div>
       </motion.div>
     </div>
   );
@@ -162,12 +158,10 @@ function ReadingRow({
 
 export function DisputeRecord() {
   const agreeing = READINGS.filter((r) => r.match).length;
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
 
   return (
-    <div ref={ref} className="min-w-0">
-      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
+    <div className="min-w-0">
+      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-4">
         <span className="font-mono text-[0.75rem] uppercase tracking-[0.08em] text-ink2">
           dispute #d-0417
         </span>
@@ -180,7 +174,7 @@ export function DisputeRecord() {
         </span>
       </p>
 
-      <div className="mt-8 flex flex-col gap-8 md:gap-10">
+      <div className="mt-10 flex flex-col gap-14 md:gap-16">
         {READINGS.map((r, i) => (
           <ReadingRow key={r.name} r={r} index={i} />
         ))}
@@ -188,18 +182,18 @@ export function DisputeRecord() {
 
       {/* The consequence. Not a field in a table: the sentence the section is
           actually making, with the party the face identified named. */}
-      <div className="mt-10 flex items-start gap-3 border-t border-line pt-6">
-        <span className="size-10 shrink-0 overflow-hidden rounded-lg bg-surface3">
+      <div className="mt-14 flex items-start gap-4 border-t border-line pt-8">
+        <span className="size-12 shrink-0 overflow-hidden rounded-lg bg-surface3">
           <LikenessAvatar
             seed="d-0417-claimant"
             className="size-full [&>svg]:size-full"
           />
         </span>
         <div className="min-w-0">
-          <p className="text-[0.9375rem] text-ink">
+          <p className="text-[1.125rem] leading-snug text-ink">
             The stake followed the face, not the majority
           </p>
-          <p className="mt-1 text-[0.875rem] leading-relaxed text-ink2">
+          <p className="body-2 mt-2 max-w-[52ch] text-ink2">
             ref-001.faceref.eth kept the record and took the 120 HBAR bond.
             Thresholds are placeholders pending calibration.
           </p>
