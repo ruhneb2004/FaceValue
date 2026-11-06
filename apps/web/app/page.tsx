@@ -82,29 +82,8 @@ export default function Landing() {
         </section>
 
         <section aria-labelledby="how" className="border-b border-line bg-surface1">
-          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
-            <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
-              <HowItWorks />
-              <div className="hidden lg:block">
-                <div className="rounded-lg border border-line bg-surface3 p-6">
-                  <p className="caption-3 text-ink">What a licence records</p>
-                  <dl className="mt-4 divide-y divide-line">
-                    {[
-                      ["Use", "One named campaign, one channel"],
-                      ["Term", "Fixed expiry, set at purchase"],
-                      ["Price", "Stated per use, no dynamic pricing"],
-                      ["Bond", "Posted by the registrant"],
-                      ["Reference", "A hash, never the image"],
-                    ].map(([k, v]) => (
-                      <div key={k} className="flex items-baseline justify-between gap-4 py-3">
-                        <dt className="caption-4 text-ink3">{k}</dt>
-                        <dd className="body-6 text-right text-ink2">{v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              </div>
-            </div>
+          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-24 md:py-36">
+            <HowItWorks />
           </div>
         </section>
 

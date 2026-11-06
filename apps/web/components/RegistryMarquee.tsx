@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SEED_LIKENESSES } from "@/lib/seed";
 import { isLicensable, type LikenessState } from "@/lib/types";
 import { StateBadge } from "./StateBadge";
-import { ApeArt } from "./ApeArt";
+import { HolderAvatar } from "./HolderAvatar";
 
 /** Two words at most: a card states the state, the record page explains it. */
 const SHORT: Record<LikenessState, string> = {
@@ -93,7 +93,7 @@ export function RegistryMarquee() {
       >
         <div
           ref={track}
-          className="marquee-track flex w-max gap-3"
+          className="marquee-track flex w-max gap-6"
           style={{
             animationDuration: `${duration}s`,
             animationPlayState: paused ? "paused" : "running",
@@ -113,8 +113,10 @@ export function RegistryMarquee() {
                   tabIndex={repeat ? -1 : undefined}
                   className="press group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface3 hover:bg-surface4"
                 >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden">
-                    <ApeArt id={l.id} className="h-full w-full" />
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface2 p-6">
+                    <div className="h-full w-full overflow-hidden rounded-md ring-1 ring-line">
+                      <HolderAvatar address={l.holder} className="h-full w-full" />
+                    </div>
                   </div>
 
                   <div className="flex flex-1 flex-col p-4">

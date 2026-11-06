@@ -41,14 +41,16 @@ export function HowItWorks() {
 
   return (
     <div>
-      <div className="mb-10 flex items-baseline justify-between gap-4">
-        <h2 id="how" className="heading-5 text-ink">
+      <div className="mx-auto mb-10 max-w-[720px] text-center">
+        <h2 id="how" className="heading-4 text-ink">
           How it works
         </h2>
-        <p className="caption-4 font-mono text-ink3">{active + 1} of 3</p>
+        <p className="caption-3 mt-3 font-mono text-ink3">
+          Step {active + 1} of 3
+        </p>
       </div>
 
-      <ol className="relative" role="list">
+      <ol className="relative mx-auto max-w-[720px] text-left" role="list">
         {STEPS.map((s, i) => {
           const isActive = i === active;
           return (
@@ -56,7 +58,7 @@ export function HowItWorks() {
               {/* The connecting rule: from this marker down to the next. */}
               {i < STEPS.length - 1 && (
                 <span
-                  className="absolute left-[15px] top-[46px] h-[calc(100%-30px)] w-px bg-line"
+                  className="absolute left-[19px] top-[56px] h-[calc(100%-34px)] w-px bg-line"
                   aria-hidden="true"
                 />
               )}
@@ -66,10 +68,10 @@ export function HowItWorks() {
                 onClick={() => setActive(i)}
                 aria-expanded={isActive}
                 aria-controls={`step-${i}`}
-                className="press group grid w-full grid-cols-[32px_1fr] items-start gap-4 rounded-lg px-3 py-4 text-left hover:bg-surface3"
+                className="press group grid w-full grid-cols-[40px_1fr] items-start gap-5 rounded-lg px-3 py-5 text-left hover:bg-surface3"
               >
                 <span
-                  className={`grid size-[31px] place-items-center rounded-full border font-mono text-xs transition-colors ${
+                  className={`grid size-[39px] place-items-center rounded-full border font-mono text-sm transition-colors ${
                     isActive
                       ? "border-accent bg-accent text-accentink"
                       : "border-line bg-surface3 text-ink3 group-hover:border-linestrong"
@@ -80,7 +82,7 @@ export function HowItWorks() {
 
                 <span>
                   <span
-                    className={`title-3 block transition-colors ${
+                    className={`title-2 block transition-colors ${
                       isActive ? "text-ink" : "text-ink2"
                     }`}
                   >
@@ -98,7 +100,7 @@ export function HowItWorks() {
                     className="block overflow-hidden"
                     style={reduce ? { opacity: 1, height: "auto" } : undefined}
                   >
-                    <span className="body-6 mt-2 block max-w-[54ch] text-ink2">
+                    <span className="body-3 mt-3 block max-w-[58ch] text-ink2">
                       {s.d}
                     </span>
                     <span className="mt-3 flex flex-wrap gap-2">
@@ -119,13 +121,15 @@ export function HowItWorks() {
         })}
       </ol>
 
-      <a
-        href="/explore"
-        className="press caption-1 mt-6 inline-flex items-center gap-1.5 text-accent hover:underline"
-      >
-        See what a licence costs
-        <ArrowRight size={14} aria-hidden="true" />
-      </a>
+      <div className="mx-auto mt-10 max-w-[720px] text-center">
+        <a
+          href="/explore"
+          className="press caption-1 inline-flex items-center gap-1.5 text-accent hover:underline"
+        >
+          See what a licence costs
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
+      </div>
     </div>
   );
 }

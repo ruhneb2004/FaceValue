@@ -47,8 +47,17 @@ export interface Likeness {
   state: LikenessState;
   /** ENS name, if one was written. */
   ensName?: string;
-  /** Truncated controller address. */
+  /** Truncated controller address, shown in the UI. */
   controller: string;
+  /**
+   * Full controller address, used to derive the identicon.
+   *
+   * An identicon needs the whole 32-byte address: `blo` hashes its bytes, so a
+   * truncated string produces art from far less entropy and two records can
+   * collide. Keeping this alongside the display value lets the UI stay short
+   * without starving the avatar of data.
+   */
+  holder: string;
   /** Number of challenges currently open. Drives the derived `disputed` state. */
   openChallenges: number;
   /** ISO date the provisional window closes. */
