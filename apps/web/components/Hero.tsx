@@ -48,26 +48,36 @@ export function Hero({
     <section
       aria-labelledby="hero"
       className={`relative isolate overflow-hidden border-b border-line bg-surface2 ${
-        tall ? "pb-28 pt-32 md:pb-36 md:pt-36" : "pb-20 pt-28 md:pb-24 md:pt-32"
+        tall ? "pb-24 pt-28 md:pb-28 md:pt-32" : "pb-16 pt-24 md:pb-20 md:pt-28"
       }`}
     >
       {video && (
         <>
-          <video
-            className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-60 motion-reduce:hidden"
-            src="/video/hero-scan.mp4"
-            poster="/video/hero-poster.jpg"
-            autoPlay
-            loop
-            muted
-            playsInline
-            aria-hidden="true"
-            tabIndex={-1}
-          />
+          {/*
+            The footage was full bleed behind the copy, which crowded the
+            headline and gave the hero a congested, noisy right edge. It is now
+            a contained panel occupying the right half, faded out at its left
+            edge so it meets the text without a seam.
+          */}
           <div
-            className="pointer-events-none absolute inset-0 -z-10 bg-surface2/85"
+            className="pointer-events-none absolute inset-y-6 right-6 -z-10 hidden w-[44%] overflow-hidden rounded-xl border border-line md:block"
             aria-hidden="true"
-          />
+          >
+            <video
+              className="h-full w-full object-cover opacity-80 motion-reduce:hidden"
+              src="/video/hero-scan.mp4"
+              poster="/video/hero-poster.jpg"
+              autoPlay
+              loop
+              muted
+              playsInline
+              tabIndex={-1}
+            />
+            {/* Flat scrim over the footage, plus a hard edge hidden behind the
+                text column. No gradient anywhere: the panel simply stops
+                before the headline and the surface colour carries the join. */}
+            <div className="absolute inset-0 bg-surface2/35" />
+          </div>
         </>
       )}
 

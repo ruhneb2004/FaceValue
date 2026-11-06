@@ -8,6 +8,7 @@ import { RegistrySample } from "@/components/RegistrySample";
 import { DisputeRecord } from "@/components/DisputeRecord";
 import { Faq } from "@/components/Faq";
 import { Reveal } from "@/components/Reveal";
+import { HowItWorks } from "@/components/HowItWorks";
 import { Button } from "@/components/Button";
 import { Footer } from "@/components/Footer";
 
@@ -71,7 +72,7 @@ export default function Landing() {
         />
 
         {/* B11 tagline moment, as its own section. */}
-        <section aria-labelledby="tagline" className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
+        <section aria-labelledby="tagline" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-20 md:py-28">
           <h2 id="tagline" className="sr-only">
             What FaceValue is for
           </h2>
@@ -81,28 +82,33 @@ export default function Landing() {
         </section>
 
         <section aria-labelledby="how" className="border-y border-line bg-surface1">
-          <div className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
-            <h2 id="how" className="heading-5 text-ink">
-              How it works
-            </h2>
-            <ol className="mt-2 grid gap-2 md:grid-cols-3">
-              {STEPS.map((s, i) => (
-                <Reveal
-                  as="li"
-                  key={s.n}
-                  delay={i * 0.08}
-                  className="h-full rounded-lg border border-line bg-surface3 p-3"
-                >
-                  <p className="caption-3 font-mono text-accent">{s.n}</p>
-                  <h3 className="title-3 mt-2 text-ink">{s.t}</h3>
-                  <p className="body-6 mt-2 text-ink2">{s.d}</p>
-                </Reveal>
-              ))}
-            </ol>
+          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
+            <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+              <HowItWorks />
+              <div className="hidden lg:block">
+                <div className="rounded-lg border border-line bg-surface3 p-6">
+                  <p className="caption-3 text-ink">What a licence records</p>
+                  <dl className="mt-4 divide-y divide-line">
+                    {[
+                      ["Use", "One named campaign, one channel"],
+                      ["Term", "Fixed expiry, set at purchase"],
+                      ["Price", "Stated per use, no dynamic pricing"],
+                      ["Bond", "Posted by the registrant"],
+                      ["Reference", "A hash, never the image"],
+                    ].map(([k, v]) => (
+                      <div key={k} className="flex items-baseline justify-between gap-4 py-3">
+                        <dt className="caption-4 text-ink3">{k}</dt>
+                        <dd className="body-6 text-right text-ink2">{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section aria-labelledby="recent" className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
+        <section aria-labelledby="recent" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
           <h2 id="recent" className="sr-only">
             Recently registered
           </h2>
@@ -110,7 +116,7 @@ export default function Landing() {
         </section>
 
         <section aria-labelledby="benefits" className="border-y border-line bg-surface1">
-          <div className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
+          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
             <div className="grid gap-2 lg:grid-cols-[0.85fr_1.15fr] lg:gap-2">
               <div>
                 <h2 id="benefits" className="heading-5 text-ink">
@@ -120,11 +126,13 @@ export default function Landing() {
                   Four things a buyer can rely on before paying, and four a registrant can rely on after.
                 </p>
               </div>
-              <ul className="grid gap-2 sm:grid-cols-2">
+              {/* Rows, not a 2x2 grid: the left column is two short paragraphs,
+                  so a grid left a visible hole under the heading. */}
+              <ul className="divide-y divide-line border-y border-line">
                 {BENEFITS.map((b, i) => (
-                  <Reveal as="li" key={b.t} delay={i * 0.06} className="h-full rounded-lg border border-line bg-surface3 p-3">
+                  <Reveal as="li" key={b.t} delay={i * 0.05} className="grid gap-1 py-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:gap-8">
                     <h3 className="title-4 text-ink">{b.t}</h3>
-                    <p className="body-6 mt-2 text-ink2">{b.d}</p>
+                    <p className="body-6 text-ink2">{b.d}</p>
                   </Reveal>
                 ))}
               </ul>
@@ -132,7 +140,7 @@ export default function Landing() {
           </div>
         </section>
 
-        <section aria-labelledby="proof" className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
+        <section aria-labelledby="proof" className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
           <h2 id="proof" className="heading-5 text-ink">
             A licence is one use, one price
           </h2>
@@ -160,7 +168,7 @@ export default function Landing() {
         </section>
 
         <section aria-labelledby="faq" className="border-y border-line bg-surface1">
-          <div className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
+          <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
             <div className="grid gap-2 lg:grid-cols-[0.7fr_1.3fr] lg:gap-2">
               <div>
                 <h2 id="faq" className="heading-5 text-ink">
@@ -175,7 +183,7 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-[1440px] px-3 py-3 md:px-3 md:py-3">
+        <section className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-20 md:py-28">
           <div className="rounded-xl border border-line bg-surface3 p-3 md:p-3">
             <h2 className="heading-5 max-w-[24ch] text-ink">
               Browse the registry before you commit to anything

@@ -307,4 +307,24 @@
   .tnum {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Reveal animation. Applied by JS only to elements confirmed below the fold,
+     so a missing observer costs the animation and never the content (B7). */
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  [class*="reveal"] {
+    transition:
+      opacity 650ms var(--ease),
+      transform 650ms var(--ease);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-pending {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }

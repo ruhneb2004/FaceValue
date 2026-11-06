@@ -23,9 +23,12 @@ const button = cva(
         quiet: "border-transparent bg-transparent text-ink3 hover:text-ink",
       },
       size: {
-        sm: "button-sm py-3 px-3",
-        md: "button-md py-3 px-3",
-        lg: "button-lg py-3 px-3",
+        // Heights land on 36 / 44 / 48. py-2 with 20px line-height gives 36,
+        // py-2.5 gives 44, and the hero CTA stays under the 56px that reads as
+        // a banner rather than a button.
+        sm: "button-sm py-2 px-3",
+        md: "button-md py-2.5 px-4",
+        lg: "button-md py-3 px-5",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },
