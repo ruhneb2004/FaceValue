@@ -18,12 +18,14 @@ export function LikenessCard({
 
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      /* Infrequent entrance: opacity + 4px blur + 12px rise over 300ms,
+         staggered 100ms. Capped so a long grid never feels slow. */
+      initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{
         duration: 0.3,
-        ease: [0.22, 1, 0.36, 1],
-        delay: Math.min(index * 0.035, 0.21),
+        ease: [0.2, 0, 0, 1],
+        delay: Math.min(index * 0.1, 0.4),
       }}
       className="h-full"
     >

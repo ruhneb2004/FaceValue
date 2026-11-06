@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "./Button";
 
 /** Opaque chrome: never translucent, never blurred. */
 export function SiteHeader() {
@@ -27,12 +28,7 @@ export function SiteHeader() {
           <HeaderLink href="/docs">Docs</HeaderLink>
         </nav>
 
-        <button
-          type="button"
-          className="press inline-flex min-h-11 shrink-0 items-center rounded-control bg-accent px-4 text-sm font-semibold text-white hover:bg-accent-hover"
-        >
-          Connect wallet
-        </button>
+        <Button>Connect wallet</Button>
       </div>
     </header>
   );

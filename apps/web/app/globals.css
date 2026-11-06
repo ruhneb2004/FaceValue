@@ -59,6 +59,12 @@
   --color-border: var(--border);
   --color-border-subtle: var(--border);
   --color-focus-ring: var(--brand);
+
+  /* Layered shadow ring, paired with a transparent border so forced-colors
+     mode still draws an edge (better-ui: shadows for elevation). */
+  --shadow-border:
+    0 1px 2px rgba(12, 12, 12, 0.06),
+    0 0 0 1px var(--border);
 }
 
 @theme inline {
@@ -124,7 +130,7 @@ h2 {
   box-shadow: 0 1px 2px rgba(12, 12, 12, 0.04);
   transition-property: box-shadow, transform, border-color;
   transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (hover: hover) {
@@ -134,14 +140,19 @@ h2 {
   }
 }
 
+button,
+.press {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .press {
   transition-property: transform, background-color, border-color;
   transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 .press:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .tabular {

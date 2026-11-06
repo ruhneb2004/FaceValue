@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { ArrowRight, ChevronDown, Search } from "lucide-react";
 import { HeroScan } from "./HeroScan";
+import { Button } from "./Button";
 
 export function Hero() {
   const reduce = useReducedMotion();
@@ -48,19 +49,13 @@ export function Hero() {
 
           {/* One primary action. The second is a quiet secondary. */}
           <motion.div {...rise(0.15)} className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href="#listings"
-              className="press inline-flex min-h-12 items-center gap-2 rounded-control bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-hover"
-            >
+            <Button href="#listings" size="lg">
               Browse likenesses
               <ArrowRight className="size-4" aria-hidden="true" />
-            </a>
-            <a
-              href="/register"
-              className="press inline-flex min-h-12 items-center rounded-control border border-line-strong bg-card px-5 text-sm font-semibold text-ink hover:bg-page"
-            >
+            </Button>
+            <Button href="/register" size="lg" variant="secondary">
               Register your likeness
-            </a>
+            </Button>
           </motion.div>
 
           <motion.dl

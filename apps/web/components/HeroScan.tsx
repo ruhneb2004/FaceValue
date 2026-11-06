@@ -20,7 +20,7 @@ export function HeroScan({ className = "" }: { className?: string }) {
       <rect x="232" y="34" width="150" height="196" rx="14" stroke="var(--border-strong)" />
 
       {/* left head */}
-      <circle cx="93" cy="118" r="34" fill="#e9dcc6" />
+      <circle cx="93" cy="118" r="34" fill="var(--bg-strong)" />
       <path
         d="M93 92c13 0 22 9 22 22 0 4 1 7 2 10 1 3-1 5-3 5v4c0 2-2 4-4 4H76c-2 0-4-2-4-4v-4c-2 0-4-2-3-5 1-3 2-6 2-10 0-13 9-22 22-22Z"
         fill="var(--text-body)"
@@ -28,7 +28,7 @@ export function HeroScan({ className = "" }: { className?: string }) {
       <rect x="59" y="168" width="68" height="62" rx="22" fill="var(--border-strong)" />
 
       {/* right head, mirrored silhouette */}
-      <circle cx="307" cy="118" r="34" fill="#e9dcc6" />
+      <circle cx="307" cy="118" r="34" fill="var(--bg-strong)" />
       <path
         d="M307 92c13 0 22 9 22 22 0 4 1 7 2 10 1 3-1 5-3 5v4c0 2-2 4-4 4h-34c-2 0-4-2-4-4v-4c-2 0-4-2-3-5 1-3 2-6 2-10 0-13 9-22 22-22Z"
         fill="var(--text-body)"
