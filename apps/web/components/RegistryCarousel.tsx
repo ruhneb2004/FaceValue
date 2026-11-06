@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
@@ -31,14 +31,23 @@ export function RegistryCarousel() {
     align: "start",
     containScroll: "trimSnaps",
     dragFree: false,
+    loop: false,
   });
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
+  const [selected, setSelected] = useState(0);
+  const [snaps, setSnaps] = useState<number[]>([]);
+  // Autoplay pauses on hover, on focus, and while the reader is dragging: a
+  // record sliding out from under a click is worse than no motion at all.
+  const [paused, setPaused] = useState(false);
+  const holdRef = useRef(false);
 
   const sync = useCallback(() => {
     if (!embla) return;
     setCanPrev(embla.canScrollPrev());
     setCanNext(embla.canScrollNext());
+    setSelected(embla.selectedScrollSnap());
+    setSnaps(embla.scrollSnapList());
   }, [embla]);
 
   useEffect(() => {
@@ -50,8 +59,30 @@ export function RegistryCarousel() {
     };
   }, [embla, sync]);
 
+  // Advance every 5s, wrapping to the start. Skipped entirely for anyone who
+  // asked for reduced motion, and while the pointer or focus is inside.
+  useEffect(() => {
+    if (!embla) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const id = window.setInterval(() => {
+      if (holdRef.current) return;
+      if (embla.canScrollNext()) embla.scrollNext();
+      else embla.scrollTo(0);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [embla]);
+
+  const hold = () => { holdRef.current = true; setPaused(true); };
+  const release = () => { holdRef.current = false; setPaused(false); };
+
   return (
-    <div>
+    <div
+      onPointerEnter={hold}
+      onPointerLeave={release}
+      onFocusCapture={hold}
+      onBlurCapture={release}
+    >
       <div className="mb-2 flex items-end justify-between gap-2">
         <div>
           <h2 className="heading-5 text-ink">Recently registered</h2>
@@ -131,9 +162,28 @@ export function RegistryCarousel() {
         </ul>
       </div>
 
-      <p className="caption-5 mt-2 text-ink3">
-        Drag to browse, or use the arrows. Every entry links to its full record.
-      </p>
+      {/* Position indicator. Embla exposes one snap per scroll position rather
+          than per card, so these are scroll stops, not an eight-dot counter that
+          would misreport the position at wide viewports. */}
+      <div className="mt-4 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-1.5" role="group" aria-label="Registry position">
+          {snaps.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-current={i === selected ? "true" : undefined}
+              aria-label={`Go to position ${i + 1} of ${snaps.length}`}
+              onClick={() => embla?.scrollTo(i)}
+              className={`h-1 rounded-full transition-all duration-200 ${
+                i === selected ? "w-6 bg-accent" : "w-3 bg-ink3/50 hover:bg-ink2"
+              }`}
+            />
+          ))}
+        </div>
+        <p className="caption-5 text-ink3">
+          {paused ? "Paused" : "Drag, use the arrows, or wait"}
+        </p>
+      </div>
     </div>
   );
 }
