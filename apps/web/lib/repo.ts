@@ -258,7 +258,14 @@ export function openChallenge(input: {
  */
 export function resolveTier1(input: {
   challengeId: string;
-}): Result<{ outcome: "won" | "lost"; settled: ReturnType<typeof settleBonds> }> {
+}): Result<{
+  outcome: "won" | "lost";
+  settled: ReturnType<typeof settleBonds>;
+  /** Carried out so a caller can settle the same decision elsewhere. */
+  likenessId: string;
+  cos: number;
+  faceWins: boolean;
+}> {
   const db = getDb();
   const ch = db.prepare("SELECT * FROM challenges WHERE id = ?").get(input.challengeId) as
     | { id: string; likeness_id: string; challenger: string; stake: number; cos: number | null; status: string }
@@ -305,7 +312,20 @@ export function resolveTier1(input: {
   });
   tx();
 
-  return { ok: true, status: 200, data: { outcome: challengerWins ? "won" : "lost", settled: settlement } };
+  return {
+    ok: true,
+    status: 200,
+    data: {
+      outcome: challengerWins ? "won" : "lost",
+      settled: settlement,
+      // Carried out so the route can settle the same decision on-chain without
+      // re-reading and re-deriving it. `cos` is what makes the settlement
+      // auditable, so it travels with the outcome rather than being discarded.
+      likenessId: likeness.id,
+      cos: ch.cos,
+      faceWins: challengerWins,
+    },
+  };
 }
 
 /**

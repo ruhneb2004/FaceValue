@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { openChallenge } from "@/lib/repo";
+import { onchainEnabled } from "@/lib/chain";
 
 /**
  * POST /api/challenge — open a challenge against a likeness.
@@ -41,5 +42,26 @@ export async function POST(req: Request) {
     nullifier: b.nullifier,
   });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
-  return NextResponse.json(result.data, { status: result.status });
+
+  // With settlement on, a challenge cannot be settled by this server alone: the
+  // contract allows one stake per address per likeness, so a single server key
+  // cannot be both registrant and challenger. A real bond is posted from each
+  // party's own wallet, which means browser signing for both sides.
+  //
+  // Until that exists this refuses on-chain challenges loudly instead of
+  // half-recording one. The ledger still records the challenge, so the demo
+  // continues; the response says which layer settled it, and the UI shows that.
+  if (onchainEnabled()) {
+    return NextResponse.json(
+      {
+        ...result.data,
+        settlement: "ledger",
+        chainError:
+          "On-chain bonds need both parties to sign from their own wallets; this build holds a single key. The ledger recorded the challenge.",
+      },
+      { status: result.status },
+    );
+  }
+
+  return NextResponse.json({ ...result.data, settlement: "ledger" }, { status: result.status });
 }
