@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import { useState } from "react";
-import { Copy, Check, SignOut, Wallet } from "@phosphor-icons/react/ssr";
+import { ArrowUpRight, Copy, Check, SignOut, Wallet } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
+import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 import { shortAddress, useWallet } from "@/lib/wallet";
 
 const NAV = [
@@ -27,7 +28,6 @@ export function SiteHeader() {
   const { status, address, connect, disconnect } = useWallet();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
-  const reduce = useReducedMotion();
 
   const connecting = status === "connecting";
 
@@ -106,54 +106,52 @@ export function SiteHeader() {
               </Button>
             )}
 
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
-              className="press grid size-11 place-items-center rounded-md text-ink lg:hidden"
-            >
-              <MenuGlyph open={open} />
-            </button>
+            {/*
+              Mobile navigation is a Sheet rather than a full screen takeover:
+              the page stays visible behind a blurred backdrop, the panel slides
+              in from the right, and only its body scrolls. Radix provides the
+              focus trap, Escape, scroll lock and focus return.
+            */}
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  className="press grid size-11 place-items-center rounded-md text-ink lg:hidden"
+                >
+                  <MenuGlyph open={open} />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" title="Menu" description="Where to go next">
+                <nav aria-label="Main" className="flex flex-col">
+                  {NAV.map((n) => (
+                    <Link
+                      key={n.href}
+                      href={n.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={
+                        pathname === n.href || pathname.startsWith(n.href + "/")
+                          ? "page"
+                          : undefined
+                      }
+                      className="press title-2 flex min-h-14 items-center justify-between gap-4 rounded-md border-b border-line py-3 text-ink hover:text-accent"
+                    >
+                      {n.label}
+                      <ArrowUpRight size={18} aria-hidden="true" className="text-ink3" />
+                    </Link>
+                  ))}
+                </nav>
+
+                <p className="caption-4 mt-8 max-w-[38ch] text-ink3">
+                  Registers a likeness, clears a single use, or reviews a dispute. Each route needs a
+                  connected wallet.
+                </p>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="fixed inset-0 z-40 bg-surface2/95 backdrop-blur-2xl lg:hidden"
-          >
-            <nav
-              aria-label="Main"
-              className="flex h-full flex-col justify-center gap-2 px-3"
-            >
-              {NAV.map((n, i) => (
-                <motion.div
-                  key={n.href}
-                  initial={reduce ? false : { opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: EASE, delay: Math.min(i * 0.06, 0.4) }}
-                >
-                  <Link
-                    href={n.href}
-                    onClick={() => setOpen(false)}
-                    className="heading-5 block py-3 text-ink"
-                  >
-                    {n.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }
