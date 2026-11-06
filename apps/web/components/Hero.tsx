@@ -14,7 +14,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * gradient (white to #9B9B9B) on text only; the surface stays flat.
  */
 export function Hero({
-  eyebrow,
   lines,
   body,
   primaryHref = "/explore",
@@ -24,7 +23,6 @@ export function Hero({
   video = false,
   tall = true,
 }: {
-  eyebrow?: string;
   lines: string[];
   body: string;
   primaryHref?: string;
@@ -47,9 +45,16 @@ export function Hero({
   return (
     <section
       aria-labelledby="hero"
-      className={`relative isolate flex items-center overflow-hidden border-b border-line bg-surface2 ${
+      className={`relative isolate flex items-center overflow-hidden bg-surface2 ${
         tall
-          ? "min-h-[78vh] pb-24 pt-28 md:min-h-[82vh] md:pb-28 md:pt-32"
+          ? // Full viewport height. 100dvh, not 100vh: on mobile browsers 100vh
+            // measures the viewport without the collapsing toolbar, so the hero
+            // ends up taller than the screen and the next section peeks through.
+            //
+            // -mt-[70px] cancels the sticky header's place in the flex column,
+            // so the section starts at y=0 and the footage reaches the top edge.
+            // The padding then gives that space back to the copy.
+            "min-h-[100dvh] -mt-[70px] pb-28 pt-[182px] md:pb-32 md:pt-[214px]"
           : "pb-16 pt-24 md:pb-20 md:pt-28"
       }`}
     >
@@ -90,26 +95,31 @@ export function Hero({
               brightest, so the left side is already dark enough to carry text
               without its own guard. */}
           <div className="absolute inset-0 bg-surface2/45" />
+
+          {/*
+            Variance to the one-gradient rule, recorded deliberately.
+
+            B5 permits a single gradient, on the hero heading. This is a second
+            one, applied as a scrim over footage rather than as decoration, and
+            it earns the exception for a reason the rule did not anticipate: the
+            hero is 100dvh, so the video now meets the next section at a hard
+            horizontal edge mid-scroll. Without a fade the section boundary cuts
+            across the footage like a torn seam.
+
+            It runs to the surface colour, not to black, so the last row of the
+            hero is already the colour of the section beneath it and there is
+            nothing left to see at the join.
+          */}
+          <div className="absolute inset-x-0 bottom-0 h-[38vh] bg-gradient-to-t from-surface2 via-surface2/85 to-transparent" />
         </div>
       )}
 
       <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12">
-        <div className="max-w-[680px]">
-          {eyebrow && (
-            <motion.p
-              {...rise(0)}
-              className="caption-4 mb-2 font-mono uppercase tracking-[0.06em] text-ink3"
-            >
-              {eyebrow}
-            </motion.p>
-          )}
-
+        <div className="w-full max-w-[1280px]">
           <motion.h1
             id="hero"
-            {...rise(eyebrow ? 1 : 0)}
-            className={`heading-gradient ${
-              tall ? "heading-2" : "heading-3"
-            }`}
+            {...rise(0)}
+            className={`heading-gradient ${tall ? "heading-display" : "heading-3"}`}
           >
             {lines.map((line) => (
               <span key={line} className="block">
@@ -119,15 +129,15 @@ export function Hero({
           </motion.h1>
 
           <motion.p
-            {...rise(eyebrow ? 2 : 1)}
-            className="body-3 mt-2 max-w-[680px] text-ink2"
+            {...rise(1)}
+            className="body-1 mt-5 max-w-[52ch] text-ink2"
           >
             {body}
           </motion.p>
 
           <motion.div
-            {...rise(eyebrow ? 3 : 2)}
-            className="mt-2 flex flex-wrap items-center gap-2"
+            {...rise(2)}
+            className="mt-8 flex flex-wrap items-center gap-3"
           >
             <Button href={primaryHref} size="lg">
               {primaryLabel}

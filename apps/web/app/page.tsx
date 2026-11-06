@@ -61,7 +61,7 @@ export default function Landing() {
       <SiteHeader />
       <main id="main" className="flex-1">
         <Hero
-          eyebrow="Hedera testnet · 8 entries registered"
+
           lines={["Clear one use of a face,", "not the face itself."]}
           body="A likeness licence names the use, the price and the expiry. Every claim is bonded, and a challenge is settled by a face match against a frozen reference."
           primaryHref="/explore"
@@ -81,7 +81,7 @@ export default function Landing() {
           </div>
         </section>
 
-        <section aria-labelledby="how" className="border-y border-line bg-surface1">
+        <section aria-labelledby="how" className="border-b border-line bg-surface1">
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-16 md:py-24">
             <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
               <HowItWorks />

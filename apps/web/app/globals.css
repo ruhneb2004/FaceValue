@@ -146,6 +146,13 @@
 
 /* B1 — named text styles. Applied by name, never restyled ad hoc. */
 @layer components {
+  .heading-display {
+    font-size: clamp(2.75rem, 8.4vw, 11rem);
+    line-height: 0.94;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
   .heading-1 {
     font-size: 3.75rem;
     line-height: 1;
