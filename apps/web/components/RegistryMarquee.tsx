@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SEED_LIKENESSES } from "@/lib/seed";
 import { isLicensable, type LikenessState } from "@/lib/types";
 import { StateBadge } from "./StateBadge";
-import { ListingArt } from "./ListingArt";
+import { ApeArt } from "./ApeArt";
 
 /** Two words at most: a card states the state, the record page explains it. */
 const SHORT: Record<LikenessState, string> = {
@@ -114,7 +114,7 @@ export function RegistryMarquee() {
                   className="press group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface3 hover:bg-surface4"
                 >
                   <div className="relative aspect-[4/3] w-full overflow-hidden">
-                    <ListingArt id={l.id} className="h-full w-full" />
+                    <ApeArt id={l.id} className="h-full w-full" />
                   </div>
 
                   <div className="flex flex-1 flex-col p-4">
