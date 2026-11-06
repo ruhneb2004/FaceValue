@@ -2,6 +2,7 @@ import { Hero } from "@/components/Hero";
 import { LikenessCard } from "@/components/LikenessCard";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SEED_LIKENESSES } from "@/lib/seed";
+import Image from "next/image";
 
 export default function Home() {
   const licensable = SEED_LIKENESSES.filter(
@@ -37,10 +38,47 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-line-subtle bg-surface">
-        <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-2 px-5 py-8 text-sm text-ink-3 md:flex-row md:items-center md:justify-between md:px-8">
-          <p>FaceValue is a registry interface, not a party to any licence.</p>
-          <p>ENS · World ID · Hedera</p>
+      {/* Dark band: the reversed lockup is the only artwork that belongs here. */}
+      <footer className="bg-[#2f3841] text-[#e9e4d8]">
+        <div className="mx-auto w-full max-w-[1200px] px-5 py-12 md:px-8">
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div className="max-w-[34ch]">
+              <Image
+                src="/logo-dark.png"
+                alt="facevalue"
+                width={800}
+                height={343}
+                className="h-12 w-auto"
+              />
+              <p className="mt-4 text-sm leading-relaxed text-[#b9bcc0]">
+                A registry interface for likeness rights. FaceValue is not a
+                party to any licence.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-10 text-sm">
+              <div>
+                <p className="mb-3 text-xs uppercase tracking-[0.08em] text-[#9aa0a6]">
+                  Integrations
+                </p>
+                <ul className="space-y-2">
+                  <li>ENS names</li>
+                  <li>World ID</li>
+                  <li>Hedera</li>
+                </ul>
+              </div>
+              <div>
+                <p className="mb-3 text-xs uppercase tracking-[0.08em] text-[#9aa0a6]">
+                  Record
+                </p>
+                <ul className="space-y-2">
+                  <li>Bond contract</li>
+                  <li>Dispute log</li>
+                  <li>Resolver set</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
     </>

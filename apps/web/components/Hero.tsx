@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { ArrowRight, Search } from "lucide-react";
 import { Button } from "@/components/Button";
 import { HeroScan } from "@/components/HeroScan";
@@ -91,6 +92,18 @@ export function Hero() {
           className="relative"
         >
           <div className="surface-card rounded-card bg-surface p-6">
+            <div className="mb-4 flex items-center justify-between border-b border-line-subtle pb-4">
+              <Image
+                src="/logo-light.png"
+                alt="facevalue"
+                width={800}
+                height={297}
+                className="h-6 w-auto"
+              />
+              <span className="text-xs uppercase tracking-[0.08em] text-ink-3">
+                Ref · 001
+              </span>
+            </div>
             <HeroScan className="h-auto w-full" />
             <p className="mt-4 text-center text-xs text-ink-3">
               Capture → embed → match against the frozen reference
