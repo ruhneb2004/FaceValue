@@ -17,7 +17,7 @@ const STYLES = [notionists, adventurer, bigSmile, openPeeps] as const;
  * badge, and six vivid backgrounds turned the grid into a rainbow, which
  * fights the single-accent rule.
  */
-const GROUND = "var(--bg-soft)";
+const GROUND = "var(--bg-surface3)";
 
 /**
  * Muted, desaturated skin/hair/garment palette.

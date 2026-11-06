@@ -15,10 +15,10 @@ export function DisputeRecord() {
   ];
 
   return (
-    <div className="rounded-card border border-line bg-card">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3">
-        <p className="font-mono text-[11px] text-ink-3">dispute #d-0417</p>
-        <p className="font-mono text-[11px] text-[var(--live)]">resolved</p>
+    <div className="bg-surface3 border border-line bg-surface3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-3 py-3">
+        <p className="font-mono caption-4 text-ink3">dispute #d-0417</p>
+        <p className="font-mono caption-4 text-[var(--state-active)]">resolved</p>
       </div>
 
       <dl className="grid grid-cols-2 divide-x divide-line border-b border-line md:grid-cols-4">
@@ -28,11 +28,11 @@ export function DisputeRecord() {
           { k: "Quorum", v: "2 of 3" },
           { k: "Payout", v: "Registered" },
         ].map((s) => (
-          <div key={s.k} className="px-4 py-3">
-            <dt className="text-[11px] uppercase tracking-[0.06em] text-ink-3">
+          <div key={s.k} className="px-3 py-3">
+            <dt className="caption-4 uppercase tracking-[0.06em] text-ink3">
               {s.k}
             </dt>
-            <dd className="tabular mt-1 font-mono text-sm text-ink">{s.v}</dd>
+            <dd className="tnum mt-2 font-mono title-4 text-ink">{s.v}</dd>
           </div>
         ))}
       </dl>
@@ -43,15 +43,15 @@ export function DisputeRecord() {
           return (
             <li
               key={r.name}
-              className="flex items-center gap-3 px-4 py-2.5"
+              className="flex items-center gap-2 px-3 py-3"
             >
-              <span className="font-mono text-xs text-ink-2">{r.name}</span>
-              <span className="tabular ml-auto font-mono text-xs text-ink-3">
+              <span className="font-mono caption-5 text-ink2">{r.name}</span>
+              <span className="tnum ml-auto font-mono caption-5 text-ink3">
                 cos {r.cos.toFixed(2)}
               </span>
               <span
-                className={`inline-flex items-center gap-1.5 text-xs ${
-                  matched ? "text-accent" : "text-ink-3"
+                className={`inline-flex items-center gap-2 caption-5 ${
+                  matched ? "text-accent" : "text-ink3"
                 }`}
               >
                 {matched ? (
@@ -66,7 +66,7 @@ export function DisputeRecord() {
         })}
       </ul>
 
-      <p className="border-t border-line px-4 py-3 text-xs leading-relaxed text-ink-3">
+      <p className="border-t border-line px-3 py-3 caption-5 leading-relaxed text-ink3">
         Two resolvers read the same face at 0.91 and 0.88. The third did not.
         The challenged entries still resolved on the face, so the registered
         party took the 120 HBAR stake.

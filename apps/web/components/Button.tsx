@@ -1,91 +1,55 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
-import { twMerge } from "tailwind-merge";
+import Link from "next/link";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/cn";
 
 /**
- * The single button in the system.
- * - Press scales to 0.96 over 150ms ease-out, disabled never scales (better-ui).
- * - Motion gated behind prefers-reduced-motion.
- * - Shadow ring sits on a transparent border so forced-colors still draws an edge.
- * - One filled variant per view: only `primary` carries the accent.
+ * B9: every button ships hover, active, focus and disabled.
+ * B7: press scales to 0.98 on the base curve, gated for reduced motion.
+ * B2: 8px vertical and 12px horizontal padding.
+ *
+ * Spacing uses only declared steps. `py-3` is 8px, `px-3` is 12px.
  */
-type Variant = "primary" | "secondary" | "ghost";
-type Size = "md" | "lg";
+const button = cva(
+  [
+    "press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold",
+    "disabled:pointer-events-none disabled:opacity-45",
+  ],
+  {
+    variants: {
+      variant: {
+        primary: "border-transparent bg-accent text-accentink hover:bg-[#8db8ff]",
+        secondary: "border-linestrong bg-surface3 text-ink hover:bg-surface4",
+        ghost: "border-transparent bg-transparent text-ink2 hover:bg-surface3 hover:text-ink",
+        quiet: "border-transparent bg-transparent text-ink3 hover:text-ink",
+      },
+      size: {
+        sm: "button-sm py-3 px-3",
+        md: "button-md py-3 px-3",
+        lg: "button-lg py-3 px-3",
+      },
+    },
+    defaultVariants: { variant: "primary", size: "md" },
+  },
+);
 
-const VARIANTS: Record<Variant, string> = {
-  // Ink on accent, never white: white on #73a6ff is 2.43:1, ink is 8.04:1.
-  primary:
-    "bg-accent text-[var(--accent-ink)] border border-transparent shadow-[var(--shadow-border)] hover:bg-accent-strong",
-  // Inputs and outlined controls keep a real border for 3:1 non-text contrast.
-  secondary: "bg-card text-ink-2 border border-line hover:bg-soft hover:border-line-strong hover:text-ink",
-  ghost: "text-ink-2 hover:bg-strong hover:text-ink border border-transparent",
-};
-
-const SIZES: Record<Size, string> = {
-  md: "min-h-11 px-4 text-sm",
-  lg: "min-h-12 px-5 text-sm",
-};
-
-export function Button({
-  children,
-  variant = "primary",
-  size = "md",
-  className,
-  disabled,
-  onClick,
-  type = "button",
-  href,
-  "aria-label": ariaLabel,
-}: {
-  children: React.ReactNode;
-  variant?: Variant;
-  size?: Size;
-  className?: string;
-  disabled?: boolean;
-  onClick?: () => void;
-  type?: "button" | "submit";
-  /** Renders an anchor instead of a button, keeping identical geometry. */
+type Props = VariantProps<typeof button> & {
   href?: string;
-  "aria-label"?: string;
-}) {
-  const reduce = useReducedMotion();
+  children: React.ReactNode;
+  className?: string;
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className">;
 
-  const cls = twMerge(
-    "press inline-flex shrink-0 items-center justify-center gap-2 rounded-control font-semibold",
-    "disabled:cursor-not-allowed disabled:opacity-50",
-    VARIANTS[variant],
-    SIZES[size],
-    className,
-  );
-
-  const tap = reduce || disabled ? undefined : { scale: 0.96 };
-
+export function Button({ href, variant, size, className, children, ...rest }: Props) {
+  const cls = cn(button({ variant, size }), className);
   if (href) {
     return (
-      <motion.a
-        href={href}
-        aria-label={ariaLabel}
-        whileTap={tap}
-        transition={{ type: "spring", duration: 0.15, bounce: 0 }}
-        className={cls}
-      >
+      <Link href={href} className={cls}>
         {children}
-      </motion.a>
+      </Link>
     );
   }
-
   return (
-    <motion.button
-      type={type}
-      disabled={disabled}
-      onClick={onClick}
-      aria-label={ariaLabel}
-      whileTap={tap}
-      transition={{ type: "spring", duration: 0.15, bounce: 0 }}
-      className={cls}
-    >
+    <button className={cls} {...rest}>
       {children}
-    </motion.button>
+    </button>
   );
 }

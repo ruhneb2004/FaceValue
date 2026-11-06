@@ -1,62 +1,50 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { StateBadge } from "./StateBadge";
 import { ListingArt } from "./ListingArt";
 import { isLicensable, type Likeness } from "@/lib/types";
 
-export function LikenessCard({
-  likeness,
-  index = 0,
-}: {
-  likeness: Likeness;
-  index?: number;
-}) {
+/**
+ * A marketplace card.
+ *
+ * The state lives in the badge and licensability lives in the price, so nothing
+ * appears twice. A card that cannot be licensed shows no price rather than a
+ * zero or a dead button.
+ */
+export function LikenessCard({ likeness }: { likeness: Likeness; index?: number }) {
   const licensable = isLicensable(likeness.state);
-  const reduce = useReducedMotion();
 
   return (
-    <motion.div
-      initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{
-        duration: 0.3,
-        ease: [0.2, 0, 0, 1],
-        delay: Math.min(index * 0.1, 0.4),
-      }}
-      className="h-full"
+    <Link
+      href={`/likeness/${likeness.id}`}
+      className="press group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface3 hover:bg-surface4"
     >
-      <Link
-        href={`/likeness/${likeness.id}`}
-        className="card press group flex h-full flex-col overflow-hidden"
-      >
-        <div className="relative aspect-square w-full overflow-hidden border-b border-line">
-          <ListingArt id={likeness.id} className="h-full w-full" />
-          <div className="absolute left-2.5 top-2.5">
-            <StateBadge state={likeness.state} count={likeness.openChallenges} />
-          </div>
+      <div className="relative aspect-square w-full shrink-0 overflow-hidden">
+        <ListingArt id={likeness.id} className="h-full w-full" />
+        <div className="absolute left-3 top-3">
+          <StateBadge state={likeness.state} count={likeness.openChallenges} />
         </div>
+      </div>
 
-        <div className="flex flex-1 flex-col gap-2 p-3">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-sm font-medium leading-snug text-ink">
-              {likeness.name}
-            </h3>
-            {licensable && (
-              <span className="tabular shrink-0 font-mono text-sm font-medium text-ink">
-                {likeness.pricePerUse.toFixed(2)}
-              </span>
-            )}
-          </div>
+      <div className="flex flex-1 flex-col border-t border-line p-3">
+        <h3 className="title-4 line-clamp-2 text-ink">{likeness.name}</h3>
+        <p className="caption-5 mt-2 font-mono text-ink3">{likeness.ensName}</p>
 
-          {/* The badge carries the state, and the price carries licensability
-              on its own; a second line would only restate one of them. */}
-          {licensable && (
-            <p className="font-mono text-[11px] text-ink-3">HBAR per use</p>
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+          {licensable ? (
+            <div>
+              <p className="tnum title-3 font-mono text-ink">
+                {likeness.pricePerUse}
+                <span className="caption-5 ml-2 text-ink3">HBAR</span>
+              </p>
+              <p className="caption-5 text-ink3">per use</p>
+            </div>
+          ) : (
+            <p className="caption-5 text-ink3">Not licensable</p>
           )}
         </div>
-      </Link>
-    </motion.div>
+      </div>
+    </Link>
   );
 }

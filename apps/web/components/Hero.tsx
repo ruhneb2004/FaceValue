@@ -1,111 +1,120 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/**
+ * B5 hero.
+ *
+ * Heading and subheading capped at 680px, with line breaks given explicitly
+ * rather than left to the box width. The heading carries the single permitted
+ * gradient (white to #9B9B9B) on text only; the surface stays flat.
+ */
 export function Hero({
   eyebrow,
-  title = "Licence a face. Prove it on chain.",
-  body = "Browse registered likenesses, clear one use at a time, and read the bond behind every claim. A dispute is settled by a face match, not a vote.",
-  primaryHref = "#listings",
+  lines,
+  body,
+  primaryHref = "/explore",
   primaryLabel = "Explore likenesses",
   secondaryHref = "/register",
-  secondaryLabel = "Register yours",
-  tall = false,
+  secondaryLabel = "Register a likeness",
+  video = false,
+  tall = true,
 }: {
   eyebrow?: string;
-  title?: string;
-  body?: string;
+  lines: string[];
+  body: string;
   primaryHref?: string;
   primaryLabel?: string;
   secondaryHref?: string;
   secondaryLabel?: string;
+  video?: boolean;
   tall?: boolean;
-} = {}) {
+}) {
   const reduce = useReducedMotion();
-  const rise = (delay: number) =>
+  const rise = (i: number) =>
     reduce
-      ? {}
+      ? { initial: false as const, animate: { opacity: 1 } }
       : {
-          initial: { opacity: 0, y: 12 },
+          initial: { opacity: 0, y: 16 },
           animate: { opacity: 1, y: 0 },
-          transition: {
-            duration: 0.3,
-            ease: [0.22, 1, 0.36, 1] as const,
-            delay,
-          },
+          transition: { duration: 0.55, ease: EASE, delay: i * 0.1 },
         };
 
   return (
     <section
       aria-labelledby="hero"
-      className="relative isolate overflow-hidden border-b border-line bg-sunken"
+      className={`relative isolate overflow-hidden border-b border-line bg-surface2 ${
+        tall ? "pb-28 pt-32 md:pb-36 md:pt-36" : "pb-20 pt-28 md:pb-24 md:pt-32"
+      }`}
     >
-      {/* Ambient scan behind the hero. Decorative: it carries no information,
-          so it is hidden from assistive tech and stops for reduced motion. */}
-      <video
-        className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-70 motion-reduce:hidden"
-        src="/video/hero-scan.mp4"
-        poster="/video/hero-poster.jpg"
-        autoPlay
-        loop
-        muted
-        playsInline
-        aria-hidden="true"
-        tabIndex={-1}
-      />
-      {/* Flat scrim (no gradient): a solid wash that keeps text contrast over
-          the brightest part of the footage. */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[var(--bg-quiet)]/80"
-        aria-hidden="true"
-      />
-      <div
-        className={
-          tall
-            ? "relative mx-auto flex w-full max-w-[1440px] items-center px-4 py-20 md:px-6 md:py-24"
-            : "relative mx-auto w-full max-w-[1440px] px-4 py-8 md:px-6 md:py-10"
-        }
-      >
-        <div className={tall ? "max-w-[54rem]" : "max-w-[46rem]"}>
-          <div>
-            {eyebrow && (
-              <motion.p
-                {...rise(0)}
-                className="mb-4 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-3"
-              >
-                {eyebrow}
-              </motion.p>
-            )}
-            <motion.h1
-              id="hero"
-              {...rise(0)}
-              className="max-w-[18ch] font-display text-[2.25rem] font-semibold leading-[1.05] tracking-[-0.035em] text-ink sm:text-5xl lg:text-[3.5rem] lg:leading-[1.02]"
-            >
-              {title}
-            </motion.h1>
+      {video && (
+        <>
+          <video
+            className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-60 motion-reduce:hidden"
+            src="/video/hero-scan.mp4"
+            poster="/video/hero-poster.jpg"
+            autoPlay
+            loop
+            muted
+            playsInline
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+          <div
+            className="pointer-events-none absolute inset-0 -z-10 bg-surface2/85"
+            aria-hidden="true"
+          />
+        </>
+      )}
 
+      <div className="mx-auto w-full max-w-[1440px] px-3 md:px-3">
+        <div className="max-w-[680px]">
+          {eyebrow && (
             <motion.p
-              {...rise(0.1)}
-              className="mt-3.5 max-w-[48ch] text-[15px] leading-relaxed text-ink-2 md:text-base"
+              {...rise(0)}
+              className="caption-4 mb-2 font-mono uppercase tracking-[0.06em] text-ink3"
             >
-              {body}
+              {eyebrow}
             </motion.p>
+          )}
 
-            <motion.div
-              {...rise(0.15)}
-              className="mt-5 flex flex-wrap items-center gap-2.5"
-            >
-              <Button href={primaryHref}>
-                {primaryLabel}
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Button>
-              <Button href={secondaryHref} variant="secondary">
-                {secondaryLabel}
-              </Button>
-            </motion.div>
-          </div>
+          <motion.h1
+            id="hero"
+            {...rise(eyebrow ? 1 : 0)}
+            className={`heading-gradient ${
+              tall ? "heading-2" : "heading-3"
+            }`}
+          >
+            {lines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </motion.h1>
+
+          <motion.p
+            {...rise(eyebrow ? 2 : 1)}
+            className="body-3 mt-2 max-w-[680px] text-ink2"
+          >
+            {body}
+          </motion.p>
+
+          <motion.div
+            {...rise(eyebrow ? 3 : 2)}
+            className="mt-2 flex flex-wrap items-center gap-2"
+          >
+            <Button href={primaryHref} size="lg">
+              {primaryLabel}
+              <ArrowRight size={18} aria-hidden="true" />
+            </Button>
+            <Button href={secondaryHref} size="lg" variant="secondary">
+              {secondaryLabel}
+            </Button>
+          </motion.div>
         </div>
       </div>
     </section>

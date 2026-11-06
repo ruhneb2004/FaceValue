@@ -21,7 +21,7 @@ export function RegistrySample() {
   ].filter((l): l is NonNullable<typeof l> => Boolean(l));
 
   return (
-    <div className="overflow-hidden rounded-card border border-line bg-card">
+    <div className="overflow-hidden rounded-lg border border-line bg-surface3">
       {/* Table on desktop, stacked rows on mobile. Same data either way. */}
       <table className="w-full border-collapse text-left">
         <caption className="sr-only">
@@ -33,7 +33,7 @@ export function RegistrySample() {
               <th
                 key={h}
                 scope="col"
-                className={`px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.06em] text-ink-3 ${
+                className={`px-3 py-3 caption-4 font-medium uppercase tracking-[0.06em] text-ink3 ${
                   h === "Licence" ? "w-[46%]" : h === "Likeness" ? "w-[24%]" : h === "State" ? "w-[16%]" : "w-[14%]"
                 }`}
               >
@@ -50,35 +50,35 @@ export function RegistrySample() {
                 key={l.id}
                 className="block border-b border-line last:border-0 md:table-row"
               >
-                <td className="block px-4 pb-0 pt-3.5 md:table-cell md:py-3.5">
+                <td className="block px-3 pb-2 pt-2 md:table-cell md:py-3">
                   <Link
                     href={`/likeness/${l.id}`}
-                    className="text-sm font-medium text-ink underline-offset-2 hover:underline"
+                    className="title-4 font-medium text-ink underline-offset-2 hover:underline"
                   >
                     {l.name}
                   </Link>
-                  <span className="mt-0.5 block font-mono text-[11px] text-ink-3 md:hidden">
+                  <span className="mt-2 block font-mono caption-4 text-ink3 md:hidden">
                     {l.ensName}
                   </span>
                 </td>
-                <td className="block px-4 py-1.5 md:table-cell md:py-3.5">
+                <td className="block px-3 py-3 md:table-cell md:py-3">
                   <StateBadge state={l.state} />
                 </td>
-                <td className="tabular block px-4 py-1.5 font-mono text-xs text-ink-2 md:table-cell md:py-3.5">
+                <td className="tnum block px-3 py-3 font-mono caption-5 text-ink2 md:table-cell md:py-3">
                   {/* An unlicensable entry has no price yet. "0 HBAR" reads as
                       free, which is the opposite of true. */}
                   {l.pricePerUse > 0 ? (
                     `${l.pricePerUse} HBAR`
                   ) : (
-                    <span className="text-ink-3">—</span>
+                    <span className="text-ink3">—</span>
                   )}
                 </td>
-                <td className="block max-w-[52ch] px-4 pb-3.5 pt-1.5 text-xs leading-relaxed md:table-cell md:py-3.5">
+                <td className="block max-w-[52ch] px-3 pb-2 pt-2 caption-5 leading-relaxed md:table-cell md:py-3">
                   {ok ? (
                     <span className="text-accent">Available</span>
                   ) : (
                     // The refusal in words, never a dead button.
-                    <span className="text-ink-3">{refusalReason(l.state)}</span>
+                    <span className="text-ink3">{refusalReason(l.state)}</span>
                   )}
                 </td>
               </tr>
@@ -87,13 +87,13 @@ export function RegistrySample() {
         </tbody>
       </table>
 
-      <div className="flex items-center justify-between gap-3 border-t border-line px-4 py-3">
-        <p className="text-xs text-ink-3">
+      <div className="flex items-center justify-between gap-2 border-t border-line px-3 py-3">
+        <p className="caption-5 text-ink3">
           {SEED_LIKENESSES.length} entries in the demo registry
         </p>
         <Link
           href="/explore"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:underline"
+          className="inline-flex items-center gap-2 caption-5 font-medium text-accent hover:underline"
         >
           See all
           <ArrowRight className="size-3.5" aria-hidden="true" />
