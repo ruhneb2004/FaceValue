@@ -17,7 +17,14 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Body must be JSON." }, { status: 400 });
   }
-  const b = body as { likenessId?: string; challenger?: string; grounds?: string; cos?: number };
+  const b = body as {
+    likenessId?: string;
+    challenger?: string;
+    grounds?: string;
+    cos?: number;
+    referenceHash?: string;
+    nullifier?: string;
+  };
   if (!b.likenessId || !b.challenger) {
     return NextResponse.json({ error: "likenessId and challenger are required." }, { status: 400 });
   }
@@ -30,6 +37,8 @@ export async function POST(req: Request) {
     challenger: b.challenger,
     grounds: b.grounds ?? "",
     cos: b.cos,
+    referenceHash: b.referenceHash,
+    nullifier: b.nullifier,
   });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json(result.data, { status: result.status });

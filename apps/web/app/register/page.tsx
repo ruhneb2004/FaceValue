@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Camera,
   Check,
   Fingerprint,
   Hash,
@@ -20,6 +19,9 @@ import { Button } from "@/components/Button";
 import { ConnectGate } from "@/components/ConnectGate";
 import { LikenessAvatar } from "@/components/LikenessAvatar";
 import { StateBadge } from "@/components/StateBadge";
+import { ReferenceCapture, type CapturedReference } from "@/components/ReferenceCapture";
+import { WorldIdGate, type WorldIdProof } from "@/components/WorldIdGate";
+import { useWallet } from "@/lib/wallet";
 
 /**
  * Register a likeness — four steps in one shell.
@@ -30,10 +32,10 @@ import { StateBadge } from "@/components/StateBadge";
  * result the system does not produce, and the dispute rules exist precisely
  * because a registration is a claim, not a fact.
  *
- * The camera is a placeholder. It renders the shape of the capture without
- * requesting a device, so the flow can be walked in a demo and reviewed without
- * a permission prompt. The element says so in words rather than looking like a
- * broken preview.
+ * The camera is real. A frame is captured locally, its SHA-256 is computed in
+ * the browser, and only that hash is sent to the registry — the image itself is
+ * never uploaded or stored. The hash is shown on screen so the claim is visible
+ * rather than asserted.
  *
  * Layout: the form sits left and a sticky rail sits right. The rail is not
  * decoration — it previews the record being built (the avatar is drawn from the
@@ -101,6 +103,11 @@ function RegisterFlow() {
   const [ensName, setEnsName] = useState("");
   const [touched, setTouched] = useState(false);
   const [done, setDone] = useState(false);
+  const [reference, setReference] = useState<CapturedReference | null>(null);
+  const [proof, setProof] = useState<WorldIdProof | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const { address } = useWallet();
 
   const nameError =
     touched && name.trim().length < 3
@@ -162,26 +169,30 @@ function RegisterFlow() {
                 every future challenge is measured against.
               </p>
 
-              {/* A placeholder that says what it is, rather than an empty box
-                  that looks like a broken camera. The corner marks make it read
-                  as a viewfinder rather than a disabled box. */}
-              <div className="relative mt-5 grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-xl border border-dashed border-linestrong bg-surface3">
-                <CameraCorner className="left-4 top-4 border-l-2 border-t-2" />
-                <CameraCorner className="right-4 top-4 border-r-2 border-t-2" />
-                <CameraCorner className="bottom-4 left-4 border-b-2 border-l-2" />
-                <CameraCorner className="bottom-4 right-4 border-b-2 border-r-2" />
-                <div className="px-6 text-center">
-                  <span className="mx-auto grid size-12 place-items-center rounded-full bg-surface4 text-accent">
-                    <Camera size={22} aria-hidden="true" />
-                  </span>
-                  <p className="body-4 mt-3 text-ink">
-                    Camera capture is not wired in this build
-                  </p>
-                  <p className="body-6 mt-1 text-ink3">
-                    The reference would be stored locally and only its hash
-                    written
-                  </p>
-                </div>
+              {/* The capture is real: camera (or a file, because judging
+                  laptops often have none), hashed in the browser. The hash is
+                  the only thing that travels. */}
+              <div className="mt-5">
+                <ReferenceCapture
+                  captured={reference}
+                  onCapture={(ref) => setReference(ref)}
+                  onClear={() => {
+                    if (reference) URL.revokeObjectURL(reference.previewUrl);
+                    setReference(null);
+                  }}
+                />
+              </div>
+
+              {/* World ID gates that a unique human is present. It is bound to
+                  the reference hash via `signal`, and it says whether the proof
+                  was real or simulated. */}
+              <div className="mt-4">
+                <WorldIdGate
+                  signal={reference?.hash ?? ""}
+                  proof={proof}
+                  onProof={setProof}
+                  onClear={() => setProof(null)}
+                />
               </div>
 
               <p className="body-6 mt-4 flex items-start gap-2 text-ink2">
@@ -310,9 +321,46 @@ function RegisterFlow() {
               <ArrowRight size={15} aria-hidden="true" />
             </Button>
           ) : (
-            <Button size="sm" onClick={() => setDone(true)}>
-              Register likeness
+            <Button
+              size="sm"
+              disabled={submitting || !reference || !address}
+              onClick={async () => {
+                if (!reference || !address) return;
+                setSubmitting(true);
+                setSubmitError(null);
+                try {
+                  const res = await fetch("/api/register", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      name: name.trim(),
+                      ensName: ensName.trim() || undefined,
+                      controller: address,
+                      pricePerUse: 20,
+                      referenceHash: reference.hash,
+                      nullifier: proof?.nullifier,
+                    }),
+                  });
+                  if (!res.ok) {
+                    const data = (await res.json().catch(() => ({}))) as { error?: string };
+                    throw new Error(data.error ?? "Registration failed.");
+                  }
+                  setDone(true);
+                } catch (err) {
+                  setSubmitError((err as Error).message);
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
+            >
+              {submitting ? "Registering…" : "Register likeness"}
             </Button>
+          )}
+
+          {submitError && (
+            <p role="alert" className="body-6 mt-3 text-[var(--state-disputed)]">
+              {submitError}
+            </p>
           )}
         </div>
       </div>
@@ -381,14 +429,5 @@ function FactRow({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
         {v}
       </dd>
     </div>
-  );
-}
-
-function CameraCorner({ className }: { className: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`absolute size-5 border-accent/70 ${className}`}
-    />
   );
 }

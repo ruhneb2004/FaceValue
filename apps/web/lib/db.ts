@@ -1,8 +1,8 @@
 import Database from "better-sqlite3";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import { SEED_LIKENESSES } from "./seed";
-import type { LikenessState } from "./types";
+import { SEED_LIKENESSES } from "./seed.ts";
+import type { LikenessState } from "./types.ts";
 
 /**
  * The app database.
@@ -59,8 +59,19 @@ function migrate(d: DB) {
       controller    TEXT NOT NULL,
       holder        TEXT NOT NULL,
       settlement_deadline TEXT,
+      -- SHA-256 of the captured reference frame. The image itself is never
+      -- persisted; this hash is what couples a record to its reference and is
+      -- the only thing a challenge is matched against.
+      reference_hash TEXT,
+      -- World ID nullifier. Server-side only, never exposed publicly. One
+      -- likeness per human is enforced by the unique index below.
+      nullifier     TEXT,
       created_at    TEXT NOT NULL DEFAULT (datetime('now'))
     );
+    -- One likeness per World ID nullifier. Partial index so un-registered rows
+    -- (null nullifier) do not collide with each other.
+    CREATE UNIQUE INDEX IF NOT EXISTS one_likeness_per_nullifier
+      ON likenesses(nullifier) WHERE nullifier IS NOT NULL;
 
     CREATE TABLE IF NOT EXISTS challenges (
       id                TEXT PRIMARY KEY,
@@ -71,6 +82,11 @@ function migrate(d: DB) {
       tier              INTEGER,            -- 1 | 2 | 3, set at resolution
       status            TEXT NOT NULL CHECK (status IN ('open','won','lost','review')),
       resolved_by       TEXT,               -- 'auto' | 'multisig'
+      -- Hash of the challenger's live capture, and their World ID nullifier.
+      -- The nullifier is checked server-side to be distinct from the
+      -- registrant's, so a registrant cannot challenge their own record.
+      reference_hash    TEXT,
+      nullifier         TEXT,
       created_at        TEXT NOT NULL DEFAULT (datetime('now')),
       resolved_at       TEXT
     );

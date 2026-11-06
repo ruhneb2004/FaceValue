@@ -9,13 +9,22 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Body must be JSON." }, { status: 400 });
   }
-  const b = body as { name?: string; ensName?: string; controller?: string; pricePerUse?: number };
+  const b = body as {
+    name?: string;
+    ensName?: string;
+    controller?: string;
+    pricePerUse?: number;
+    referenceHash?: string;
+    nullifier?: string;
+  };
 
   const result = registerLikeness({
     name: b.name ?? "",
     ensName: b.ensName,
     controller: b.controller ?? "",
     pricePerUse: Number(b.pricePerUse ?? 0),
+    referenceHash: b.referenceHash,
+    nullifier: b.nullifier,
   });
 
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });

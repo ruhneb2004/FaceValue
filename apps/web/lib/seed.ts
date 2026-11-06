@@ -1,4 +1,4 @@
-import type { Likeness } from "./types";
+import type { Likeness } from "./types.ts";
 
 /**
  * Seed data for the demo marketplace.

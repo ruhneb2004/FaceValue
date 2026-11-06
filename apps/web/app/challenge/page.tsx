@@ -11,6 +11,9 @@ import { ConnectGate } from "@/components/ConnectGate";
 import { StateBadge } from "@/components/StateBadge";
 import { SEED_LIKENESSES } from "@/lib/seed";
 import { isLicensable } from "@/lib/types";
+import { ReferenceCapture, type CapturedReference } from "@/components/ReferenceCapture";
+import { WorldIdGate, type WorldIdProof } from "@/components/WorldIdGate";
+import { useWallet } from "@/lib/wallet";
 
 /**
  * Challenge a likeness.
@@ -53,6 +56,12 @@ function ChallengeForm() {
   const [target, setTarget] = useState(SEED_LIKENESSES[0]?.id ?? "");
   const [evidence, setEvidence] = useState("");
   const [touched, setTouched] = useState(false);
+  const [reference, setReference] = useState<CapturedReference | null>(null);
+  const [proof, setProof] = useState<WorldIdProof | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [opened, setOpened] = useState<{ id: string; tier: number } | null>(null);
+  const { address } = useWallet();
 
   const evidenceError =
     touched && evidence.trim().length < 20
@@ -119,17 +128,28 @@ function ChallengeForm() {
 
         <Field label="Reference for comparison" hint="A hash is written. The image itself is not uploaded.">
           {(p) => (
-            <div
-              id={p.id}
-              className="grid place-items-center rounded-md border border-dashed border-linestrong bg-surface3 px-6 py-8 text-center"
-            >
-              <p className="body-5 text-ink2">Capture is not wired in this build</p>
-              <p className="body-6 mt-1 text-ink3">
-                The bond and the comparison would follow
-              </p>
+            <div id={p.id}>
+              <ReferenceCapture
+                captured={reference}
+                onCapture={(ref) => setReference(ref)}
+                onClear={() => {
+                  if (reference) URL.revokeObjectURL(reference.previewUrl);
+                  setReference(null);
+                }}
+              />
             </div>
           )}
         </Field>
+
+        {/* A challenger must be a different unique human from the registrant;
+            the server rejects a nullifier that matches the registrant's. */}
+        <WorldIdGate
+          signal={reference?.hash ?? ""}
+          proof={proof}
+          onProof={setProof}
+          onClear={() => setProof(null)}
+          action="challenge-likeness"
+        />
       </div>
 
       {likeness && (
@@ -164,19 +184,67 @@ function ChallengeForm() {
         outcome are written.
       </p>
 
-      {/* No submit button. The bond contract is not deployed, so a control
-          here could not do what its label says — and a button that posts
-          nothing is worse than an honest stop. The form validates so the
-          fields are real; the action is stated as unavailable instead. */}
+      {/* The bond is a ledger row in this build, not an on-chain transfer: the
+          contract is not deployed. The copy below says that plainly rather than
+          implying a bond was escrowed on Hedera. */}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
         <Button variant="ghost" size="sm" href="/explore">
           Back to the registry
         </Button>
-        <p className="body-6 max-w-[34ch] text-right text-ink3">
-          Posting a bond needs the deployed contract, which this build does not
-          have. The challenge flow stops here.
-        </p>
+        <Button
+          size="sm"
+          disabled={submitting || !reference || !proof || evidence.trim().length < 20 || !address}
+          onClick={async () => {
+            if (!reference || !address) return;
+            setTouched(true);
+            if (evidence.trim().length < 20) return;
+            setSubmitting(true);
+            setSubmitError(null);
+            try {
+              const res = await fetch("/api/challenge", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({
+                  likenessId: target,
+                  challenger: address,
+                  grounds: evidence.trim(),
+                  // No embedding service yet, so the caller supplies the cosine.
+                  // The route already treats it as untrusted input; Wave 3 only
+                  // changes where the number comes from.
+                  cos: 0.9,
+                  referenceHash: reference.hash,
+                  nullifier: proof?.nullifier,
+                }),
+              });
+              const data = (await res.json().catch(() => ({}))) as {
+                error?: string;
+                challengeId?: string;
+                tier?: number;
+              };
+              if (!res.ok) throw new Error(data.error ?? "The challenge could not be opened.");
+              setOpened({ id: data.challengeId ?? "", tier: data.tier ?? 0 });
+            } catch (err) {
+              setSubmitError((err as Error).message);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {submitting ? "Opening…" : "Open challenge"}
+        </Button>
       </div>
+
+      {opened && (
+        <p role="status" className="body-5 mt-4 rounded-md border border-line bg-surface3 px-4 py-3 text-ink">
+          Challenge <span className="font-mono">{opened.id}</span> opened at tier {""}
+          {opened.tier}. The bond is recorded against your address.
+        </p>
+      )}
+      {submitError && (
+        <p role="alert" className="body-5 mt-4 text-[var(--state-disputed)]">
+          {submitError}
+        </p>
+      )}
     </div>
   );
 }

@@ -62,6 +62,15 @@ export interface Likeness {
   openChallenges: number;
   /** ISO date the provisional window closes. */
   settlementDeadline?: string;
+  /**
+   * Hex SHA-256 of the captured reference frame.
+   *
+   * Public on purpose: it is the coupling proof — it shows which reference a
+   * record was registered from without revealing the image. A hash of a frame
+   * is one-way, so publishing it is safe in a way the image and the nullifier
+   * are not. The nullifier is never part of this type.
+   */
+  referenceHash?: string;
 }
 
 export type MatchBand = "no-match" | "review" | "match";

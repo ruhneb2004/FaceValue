@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { getDb, type DB } from "./db.ts";
 import { deriveState, canLicense, bandOf, tierOf, settleBonds, quorum } from "./state-machine.ts";
 import type { Likeness, LikenessState, Challenge } from "./types.ts";
@@ -23,6 +24,8 @@ type Row = {
   controller: string;
   holder: string;
   settlement_deadline: string | null;
+  reference_hash: string | null;
+  nullifier: string | null;
 };
 
 function openCount(db: DB, likenessId: string): number {
@@ -46,6 +49,7 @@ function toLikeness(db: DB, r: Row): Likeness {
     holder: r.holder,
     openChallenges: open,
     settlementDeadline: r.settlement_deadline ?? undefined,
+    referenceHash: r.reference_hash ?? undefined,
   };
 }
 
@@ -93,6 +97,10 @@ export function registerLikeness(input: {
   ensName?: string;
   controller: string;
   pricePerUse: number;
+  /** Hex SHA-256 of the captured reference frame. Optional until a capture is supplied. */
+  referenceHash?: string;
+  /** World ID nullifier. Enforces one likeness per human when present. */
+  nullifier?: string;
 }): Result<Likeness> {
   const name = input.name.trim();
   if (name.length < 3) {
@@ -103,10 +111,31 @@ export function registerLikeness(input: {
   }
 
   const db = getDb();
-  const id = `lc-${String(Date.now()).slice(-6)}`;
+
+  // One likeness per human (plan §3). Checked explicitly so the caller gets a
+  // readable 409 rather than a raw unique-constraint violation.
+  if (input.nullifier) {
+    const existing = db
+      .prepare("SELECT id FROM likenesses WHERE nullifier = ?")
+      .get(input.nullifier) as { id: string } | undefined;
+    if (existing) {
+      return {
+        ok: false,
+        status: 409,
+        error: "This World ID has already registered a likeness. One likeness per human.",
+      };
+    }
+  }
+
+  // Time alone is not enough: a fast double-submit, or two registrations in the
+  // same millisecond, produced the same id and hit the primary key. A short
+  // random suffix keeps ids readable and collision-free.
+  const id = `lc-${String(Date.now()).slice(-6)}${randomBytes(2).toString("hex")}`;
   db.prepare(
-    `INSERT INTO likenesses (id, name, price_per_use, state, ens_name, controller, holder, settlement_deadline)
-     VALUES (?, ?, ?, 'provisional', ?, ?, ?, ?)`,
+    `INSERT INTO likenesses
+       (id, name, price_per_use, state, ens_name, controller, holder, settlement_deadline,
+        reference_hash, nullifier)
+     VALUES (?, ?, ?, 'provisional', ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     name,
@@ -116,6 +145,8 @@ export function registerLikeness(input: {
     input.controller.slice(0, 12),
     input.controller,
     new Date(Date.now() + 24 * 3600 * 1000).toISOString(),
+    input.referenceHash ?? null,
+    input.nullifier ?? null,
   );
 
   return { ok: true, status: 201, data: getLikeness(id)! };
@@ -148,6 +179,10 @@ export function openChallenge(input: {
   challenger: string;
   grounds: string;
   cos: number;
+  /** Hex SHA-256 of the challenger's live capture. */
+  referenceHash?: string;
+  /** Challenger's World ID nullifier; must differ from the registrant's. */
+  nullifier?: string;
 }): Result<{ challengeId: string; tier: 1 | 3; likeness: Likeness }> {
   const likeness = getLikeness(input.likenessId);
   if (!likeness) return { ok: false, status: 404, error: "No such likeness." };
@@ -172,13 +207,39 @@ export function openChallenge(input: {
     return { ok: false, status: 409, error: "You already have an open challenge on this likeness." };
   }
 
+  // A challenger must be a different unique human from the registrant. Without
+  // this, a registrant could challenge their own record with a second account
+  // and route the bond to themselves. The registrant's nullifier is server-side
+  // only, so this comparison never exposes either value.
+  if (input.nullifier) {
+    const registrant = db
+      .prepare("SELECT nullifier FROM likenesses WHERE id = ?")
+      .get(likeness.id) as { nullifier: string | null } | undefined;
+    if (registrant?.nullifier && registrant.nullifier === input.nullifier) {
+      return {
+        ok: false,
+        status: 409,
+        error: "This World ID belongs to the registrant. A challenge needs a different unique human.",
+      };
+    }
+  }
+
   const tier = tierOf(input.cos);
-  const challengeId = `ch-${String(Date.now()).slice(-8)}`;
+  const challengeId = `ch-${String(Date.now()).slice(-8)}${randomBytes(2).toString("hex")}`;
   // Stake is equal to the registrant bond (price * 2), per the equal-stake rule.
   const stake = likeness.pricePerUse * 2;
   db.prepare(
-    "INSERT INTO challenges (id, likeness_id, challenger, stake, cos, tier, status) VALUES (?, ?, ?, ?, ?, ?, 'open')",
-  ).run(challengeId, likeness.id, input.challenger, stake, input.cos, tier);
+    "INSERT INTO challenges (id, likeness_id, challenger, stake, cos, tier, status, reference_hash, nullifier) VALUES (?, ?, ?, ?, ?, ?, 'open', ?, ?)",
+  ).run(
+    challengeId,
+    likeness.id,
+    input.challenger,
+    stake,
+    input.cos,
+    tier,
+    input.referenceHash ?? null,
+    input.nullifier ?? null,
+  );
   db.prepare(
     "INSERT INTO bond_ledger (id, likeness_id, challenge_id, kind, from_account, amount) VALUES (?, ?, ?, 'challenge', ?, ?)",
   ).run(`bl-${Date.now()}`, likeness.id, challengeId, input.challenger, stake);
