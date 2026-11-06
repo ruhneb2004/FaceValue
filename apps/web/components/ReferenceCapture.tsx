@@ -70,6 +70,24 @@ export function ReferenceCapture({
   // navigating away is a privacy failure the user will notice.
   useEffect(() => stopStream, [stopStream]);
 
+  /**
+   * Attach the stream once the <video> element actually exists.
+   *
+   * The element only renders when `cameraState` is "starting" or "live", so at
+   * the moment getUserMedia resolves the ref can still be null. Assigning
+   * srcObject inside startCamera therefore silently did nothing and left an
+   * empty black preview. Binding it here runs after the element mounts, which
+   * is the only point the ref is guaranteed to be present.
+   */
+  useEffect(() => {
+    if (cameraState !== "starting" && cameraState !== "live") return;
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (!video || !stream || video.srcObject === stream) return;
+    video.srcObject = stream;
+    void video.play().catch(() => {});
+  }, [cameraState]);
+
   async function startCamera() {
     setCameraState("starting");
     setCameraError(null);
@@ -82,10 +100,8 @@ export function ReferenceCapture({
         audio: false,
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => {});
-      }
+      // Flip to "live" so the <video> mounts; the effect above attaches the
+      // stream to it on the next commit.
       setCameraState("live");
     } catch (err) {
       const name = (err as { name?: string })?.name ?? "";
@@ -200,11 +216,12 @@ export function ReferenceCapture({
         <span aria-hidden="true" className="absolute bottom-3 left-3 size-4 border-b-2 border-l-2 border-accent/70" />
         <span aria-hidden="true" className="absolute bottom-3 right-3 size-4 border-b-2 border-r-2 border-accent/70" />
 
-        {cameraState === "live" ? (
+        {cameraState === "live" || cameraState === "starting" ? (
           <video
             ref={videoRef}
             playsInline
             muted
+            autoPlay
             aria-label="Camera preview"
             className="h-full w-full object-cover"
           />
@@ -213,9 +230,7 @@ export function ReferenceCapture({
             <span className="mx-auto grid size-12 place-items-center rounded-full bg-surface4 text-accent">
               <Camera size={22} aria-hidden="true" />
             </span>
-            <p className="body-4 mt-3 text-ink">
-              {cameraState === "starting" ? "Starting the camera…" : "Capture a straight-on reference"}
-            </p>
+            <p className="body-4 mt-3 text-ink">Capture a straight-on reference</p>
             <p className="body-6 mt-1 text-ink3">
               One well-lit photo. Only its hash is written.
             </p>
@@ -236,14 +251,15 @@ export function ReferenceCapture({
             <Camera size={15} aria-hidden="true" />
             Capture frame
           </Button>
-        ) : (
-          <Button
-            size="sm"
-            onClick={startCamera}
-            disabled={cameraState === "starting"}
-          >
+        ) : cameraState === "starting" ? (
+          <Button size="sm" disabled>
             <Camera size={15} aria-hidden="true" />
-            {cameraState === "starting" ? "Starting…" : "Use camera"}
+            Starting…
+          </Button>
+        ) : (
+          <Button size="sm" onClick={startCamera}>
+            <Camera size={15} aria-hidden="true" />
+            Use camera
           </Button>
         )}
 

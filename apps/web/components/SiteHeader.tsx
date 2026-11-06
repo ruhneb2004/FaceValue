@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { useEffect } from "react";
 import { ArrowRight, ArrowUpRight, Copy, Check, SignOut, Wallet } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
@@ -33,6 +34,53 @@ export function SiteHeader() {
   const { status, address, connect, disconnect } = useWallet();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
+  /** Whether the bar is tucked away while reading. */
+  const [hidden, setHidden] = useState(false);
+
+  /**
+   * Hide on scroll down, show on scroll up — the convention readers expect from
+   * a floating bar, where the thing being scrolled is content and the bar is
+   * chrome.
+   *
+   * Three rules keep it from feeling twitchy:
+   *  - a small threshold (8px) so trackpad jitter and rubber-banding do not
+   *    toggle it;
+   *  - always visible near the top of the page, so it cannot be lost while
+   *    orienting;
+   *  - never hidden while the mobile sheet is open, or the menu button would
+   *    slide out from under the panel it opened.
+   */
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let frame = 0;
+
+    const onScroll = () => {
+      if (frame) return; // coalesce to one update per frame
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const y = window.scrollY;
+        const delta = y - lastY;
+        if (Math.abs(delta) < 8) return;
+        if (y < 96) {
+          setHidden(false);
+        } else if (delta > 0) {
+          setHidden(true);
+        } else {
+          setHidden(false);
+        }
+        lastY = y;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  // The sheet owns the screen while it is open; the bar stays put behind it.
+  const tucked = hidden && !open;
 
   const connecting = status === "connecting";
 
@@ -50,7 +98,21 @@ export function SiteHeader() {
   return (
     <>
       <header className="pointer-events-none sticky top-4 z-50 flex justify-center px-3">
-        <div className="pointer-events-auto flex w-full max-w-[1312px] items-center gap-2 rounded-xl border border-linestrong bg-surface2/55 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+        <div
+          className="pointer-events-auto flex w-full max-w-[1312px] items-center gap-2 rounded-xl border border-linestrong bg-surface2/55 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
+          style={{
+            // Translate rather than unmount or change height: the bar stays in
+            // layout, so nothing below it shifts as it comes and goes, and the
+            // switch is compositor-only.
+            transform: tucked ? "translateY(calc(-100% - 1.5rem))" : "translateY(0)",
+            opacity: tucked ? 0 : 1,
+            transition: "transform 260ms cubic-bezier(0.4,0,0.2,1), opacity 200ms ease",
+            pointerEvents: tucked ? "none" : undefined,
+          }}
+          // Hide it from assistive tech and the tab order while it is off-screen,
+          // so focus cannot land on a control nobody can see.
+          inert={tucked ? true : undefined}
+        >
           <Link
             href="/"
             aria-label="FaceValue home"
