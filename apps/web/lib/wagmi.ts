@@ -35,7 +35,10 @@ import { http } from "wagmi";
  * Rainbow mobile app, and any injected extension.
  */
 const projectId =
-  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "facevalue-local-demo";
+  // `||`, not `??`: an empty string in .env is a *set* variable, so `??` would
+  // pass it through and RainbowKit refuses to build with a blank projectId.
+  // An empty value means "not configured", which is what the fallback is for.
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "facevalue-local-demo";
 
 export const wagmiConfig = getDefaultConfig({
   appName: "FaceValue",

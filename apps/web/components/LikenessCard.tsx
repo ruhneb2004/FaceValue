@@ -22,13 +22,19 @@ export function LikenessCard({ likeness }: { likeness: Likeness; index?: number 
     >
       <div className="relative aspect-square w-full shrink-0 overflow-hidden">
         <LikenessAvatar seed={likeness.id} className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />
-        <div className="absolute left-3 top-3">
-          <StateBadge state={likeness.state} count={likeness.openChallenges} />
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col border-t border-line p-3">
-        <h3 className="title-4 line-clamp-2 text-ink">{likeness.name}</h3>
+        {/* State sits on the name row, not over the portrait. The generated art is
+            busy and high-contrast, so a badge pinned to it was hard to read and
+            read as decoration rather than status. Here it is on a plain surface
+            next to the name the badge describes. */}
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="title-4 line-clamp-2 min-w-0 text-ink">{likeness.name}</h3>
+          <div className="shrink-0">
+            <StateBadge state={likeness.state} count={likeness.openChallenges} />
+          </div>
+        </div>
         <p className="caption-5 mt-2 font-mono text-ink3">{likeness.ensName}</p>
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">

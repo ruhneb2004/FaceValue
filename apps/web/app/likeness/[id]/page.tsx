@@ -123,19 +123,21 @@ async function LikenessBody({ params }: { params: Promise<{ id: string }> }) {
                     seed={likeness.id}
                     className="h-full w-full [&>svg]:h-full [&>svg]:w-full"
                   />
-                  <div className="absolute left-4 top-4">
-                    <StateBadge
-                      state={likeness.state}
-                      count={likeness.openChallenges}
-                    />
-                  </div>
                 </div>
               </div>
 
               <div className="mt-6">
-                <h1 className="heading-4 text-ink text-balance">
-                  {likeness.name}
-                </h1>
+                {/* The state belongs beside the name it describes, not floating
+                    over the portrait where the art drowns it out. */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="heading-4 text-ink text-balance">
+                    {likeness.name}
+                  </h1>
+                  <StateBadge
+                    state={likeness.state}
+                    count={likeness.openChallenges}
+                  />
+                </div>
                 <p className="body-5 mt-2 text-ink2">
                   {licensable
                     ? "Licensable now, one use at a time."
