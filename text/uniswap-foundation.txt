@@ -1,0 +1,92 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Uniswap Foundation
+$15,000
+uniswapfoundation.org
+X Logouniswapfnd
+About
+The Uniswap Protocol is one of the largest decentralized exchange protocol for swapping value onchain across Ethereum and other supported blockchains. The Uniswap ecosystem has evolved into a full stack platform for onchain finance, including smart contracts such as v2, v3, and v4, developer tools, APIs, and emerging infrastructure like Unichain. This enables developers to build applications on top of shared, permissionless liquidity.
+Prizes
+🦄 Build with Uniswap ⸺ $10,000
+🥇
+1st place
+$4,000
+🥈
+2nd place
+$3,000
+🥉
+3rd place
+$2,000
+🏅
+4th place
+$1,000
+Build on or integrate any part of the Uniswap stack, including the Uniswap API, the Uniswap AMM (v2, v3, or v4), CCA, or any other Uniswap protocol. This also includes new v4 hooks, extensions or improvements to official Uniswap repositories, and tooling or solutions built for the broader ecosystem.
+Qualification Requirements
+A public GitHub repository with open-source code, a FEEDBACK.md file, and a completed submission to the Uniswap Developer Feedback Form (https://developers.uniswap.org/hackathon-feedback) that includes the link to your FEEDBACK.md file.
+Submissions without it will be reviewed and audited before winners are finalized. Make sure your README clearly points to the relevant contracts and lines of code so we can verify your integration.
+🦄 Build with Uniswap ⸺ $5,000
+🆕  This prize is only available to Continuity Track participants →
+🥇
+1st place
+$1,250
+🥈
+2nd place
+$1,250
+🥉
+3rd place
+$1,250
+🏅
+4th place
+$1,250
+Build on or integrate any part of the Uniswap stack, including the Uniswap API, the Uniswap AMM (v2, v3, or v4), CCA, or any other Uniswap protocol. This also includes new v4 hooks, extensions or improvements to official Uniswap repositories, and tooling or solutions built for the broader ecosystem.
+Qualification Requirements
+A public GitHub repository with open-source code, a FEEDBACK.md file, and a completed submission to the Uniswap Developer Feedback Form (https://developers.uniswap.org/hackathon-feedback) that includes the link to your FEEDBACK.md file.
+Submissions without it will be reviewed and audited before winners are finalized. Make sure your README clearly points to the relevant contracts and lines of code so we can verify your integration.
+Resources
+Uniswap Docs
+https://developers.uniswap.org/docs?utm_medium=eco&utm_source=platform&utm_campaign=20261104-ethglobal_mumbai&utm_content=callout&utm_term=self-serve
+↗
+Uniswap Developer Platform
+https://developers.uniswap.org/dashboard/welcome
+↗
+Uniswap AI Skills
+https://www.skills.sh/uniswap/uniswap-ai
+↗
+Workshop
+How to Navigate the Uniswap Stack 🦄
+A hands-on intro to the full Uniswap ecosystem: the Uniswap API, v4 hooks, Uniswap AI, and open-source tooling. Cov...
+This workshop is happening in-person
+04:30 PM IST — Thursday, Nov 5, 2026 in Workshop Room 1
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

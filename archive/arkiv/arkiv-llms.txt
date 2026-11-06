@@ -1,0 +1,61 @@
+# Arkiv
+
+> The Web3 database. A universal data layer for Ethereum — queryable, time-scoped, tamper-proof, wallet-owned. The TypeScript SDK is `@arkiv-network/sdk`, built on viem.
+
+## Get started
+
+- [What Arkiv is](https://docs.arkiv.network/start-here/introduction/): entities, attributes, ownership, expiration
+- [Your first entity](https://docs.arkiv.network/start-here/first-entity/): install, define a schema, write, query
+- [Connect to Arkiv](https://docs.arkiv.network/start-here/clients/): public and wallet clients, browser wallets, access keys
+
+## Schemas
+
+- [Define a schema](https://docs.arkiv.network/schemas/define/): `defineSchema`, `.indexed()`, `.optional()`, `.default()`, named schemas
+- [Column types](https://docs.arkiv.network/schemas/column-types/): `bool`, `i32`, `u64`, `u256`, `dec`, `str`, `addr`, `key`, `bytes`
+
+## Write data
+
+- [Create entities](https://docs.arkiv.network/writing/create/): `createEntity(schema, values, { expiration, flags, salt })`
+- [Expiration](https://docs.arkiv.network/writing/expiration/): `ExpirationTime`, `extendEntity`
+- [Change and delete](https://docs.arkiv.network/writing/change/): `patchEntity`, `changeOwnership`, `deleteEntity`
+- [Batches](https://docs.arkiv.network/writing/batches/): `executeBatch`, `predictEntityKeys`
+
+## Query data
+
+- [Select fields](https://docs.arkiv.network/querying/select/): `select({ $key: true, title: true }).from(schema)`, flat typed rows
+- [Filter results](https://docs.arkiv.network/querying/filter/): `where`, `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `between`, `startsWith`, `exists`, `hasType`, `and`, `or`, `not`
+- [Paginate results](https://docs.arkiv.network/querying/paginate/): `limit` (max 100), `fetch`, `next`, `for await`, `cursor`, `atBlock`
+- [Sort results](https://docs.arkiv.network/querying/sort/): `orderBy(asc(name))`, `orderBy(desc(name))`, one key, entity fields, entities without the attribute
+- [Count entities](https://docs.arkiv.network/querying/count/): `client.count()`, `withCount`
+- [Read one entity](https://docs.arkiv.network/querying/get-entity/): `getEntity(key, schema?)`
+- [Query without a schema](https://docs.arkiv.network/querying/without-schema/): `$attributes`, `$attributeSchema`, `query()` with `orderBy`, raw query strings
+- [Watch entity events](https://docs.arkiv.network/querying/watch-events/): `watchEntityEvents`
+
+## Guides
+
+- [Use with React](https://docs.arkiv.network/guides/react/): wagmi, RainbowKit, TanStack Query, Next.js; build the Arkiv wallet client from wagmi’s connection
+
+## Reference
+
+- [Query language](https://docs.arkiv.network/reference/query-language/)
+- [Errors](https://docs.arkiv.network/reference/errors/)
+- [Limits](https://docs.arkiv.network/reference/limits/)
+- [API reference](https://docs.arkiv.network/typescript-sdk/api-reference/)
+
+## JSON-RPC API
+
+- [Read methods](https://docs.arkiv.network/json-rpc/querying-data/): `arkiv_query` (with the `count` projection), `arkiv_getEntity`, `arkiv_getBlockTiming`
+- [Write transactions](https://docs.arkiv.network/json-rpc/mutating-entities/): `execute` calldata, attribute encoding, entity keys, events, revert errors
+
+## Conventions that trip up generated code
+
+- Arkiv is a public database: anyone can write entities of any shape. Name schemas after your project (`defineSchema("my-app.posts", ...)`), and filter by owner or creator (`.ownedBy(address)`, `.createdBy(address)`) when you need to trust what you read
+- Entity fields start with `$` in selections, rows and filters: `$key`, `$owner`, `$creator`, `$createdAt`, `$updatedAt`, `$expiresAt`, `$creationFlags`. Names without `$` are attributes
+- Every write goes through a schema. There is no payload or content type: store data in `str` (up to 128 bytes) or `bytes` columns
+- A column value is a typed object: read it through `.value`. `dec`, `addr`, `key` and `u64` values must be wrapped, as in `dec("4.5")`
+- Only indexed columns can be filtered on. `bytes` is never indexed
+- `expiration` is required on every create. Build it with helpers such as `ExpirationTime.fromDays(30)`
+- There is no `updateEntity`: `patchEntity` changes only the columns it names
+- Sort with `.orderBy(desc("score"))` from `@arkiv-network/sdk/query`. It takes one key, an `asc` or a `desc`. Through a schema, any column but a `bytes` one can be sorted on, indexed or not, and so can `$key`, `$owner`, `$creator` and `$expiresAt`. Without a schema, write the type: `desc("score", "dec")`. `query()` takes the same key: `query(condition, { orderBy: desc("score", "dec") })`
+- An entity without the sorted attribute, or with it stored as another type, sorts first with `asc` and last with `desc`
+- There is no `getEntityCount`. Count with `client.count().from(schema).where(...).fetch()`, or add `.withCount()` to a select to get the total on every page

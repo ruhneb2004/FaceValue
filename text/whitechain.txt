@@ -1,0 +1,261 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Whitechain
+$15,000
+whitechain.io
+X Logowhitechain_io
+About
+Whitechain is The Onchain Economy Layer: the core for onchain business to launch, operate and scale on. An EVM Layer 2 built on the OP Stack, supported by developer tooling and a partner ecosystem, with mainnet arriving in November. At ETHGlobal Mumbai together with Optimism.
+Prizes
+💳 Operate · Stablecoin Payments for Business ⸺ $5,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+🥉
+3rd place
+$1,000
+Give a business everything it needs to get paid in USDT on Whitechain, from the first checkout to what happens after it. Build a payment flow a real merchant could plug into their app or store, and show it working end to end with test stablecoins on Whitechain. It is plain EVM, so use any tooling you like.
+Ideas to start from
+A drop in checkout for online stores with order webhooks and an onchain receipt
+Payment links and invoices for remote studios, contractors and cross-border teams billing global clients, with due dates and reminders
+Subscriptions and recurring billing with permit based pulls and cancel anytime
+Refunds and partial refunds a merchant issues in one click, with a record the customer can check
+What we want to see
+A drop in piece, widget, SDK, payment link API or plugin that a separate demo app adds in about 20 lines
+Both views in the demo, the merchant and the paying customer
+Extra credit if your flow goes past the first payment, like a refund, a renewal or an export the accountant can use
+Won't place. A pay button that sends a plain transfer, tipping jars, bill splitters, or custodial bridges into a local currency token. Payroll, escrow and revenue splits on their own.
+Qualification Requirements
+Contracts deployed on Whitechain Sepolia (chain ID 1874) and verified on the Whitechain explorer
+At least one payment in USDT (0xcedfB56113143d55b2358b8CFbB0dEB5Ad2f55a7) settled on Whitechain in your main flow, with the explorer link in your README. Payments in a test token you minted yourself won't count
+A line in your README on why this flow needs onchain stablecoin settlement on Whitechain and what a regular payment rail couldn't do here
+A public GitHub repo that shows steady progress through the hackathon rather than one big upload at the end, with a README that explains setup, architecture and current limitations
+A demo video of 2 to 4 minutes that shows each party involved
+A WHITECHAIN_FEEDBACK.md in your repo, a few honest lines on what worked, where you got stuck and what our docs were missing
+Good to know before you build
+Test tokens (WBT, USDT) have no monetary value. Prizes are paid by ETHGlobal in USDC under standard event eligibility rules.
+Free Ankr RPC for hackers, 1,500 requests per second for 7 days. Activate it here when you start building.
+Links and Resources
+Whitechain Docs
+https://docs.whitechain.io
+↗
+Faucet
+https://faucet.testnet.whitechain.io
+↗
+Explorer
+https://explorer.testnet.whitechain.io
+↗
+Optimism
+https://optimism.io
+↗
+OP Stack docs
+https://docs.optimism.io
+↗
+Ankr RPC, free for hackers
+https://www.ankr.com/rpc/?utm_referral=Whitechain2026
+↗
+🏦 Tokenize · Real World Finance on Whitechain ⸺ $4,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+Model real-world asset (RWA) lifecycles and compliance logic onchain. Build an issuance, settlement or lifecycle flow for a real world asset on Whitechain, where every payment happens in USDT, and show it working end to end with test stablecoins.
+Ideas to start from
+Tokenized bonds or notes with an investor allowlist, coupon payments in USDT and repayment at maturity
+Invoice financing where a business tokenizes an invoice, a buyer funds it at a discount and settlement happens automatically on the due date
+Repo or short term lending agreements with delivery versus payment, where the asset and the stablecoin move in one transaction
+Trade finance flows where importer, exporter and bank each confirm their step before funds are released
+What we want to see
+Real transfer rules enforced in the contract, such as allowlists, transfer restrictions, maturity or settlement conditions, not just a token with a UI on top
+A clear issuer, investor or business user and at least one full lifecycle step in the demo, from issuance to payment or settlement
+Won't place. A token with a mint button and no rules, or ownership NFTs where nothing is enforced onchain.
+Paying an invoice belongs in Operate. Financing or selling an invoice belongs in Tokenize.
+Qualification Requirements
+Contracts deployed on Whitechain Sepolia (chain ID 1874) and verified on the Whitechain explorer
+At least one payment in USDT (0xcedfB56113143d55b2358b8CFbB0dEB5Ad2f55a7) settled on Whitechain in your main flow, with the explorer link in your README. Payments in a test token you minted yourself won't count
+A line in your README on why this flow needs onchain stablecoin settlement on Whitechain and what a regular payment rail couldn't do here
+A public GitHub repo that shows steady progress through the hackathon rather than one big upload at the end, with a README that explains setup, architecture and current limitations
+A demo video of 2 to 4 minutes that shows each party involved
+A WHITECHAIN_FEEDBACK.md in your repo, a few honest lines on what worked, where you got stuck and what our docs were missing
+Good to know before you build
+Test tokens (WBT, USDT) have no monetary value. Prizes are paid by ETHGlobal in USDC under standard event eligibility rules.
+Free Ankr RPC for hackers, 1,500 requests per second for 7 days. Activate it here when you start building.
+Links and Resources
+Whitechain Docs
+https://docs.whitechain.io
+↗
+Faucet
+https://faucet.testnet.whitechain.io
+↗
+Explorer
+https://explorer.testnet.whitechain.io
+↗
+Optimism
+https://optimism.io
+↗
+OP Stack docs
+https://docs.optimism.io
+↗
+Ankr RPC, free for hackers
+https://www.ankr.com/rpc/?utm_referral=Whitechain2026
+↗
+⚡ Scale · Payments Nobody Notices ⸺ $3,000
+🥇
+1st place
+$2,000
+🥈
+2nd place
+$1,000
+Businesses scale when their customers never have to learn crypto, and when software can pay software. Build a payment flow on Whitechain where the payer, a person or an AI agent, pays in stablecoins without holding WBT for gas, writing down a seed phrase or knowing what chain they are on.
+Ideas to start from
+Gasless checkout where the merchant covers gas, using permit or transferWithAuthorization (EIP 3009) and your own relayer
+Checkout with an embedded wallet or smart account from any provider that supports Whitechain Sepolia (chain ID 1874)
+Pay per request APIs where an AI agent pays a business in USDT over x402, settled on Whitechain through a facilitator you run
+What we want to see
+A payer flow with zero crypto steps visible, shown in the demo
+How the business side pays for the gas, how your relayer gets its WBT, and what stops someone from draining it
+Won't place. Flows where the payer still signs a transaction that costs them gas, or AI chats that never actually pay anyone.
+Qualification Requirements
+Contracts deployed on Whitechain Sepolia (chain ID 1874) and verified on the Whitechain explorer
+At least one payment in USDT (0xcedfB56113143d55b2358b8CFbB0dEB5Ad2f55a7) settled on Whitechain in your main flow, with the explorer link in your README. Payments in a test token you minted yourself won't count
+A line in your README on why this flow needs onchain stablecoin settlement on Whitechain and what a regular payment rail couldn't do here
+A public GitHub repo that shows steady progress through the hackathon rather than one big upload at the end, with a README that explains setup, architecture and current limitations
+A demo video of 2 to 4 minutes that shows each party involved
+A WHITECHAIN_FEEDBACK.md in your repo, a few honest lines on what worked, where you got stuck and what our docs were missing
+Good to know before you build
+Test tokens (WBT, USDT) have no monetary value. Prizes are paid by ETHGlobal in USDC under standard event eligibility rules.
+Free Ankr RPC for hackers, 1,500 requests per second for 7 days. Activate it here when you start building.
+Links and Resources
+Whitechain Docs
+https://docs.whitechain.io
+↗
+Faucet
+https://faucet.testnet.whitechain.io
+↗
+Explorer
+https://explorer.testnet.whitechain.io
+↗
+Optimism
+https://optimism.io
+↗
+OP Stack docs
+https://docs.optimism.io
+↗
+Ankr RPC, free for hackers
+https://www.ankr.com/rpc/?utm_referral=Whitechain2026
+↗
+🔁 Continuity · Bring Your Product to Whitechain ⸺ $3,000
+🥇
+1st place
+$1,500
+🥈
+2nd place
+$1,500
+Already have a product with users? Add Whitechain to it during the hackathon. Accept USDT payments, move a feature onchain or deploy your contracts on Whitechain. It can be a live product or an open source repo, either works.
+What we want to see
+Real progress made this weekend, like a new feature or a new payment flow. A nicer UI on what you already had is not enough
+Real users or a real business behind the product count in your favour
+Won't place. Projects that only repackage something built before the hackathon.
+Good to know before you build
+Test tokens (WBT, USDT) have no monetary value. Prizes are paid by ETHGlobal in USDC under standard event eligibility rules.
+Free Ankr RPC for hackers, 1,500 requests per second for 7 days. Activate it here when you start building.
+Qualification Requirements
+Contracts deployed on Whitechain Sepolia (chain ID 1874) and verified on the Whitechain explorer
+At least one payment in USDT (0xcedfB56113143d55b2358b8CFbB0dEB5Ad2f55a7) settled on Whitechain in your main flow, with the explorer link in your README. Payments in a test token you minted yourself won't count
+A line in your README on why this flow needs onchain stablecoin settlement on Whitechain and what a regular payment rail couldn't do here
+Proof of your starting point, for example a dated commit from before the hackathon or the page of your earlier submission
+A short "before and during" part in your README so judges can tell the old code from the Whitechain work added at this hackathon
+A public GitHub repo that shows steady progress through the hackathon rather than one big upload at the end, with a README that explains setup, architecture and current limitations
+A demo video of 2 to 4 minutes that shows each party involved
+A WHITECHAIN_FEEDBACK.md in your repo, a few honest lines on what worked, where you got stuck and what our docs were missing
+Links and Resources
+Whitechain Docs
+https://docs.whitechain.io
+↗
+Faucet
+https://faucet.testnet.whitechain.io
+↗
+Explorer
+https://explorer.testnet.whitechain.io
+↗
+Optimism
+https://optimism.io
+↗
+OP Stack docs
+https://docs.optimism.io
+↗
+Ankr RPC, free for hackers
+https://www.ankr.com/rpc/?utm_referral=Whitechain2026
+↗
+Resources
+Whitechain Docs
+https://docs.whitechain.io
+↗
+Faucet
+https://faucet.testnet.whitechain.io
+↗
+Ankr RPC, free for hackers
+https://www.ankr.com/rpc/?utm_referral=Whitechain2026
+↗
+Explorer
+https://explorer.testnet.whitechain.io
+↗
+Whitechain Builders Program
+https://whitechain.io/builders
+↗
+YetiTrade testnet
+https://testnet.yetitrade.fi
+↗
+Optimism
+https://optimism.io
+↗
+OP Stack docs
+https://docs.optimism.io
+↗
+Optimism on X
+https://x.com/Optimism
+↗
+Workshop
+Watch Video →
+🛠️ How to Win on Whitechain, Tracks and Tips
+Meet the Whitechain team and find out what we want to see you build. We’ll walk through the four tracks and $15K in...
+This workshop is happening in-person
+04:30 PM IST — Thursday, Nov 5, 2026 in Workshop Room 2
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

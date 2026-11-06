@@ -1,0 +1,133 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Definitive
+$5,000
+definitive.fi
+X Logodefinitivefi
+About
+Definitive Finance (www.definitive.fi) is an onchain trading platform offering professional-grade trade execution for any ERC-20 or SPL asset. Definitive’s web, mobile, and API products serve pro-traders and builders everywhere, with a track record of $3B+ notional spot volume settled over millions of transactions onchain. Definitive delivers a CeFi-like experience in DeFi: advanced orders (DCA, Limit, Stop Loss, Take Profit, Cross-Chain, Bracket, Market) and access to 900+ unique liquidity sources across 12 EVM chains and Solana, in one terminal and API. Our newest release, Flash API, exposes that same execution engine, order types, routing, and managed execution in a single REST API and MCP server, built for both human builders and AI agents.
+Prizes
+🏆 Best Use of Flash Advanced Orders in a Social App ⸺ $2,500
+Trading is more fun, and stickier, when it's not a solo activity. Build the best social trading agent or app on top of Flash's advanced order types and show us what trading looks like when people are in it together. We encourage creativity - your product could involve:
+Copy trading using Flash for trade execution
+Trade signals or leaderboards shared to X, TikTok and other social channels
+Agent-run products (e.g Grok bot) other users can follow
+Your own take, any product that makes trading a shared experience
+A few helpful tips:
+Flash is non-custodial, and works seamlessly with any EOA wallet or embedded wallet solution like Privy, Dynamic or Coinbase Embedded Wallets.
+Every order type (DCA, Limit, Stop Loss, Stop Buy, Take Profit, TWAP, Bracket) runs through the same orders endpoint, and Flash handles the trade execution end-to-end, landing the trade onchain for you.
+You can attach a fee to every trade you route through Flash, so your social trading product can be monetized from Day 1.
+Flash is AI-native and agent-friendly, and has an MCP server and LLM-optimized docs for fast integration.
+Qualification Requirements
+A working trading flow powered by Flash API or Flash MCP advanced orders (DCA, Limit, Stop, Stop Loss, Take Profit, TWAP).
+Onchain execution shown in the final demo.
+Submit a short demo video on both Discord and X featuring your product. Tag @DefinitiveFi on X.
+Links and Resources
+Flash Docs
+https://flash.definitive.fi/docs
+↗
+Get an API Key
+https://flash.definitive.fi/docs/getting-started
+↗
+Agentic Integration Quickstart
+https://flash.definitive.fi/docs/for-agents
+↗
+MCP Server Setup
+https://flash.definitive.fi/docs/flash-mcp
+↗
+Trade Order Types
+https://flash.definitive.fi/docs/placing-orders
+↗
+Quote Endpoint Reference
+https://flash.definitive.fi/docs/api-reference/flash/quote
+↗
+Order Endpoint Reference
+https://flash.definitive.fi/docs/api-reference/flash/order
+↗
+💡 Most Creative Use of Definitive Flash Advanced Orders ⸺ $2,500
+🆕  This prize is only available to Continuity Track participants →
+Awarded to the team that takes Flash's advanced orders somewhere unexpected, incorporated in a bigger agent workflow, paired with another protocol's tools, or given a strategy nobody has imagined.
+Examples include multi-agent systems where Flash is one tool among several, voice or chat interfaces for trading, or workflows that combine Flash with other MCP servers or onchain data sources.
+Projects will be judged based on originality of the integration, technical creativity, and how well the demo shows off what Flash can do.
+A few helpful tips:
+Flash is non-custodial, and works seamlessly with any EOA wallet or embedded wallet solution like Privy, Dynamic or Coinbase Embedded Wallets.
+Every order type (DCA, Limit, Stop Loss, Stop Buy, Take Profit, TWAP, Bracket) runs through the same orders endpoint, and Flash handles the trade execution end-to-end, landing the trade onchain for you.
+You can attach a fee to every trade you route through Flash, so your social trading product can be monetized from Day 1.
+Flash is AI-native and agent-friendly, and has an MCP server and LLM-optimized docs for fast integration.
+Qualification Requirements
+A working trading flow powered by Flash API or Flash MCP advanced orders (DCA, Limit, Stop, Stop Loss, Take Profit, TWAP).
+Onchain execution shown in the final demo.
+Submit a short demo video on both Discord and X featuring your product. Tag @DefinitiveFi on X.
+Links and Resources
+Flash Docs
+https://flash.definitive.fi/docs
+↗
+Get an API Key
+https://flash.definitive.fi/docs/getting-started
+↗
+Agentic Integration Quickstart
+https://flash.definitive.fi/docs/for-agents
+↗
+MCP Server Setup
+https://flash.definitive.fi/docs/flash-mcp
+↗
+Trade Order Types
+https://flash.definitive.fi/docs/placing-orders
+↗
+Quote Endpoint Reference
+https://flash.definitive.fi/docs/api-reference/flash/quote
+↗
+Order Endpoint Reference
+https://flash.definitive.fi/docs/api-reference/flash/order
+↗
+Monetize Your Integration
+https://flash.definitive.fi/docs/monetizing-your-integration
+↗
+Resources
+Docs
+https://flash.definitive.fi/docs
+↗
+Get API Key
+https://flash.definitive.fi/docs/getting-started
+↗
+Agentic Integration Quickstart
+https://flash.definitive.fi/docs/for-agents
+↗
+MCP Server Setup
+https://flash.definitive.fi/docs/flash-mcp
+↗
+Workshop
+Watch Video →
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

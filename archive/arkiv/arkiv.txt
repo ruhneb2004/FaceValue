@@ -1,0 +1,263 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Arkiv
+$15,000
+arkiv.network
+X Logoarkivnetwork
+About
+Arkiv is the Web3 database, an Ethereum-aligned DB-Chain. Your app's data lives in Arkiv entities: each one is owned by a wallet, can be queried with SQL-like filters, and expires when you choose.
+Most prizes are for projects built from scratch. Build on Arkiv and the Arkiv + Swarm bonus also have a prize for existing projects that add Arkiv at the event. RPC: https://rpc.rabdi.db-chain.testnet.arkiv.network · Explorer: https://rabdi.explorer.arkiv.network · Indexer: https://indexer.rabdi.db-chain.testnet.arkiv.network · Faucet: https://hub.arkiv.network/faucet · Access keys: https://hub.arkiv.network/access-keys · Chain ID: 7794095
+Prizes
+🪞 Mirror something Ethereum depends on ⸺ $4,000
+🥇
+1st place
+$3,000
+🥈
+2nd place
+$1,000
+Pick public data that Ethereum apps and developers rely on, and mirror it into Arkiv entities that anyone can query without asking you for access.
+Example: Sourcify's API looks up its 7.9 million verified Ethereum mainnet contracts by address. We mirrored them to Arkiv at sourcify.arkiv.network, and now anyone can filter them by name, ABI, compiler version, deployer and more.
+Ideas: token lists, chain and RPC registries, address labels, wallet ratings, function signatures.
+How we judge:
+Arkiv feedback (25%): /arkiv/friction.md
+What should we improve today to make Arkiv better: something that got in your way, or something we don't have yet that would make building easier?
+When something broke, what did you expect, what happened, and how can we reproduce it?
+Reach (25%): /arkiv/reach.md
+How many people or projects already use or depend on this data?
+Who would use your copy on Arkiv after Mumbai, and for what?
+Why Arkiv (25%): /arkiv/why-arkiv.md
+If this data sat in Postgres or any other database instead of Arkiv, what could people no longer do?
+What can people do with your copy on Arkiv that they can't do with the original source today?
+Data quality (25%): /arkiv/data-quality.md
+Is the data up to date, and how does your import keep it that way?
+Can people filter it the way they actually search for it?
+Qualification Requirements
+Built from scratch at ETHGlobal Mumbai, following ETHGlobal's rules.
+The data's license allows republishing. Link it in your README.
+Not Sourcify data, from any chain.
+Your import script is in the repo, and we can re-run it.
+Your project writes to Arkiv's current testnet (see the docs) with @arkiv-network/sdk or the JSON-RPC API, and a feature or query people use reads the data from Arkiv.
+In your README: the wallet address(es) that wrote your entities, and one query we can run.
+/arkiv/schema.md: your entities, the fields you query, who owns them and when they expire. /arkiv/friction.md: your feedback.
+One file per criterion in How we judge, at the path next to it, answering its questions with links, numbers or a query we can run.
+A public repo with an open-source license. Say how you used AI, as ETHGlobal's rules require.
+Each team can win one Arkiv track prize; the Arkiv + Swarm bonus can come on top of it.
+Links and Resources
+Sourcify on Arkiv (example)
+https://sourcify.arkiv.network
+↗
+Docs
+https://docs.arkiv.network
+↗
+🧩 Build on Arkiv (from scratch) ⸺ $4,000
+🥇
+1st place
+$3,000
+🥈
+2nd place
+$1,000
+Build a new app whose data lives in Arkiv. You query its entities with SQL-like filters, and each one has an owner wallet and an expiration you choose.
+Some directions:
+Agents: ephemeral coordination state: tasks, bids and claims that agents share, query and let expire.
+Markets: listings or offers that expire at their deadline.
+Publishing and media: posts, profiles and follows that any app can read.
+Names and identity: profiles or service directories keyed by ENS names.
+How we judge:
+Arkiv feedback (25%): /arkiv/friction.md
+What should we improve today to make Arkiv better: something that got in your way, or something we don't have yet that would make building easier?
+When something broke, what did you expect, what happened, and how can we reproduce it?
+Reach (25%): /arkiv/reach.md
+Who is it for, and would they use it?
+Can they try it today, and will you keep building it after Mumbai?
+Why Arkiv (25%): /arkiv/why-arkiv.md
+If you swapped Arkiv for Postgres or any other database, what would your users lose?
+What did you keep off Arkiv, and why?
+How you use Arkiv (25%): /arkiv/how-you-use-arkiv.md
+Do the things you filter on, who can edit each entity, and when it expires fit what your app does?
+Does each Arkiv feature you use change something your users see?
+Qualification Requirements
+Built from scratch at ETHGlobal Mumbai, following ETHGlobal's rules.
+Your app writes to Arkiv's current testnet (see the docs) with @arkiv-network/sdk or the JSON-RPC API, and at least one feature users see reads its data from Arkiv.
+In your README: the wallet address(es) that wrote your entities, and one query we can run.
+/arkiv/schema.md: your entities, the fields you query, who owns them and when they expire. /arkiv/friction.md: your feedback.
+One file per criterion in How we judge, at the path next to it, answering its questions with links, numbers or a query we can run.
+A public repo with an open-source license. Say how you used AI, as ETHGlobal's rules require.
+Not counted: the SDK installed but never used to read, or Arkiv used only as a log that nothing reads.
+Each team can win one Arkiv track prize; the Arkiv + Swarm bonus can come on top of it.
+Links and Resources
+Docs
+https://docs.arkiv.network
+↗
+AI tools (MCP + plugin)
+https://hub.arkiv.network/ai-tools
+↗
+🧩 Build on Arkiv (existing projects) ⸺ $4,000
+🆕  This prize is only available to Continuity Track participants →
+🥇
+1st place
+$3,000
+🥈
+2nd place
+$1,000
+Already building a product? Bring it to ETHGlobal Mumbai and move part of its data into Arkiv. You query Arkiv entities with SQL-like filters, and each one has an owner wallet and an expiration you choose.
+Some directions:
+Data your users own: profiles, posts or settings that stay with each user's wallet and that other apps can read.
+Shared state: listings, orders or tasks that several parties query, and that expire when they are done.
+Agents: ephemeral coordination state that your agents share, query and let expire.
+How we judge:
+Arkiv feedback (25%): /arkiv/friction.md
+What should we improve today to make Arkiv better: something that got in your way, or something we don't have yet that would make adding Arkiv easier?
+When something broke, what did you expect, what happened, and how can we reproduce it?
+Reach (25%): /arkiv/reach.md
+Who uses your product today, and will they use the part on Arkiv?
+Will it ship to them after Mumbai?
+Why Arkiv (25%): /arkiv/why-arkiv.md
+If this data stayed in your current database, what would your users lose?
+What did you keep off Arkiv, and why?
+How you use Arkiv (25%): /arkiv/how-you-use-arkiv.md
+Do the things you filter on, who can edit each entity, and when it expires fit what your product does?
+Does each Arkiv feature you use change something your users see?
+Qualification Requirements
+An existing project in ETHGlobal's Continuity batch, following ETHGlobal's rules.
+The Arkiv part is new work done at ETHGlobal Mumbai. In your README, say what existed before the event and what you added; we judge only what you added.
+Your app writes to Arkiv's current testnet (see the docs) with @arkiv-network/sdk or the JSON-RPC API, and at least one feature users see reads its data from Arkiv.
+In your README: the wallet address(es) that wrote your entities, and one query we can run.
+/arkiv/schema.md: your entities, the fields you query, who owns them and when they expire. /arkiv/friction.md: your feedback.
+One file per criterion in How we judge, at the path next to it, answering its questions with links, numbers or a query we can run.
+A public repo with an open-source license. Say how you used AI, as ETHGlobal's rules require.
+Not counted: the SDK installed but never used to read, or Arkiv used only as a log that nothing reads.
+Each team can win one Arkiv track prize; the Arkiv + Swarm bonus can come on top of it.
+Links and Resources
+Docs
+https://docs.arkiv.network
+↗
+AI tools (MCP + plugin)
+https://hub.arkiv.network/ai-tools
+↗
+🛠️ Node tooling ⸺ $2,000
+Build a tool for the people who run Arkiv nodes. Two directions:
+Operator dashboard: a collector that runs next to a node and shows how many days are left before the disk is full (with an alert), requests and latency per method, peers, sync, CPU and memory.
+Slow query finder: load data into your own node and measure which query shapes are slow. Run it only on your own node, never on a public endpoint.
+For reference: nodes.arkiv.network shows Arkiv's community nodes from the outside. You don't have to rebuild it: use it as a guide, and show what only a tool next to the node can see.
+How we judge:
+Arkiv feedback (25%): /arkiv/friction.md
+What should we improve today to make running or querying an Arkiv node better: something that got in your way, or something we don't have yet?
+When something broke, what did you expect, what happened, and how can we reproduce it?
+Real use (25%): /arkiv/real-use.md
+Would people who run Arkiv nodes, or Arkiv's engineers, actually use this?
+What does it tell them that they need to know?
+What's new (25%): /arkiv/whats-new.md
+What does it show or find that the node's built-in tools don't?
+Is it more than putting an existing dashboard together?
+Easy to run (25%): /arkiv/easy-to-run.md
+Can someone else install and run it from your README in a few minutes?
+Does the README say what it needs and what to do when it fails?
+Qualification Requirements
+Built from scratch at ETHGlobal Mumbai: a new repo that runs next to the node. A pull request to an existing repo is not from scratch.
+It works against an Arkiv node in your demo. A node on your own machine is enough.
+In your README: which node you used, and how to reproduce the demo. If your tool writes Arkiv entities, also the wallet address(es) that wrote them and a /arkiv/schema.md.
+/arkiv/friction.md: your feedback on running and querying the node.
+One file per criterion in How we judge, at the path next to it, answering its questions with links, numbers or a query we can run.
+Slow query shapes you find go to us privately (we will share how at the Arkiv booth), never into your public repo, /arkiv/friction.md or demo.
+A public repo with an open-source license. Say how you used AI, as ETHGlobal's rules require.
+Each team can win one Arkiv track prize; the Arkiv + Swarm bonus can come on top of it.
+Links and Resources
+Arkiv community nodes (reference)
+https://nodes.arkiv.network
+↗
+Arkiv node client
+https://github.com/Arkiv-Network/arkiv
+↗
+Docs
+https://docs.arkiv.network
+↗
+🐝 Arkiv + Swarm bonus (from scratch) ⸺ $500
+Use Swarm (ethswarm.org) in your project in a meaningful way, and you are also in the running for $500. For example, keep the files your users see on Swarm and point to them from your Arkiv entities, or upload them encrypted so only the people who get the reference can open them. The most useful integration wins. It comes on top of any track prize: you can win a track and this bonus.
+To enter: when you submit a from-scratch project to Mirror, Build on Arkiv or Node tooling, also select this bonus. Arkiv's prizes count as one partner prize on ETHGlobal, so it does not use another of your three picks. Existing projects have their own Arkiv + Swarm bonus.
+Qualification Requirements
+Your project uses both Arkiv and Swarm. A project that uses only Swarm does not qualify.
+/arkiv/swarm.md in your repo, with:
+What you keep on Swarm, what you keep on Arkiv, and which entity field holds the Swarm reference or feed.
+One Arkiv entity key and the Swarm reference it points to, with a link we can open.
+The postage stamp batch ID you uploaded with and the wallet that bought it (or who gave you the batch), and the Bee node or service you uploaded through.
+The files in your repo that upload to Swarm and read from it.
+Steps to run one upload and one read yourself, what they need, and what we should see.
+The moment in your demo video where Swarm is used.
+What got in your way with Swarm.
+Careful: an encrypted Swarm reference contains its key, and Arkiv entities are public. Never store one in an entity as it is: encrypt it first or keep it off Arkiv.
+Links and Resources
+Swarm
+https://www.ethswarm.org
+↗
+Swarm docs
+https://docs.ethswarm.org
+↗
+🐝 Arkiv + Swarm bonus (existing projects) ⸺ $500
+🆕  This prize is only available to Continuity Track participants →
+Use Swarm (ethswarm.org) in what you add to your product at ETHGlobal Mumbai, and you are also in the running for $500. For example, keep the files your users see on Swarm and point to them from your Arkiv entities, or upload them encrypted so only the people who get the reference can open them. The most useful integration wins. It comes on top of the Build on Arkiv prize for existing projects: you can win both.
+To enter: when you submit your project to Build on Arkiv (existing projects), also select this bonus. Arkiv's prizes count as one partner prize on ETHGlobal, so it does not use another of your three picks.
+Qualification Requirements
+An existing project in ETHGlobal's Continuity batch that uses both Arkiv and Swarm. A project that uses only Swarm does not qualify.
+How Swarm works with your Arkiv entities is new work done at ETHGlobal Mumbai. In /arkiv/swarm.md, say what existed before the event; we judge only what you added.
+/arkiv/swarm.md in your repo, with:
+What you keep on Swarm, what you keep on Arkiv, and which entity field holds the Swarm reference or feed.
+One Arkiv entity key and the Swarm reference it points to, with a link we can open.
+The postage stamp batch ID you uploaded with and the wallet that bought it (or who gave you the batch), and the Bee node or service you uploaded through.
+The files in your repo that upload to Swarm and read from it.
+Steps to run one upload and one read yourself, what they need, and what we should see.
+The moment in your demo video where Swarm is used.
+What got in your way with Swarm.
+Careful: an encrypted Swarm reference contains its key, and Arkiv entities are public. Never store one in an entity as it is: encrypt it first or keep it off Arkiv.
+Links and Resources
+Swarm
+https://www.ethswarm.org
+↗
+Swarm docs
+https://docs.ethswarm.org
+↗
+Resources
+Docs
+https://docs.arkiv.network
+↗
+Arkiv Hub
+https://hub.arkiv.network
+↗
+AI tools (MCP + plugin)
+https://hub.arkiv.network/ai-tools
+↗
+Discord
+https://discord.gg/arkiv
+↗
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

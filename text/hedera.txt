@@ -1,0 +1,207 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Hedera
+$15,000
+hedera.com
+X Logohedera
+About
+Hedera stands apart as a leading EVM blockchain through its distinctive developer experience, enabling developers of all backgrounds to leverage familiar tools like Solidity or its JavaScript SDK* to build breakthrough applications.
+Hedera also hasSDKs for Java, Python, Rust, Go, and Swift!
+Prizes
+🤖 AI Agents That Pay: x402 on Hedera ⸺ $6,500
+🥇
+1st place
+$3,000
+🥈
+2nd place
+$2,000
+🥉
+3rd place
+$1,500
+AI agents can reason, plan, and call tools, but most still can't pay for what they use. x402 gives them a way: it brings back the HTTP 402 Payment Required status code so a server can quote a price and a client can pay inside an ordinary request. There's no checkout page, signup, or API key.
+On Hedera, an x402 payment settles in HBAR or HTS tokens (including USDC) with low, fixed fees and fast finality. The facilitator pays the network fee, so the paying agent doesn't need to hold HBAR for gas. That makes it practical to charge per call, per token, or per second.
+Build the economy that agents run on: services that charge for each request, and agents that discover, compare, and pay for those services on their own.
+Ideas
+A pay-per-call AI inference or data API: model access, translation, OCR, market data, or regional-language speech-to-text, priced per request.
+An agent marketplace where agents hire other agents for subtasks and pay each one through x402.
+A metered MCP server whose tools charge per call.
+A research agent that works within a budget: it compares the prices of paid sources, chooses which ones to use, and reports what it spent.
+Micropaywalls for creators: pay a few cents per article, image, or dataset query instead of a subscription.
+An open-source Hedera x402 facilitator with its own safety checks and replay protection.
+Qualification Requirements
+At least one x402-protected endpoint that settles on Hedera testnet or mainnet through any facilitator listed in the Hedera docs (Official x402, Ax402, or Blocky402), or through a facilitator you run yourself.
+An agent or client that finds the endpoint and completes at least one paid request end to end, with no human approving.
+A public GitHub repo with a README that covers setup, architecture, and the payment flow, including the Hedera transaction ID of at least one settled payment.
+A demo video of 5 minutes or less that shows a payment settling and links to it on HashScan.
+Extra points
+Spending controls for agents: budgets, per-merchant limits, allowlists, or a human-in-the-loop approval above a set amount.
+Agent identity and reputation through HCS-14 or ERC-8004
+An HCS topic used as a tamper-evident audit log of each agent's spending.
+Multi-agent negotiation (A2A or ACP) before the payment is made.
+Settling in an HTS token such as USDC, or using HTS custom fees to split revenue.
+Recurring or subscription-style payments through Scheduled Transactions.
+Use of the Hedera Agent Kit or Hedera Network MCP.
+Links and Resources
+x402 on Hedera docs
+https://docs.hedera.com/solutions/ai/x402
+↗
+How x402 works
+https://docs.hedera.com/solutions/ai/x402/how-it-works
+↗
+Pay with x402 (client and agent setup)
+https://docs.hedera.com/solutions/ai/x402/pay-with-x402
+↗
+Merchant integration
+https://docs.hedera.com/solutions/ai/x402/merchant-integration
+↗
+Facilitators (testnet and mainnet)
+https://docs.hedera.com/solutions/ai/x402/facilitators
+↗
+Hedera's exact scheme spec
+https://docs.hedera.com/solutions/ai/x402/exact-scheme
+↗
+x402 protocol repo
+https://github.com/x402-foundation/x402
+↗
+Blog post, "Hedera and the x402 Payment Standard"
+https://hedera.com/blog/hedera-and-the-x402-payment-standard/
+↗
+Hedera Agent Kit
+https://docs.hedera.com/solutions/ai/agent-kit
+↗
+Hedera Network MCP
+https://docs.hedera.com/solutions/ai/hosted-mcp-server
+↗
+Scaffold HBAR
+https://docs.hedera.com/solutions/tools/scaffold-hbar
+↗
+Hedera Discord
+https://hedera.com/discord
+↗
+🪙 Tokenize Anything with Hedera Studios ⸺ $5,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+🥉
+3rd place
+$1,000
+Use Hedera's open-source studios to put a real-world asset or payment flow on-chain. Asset Tokenization Studio (ATS) covers the full lifecycle of security tokens, bonds, and equities, and supports ERC-3643 and ERC-1400. Stablecoin Studio covers minting and managing fiat-backed stablecoins, with admin and reserve controls built in.
+Pick something that exists today in finance, trade, or commerce, and show how it works when it's issued, managed, and settled on Hedera.
+Ideas
+Fractional ownership of invoices or receivables for small businesses, sold to investors.
+Tokenized bonds with on-chain coupon schedules.
+Fractional ownership of gold, real estate, or warehouse receipts.
+A stablecoin for cross-border remittances, with compliance controls.
+A secondary market or order book for ATS assets.
+An x402 service that sells data about tokenized assets, such as NAV or price feeds (this also links to Track 1).
+Qualification Requirements
+Use ATS or Stablecoin Studio (SDK, contracts, web app, or a combination) to issue or manage a tokenized asset or stablecoin.
+Deploy and demo on Hedera testnet.
+A public GitHub repo, with contracts verified on HashScan where applicable.
+A demo video of 5 minutes or less that covers issuance, configuration, and at least one lifecycle operation (for example a coupon payment, redemption, freeze, or reserve update).
+Extra points
+Compliance controls: KYC, freezes, transfer restrictions, pauses.
+Custom fees and distributions.
+Oracle pricing or NAV feeds.
+Scheduled Transactions for coupons, vesting, or recurring payouts.
+Contributions back to ATS or Stablecoin Studio.
+Links and Resources
+Asset Tokenization Studio
+https://docs.hedera.com/solutions/tokenization/ats
+↗
+Stablecoin Studio
+https://docs.hedera.com/solutions/tokenization/stablecoin
+↗
+Scaffold HBAR
+https://docs.hedera.com/solutions/tools/scaffold-hbar
+↗
+Hedera Discord
+https://hedera.com/discord
+↗
+🚫 "No Solidity Allowed": Build with Hedera SDKs ⸺ $2,000
+Up to 2 teams will receive $1,000
+Build a complete app on Hedera without writing a single smart contract. Hedera's native services cover tokens (HTS), verifiable messaging and data (HCS), scheduled and multi-signature transactions, and accounts, all through the SDKs. Show what you can ship when the network does the heavy lifting.
+Qualification Requirements
+Use the Hedera JavaScript/TypeScript SDK or Python SDK, with no Solidity smart contracts.
+Use at least two native Hedera services (for example, HTS and HCS).
+A public GitHub repo with a README covering setup and usage.
+A demo video of 5 minutes or less.
+Extra points
+A coherent end-to-end user experience.
+Integration with the Hedera Mirror Node REST API.
+Creative use of HCS for data integrity, logging, or messaging.
+The Hedera Agent Kit for AI-driven workflows.
+A thoughtful security approach (key management, access controls).
+Links and Resources
+Hedera SDKs
+https://docs.hedera.com/hedera/sdks-and-apis
+↗
+Hedera Token Service
+https://docs.hedera.com/learn/core-concepts/tokens/hts-overview
+↗
+Hedera Consensus Service
+https://docs.hedera.com/reference/protobuf/consensus/consensus-service
+↗
+Mirror Node REST API
+https://docs.hedera.com/reference/rest-api
+↗
+Hedera Agent Kit
+https://docs.hedera.com/solutions/ai/agent-kit
+↗
+Hedera code snippets
+https://github.com/hedera-dev/hedera-code-snippets
+↗
+Hedera Discord
+https://hedera.com/discord
+↗
+♻️ Built on Hedera (Continuity Track) ⸺ $1,500
+🆕  This prize is only available to Continuity Track participants →
+Up to 2 teams will receive $750
+Take a project that already exists on Hedera and move it forward significantly. Polish and bug fixes alone don't qualify.
+Qualification Requirements
+The project was built for a previous hackathon or already exists on Hedera.
+Substantive new work from this event: new features, new Hedera services, or a major architectural change.
+A public GitHub repo with a README that separates what existed before from what's new, ideally with commit history or a diff.
+A demo video of 5 minutes or less that focuses on the new work.
+Workshop
+Watch Video →
+Hedera X Claude Code - AI Skills for Hackatho...
+In this hands-on workshop from ETHGlobal Mumbai 2026, hackathon builders install the open-source Hedera Skills plug...
+This workshop is happening in-person
+03:30 PM IST — Thursday, Nov 5, 2026 in Workshop Room 2
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

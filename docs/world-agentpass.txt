@@ -1,0 +1,150 @@
+Human continuity for apps and agents · World ID
+ Skip to content
+ World ID
+ Overview
+ Integration guides
+ OAuth Playground
+ ↗
+ Open portal ↗
+ Human continuity for apps and agents.
+ Recognize the same human across accounts, devices, and agents through a private identifier for your
+ application.
+ Read integration guides →
+ On this page
+ Human continuity
+ What you can build
+ Private recognition
+ Fresh authentication
+ Powered by World ID
+ Integration guides
+ Standards
+ ↑Back to top
+ Human continuity
+ Human Continuity gives your application a stable way to recognize the same human across their accounts,
+ devices, and agents while preserving privacy.
+ Welcome people back, carry reputation forward, and create experiences that grow more valuable with every
+ interaction.
+ What you can build
+ Build durable reputation
+ Let credibility, contribution history, and community standing grow over time using a private
+ identifier scoped to your sector.
+ Protect scarce benefits
+ Apply eligibility, claim limits, and participation rules consistently across every interaction with
+ the same human.
+ Power human-backed agents
+ Give agent experiences a persistent connection to the human who authorized them, with fresh
+ authentication for important actions.
+ Recover established accounts
+ Reconnect a returning human to their account in your application from a new device through the same
+ continuity identifier.
+ Enforce lasting consequences
+ Carry suspensions, bans, and trust decisions across accounts, devices, and agents linked to the same
+ continuity relationship.
+ Private recognition
+ Applications registered in the same sector receive the same stable identifier for a
+ given World ID account. Applications in different sectors receive different identifiers.
+ One World ID account, viewed by three applications
+ Application A · sector A
+ private-id-A
+ Application B · sector B
+ private-id-B
+ Application C · sector A
+ private-id-A
+ Illustrative values. Application C receives the same identifier when it is registered in Application
+ A’s sector. See
+ sector configuration.
+ Use this identifier to recognize the person within your sector and manage your application's own data.
+ Fresh authentication
+ Add fresh World ID authentication to your existing sign-in when an experience calls for stronger
+ assurance. Ask the person to authenticate before a sensitive action, then check the result in your
+ backend.
+ Your application decides whether the authenticated person may perform the action.
+ Use the stable identifier to recognize a returning person and authentication time to decide when to ask
+ them to authenticate again.
+ Powered by World ID
+ People authenticate with an enrolled passkey or a World ID proof. World IdP makes the authentication
+ result available through OpenID Connect (OIDC), keeping the underlying World identity and proof private
+ from your application.
+ OIDC delivers the private identifier as the pairwise sub
+ (subject) claim. The application
+ stores the issuer and subject together to recognize the same World ID account over time.
+ For agent experiences, your application uses OIDC in the same way: it links the issuer and subject to
+ its own account or grant, then issues credentials for its APIs or MCP server.
+ Integration guides
+ Keep your existing sign-in and add World ID for sensitive actions. For agent workflows, add a human
+ checkpoint that requires fresh authentication before your application resumes the workflow.
+ Recommended starting point
+ Step-up authentication
+ Require recent World ID authentication before a sensitive action, through your backend or auth
+ server.
+ Read the step-up guide →
+ Human in the loop
+ Require fresh World ID authentication before your application resumes an agent workflow. Your
+ application handles any separate approval of the action. Works with your existing sign-in or World
+ ID as your primary sign-in.
+ Read the human checkpoint instructions →
+ Client setup
+ Configure your OIDC client, callback URLs, and credentials in the developer portal, with optional
+ help from a coding agent.
+ Read the client setup guide →
+ Optional
+ Primary sign-in
+ Use World ID as your primary or only sign-in, directly or through your auth server.
+ Read the OIDC primary sign-in instructions →
+ Standards
+ These references describe the protocols and application integrations covered by these guides. Each
+ environment’s discovery metadata lists the flows and options supported by its issuer.
+ OpenID Connect
+ OpenID Connect Core 1.0 (opens in a new tab)
+ — authorization code flow, ID tokens, authentication freshness, and pairwise subjects.
+ OpenID Connect Discovery 1.0 (opens in a new tab)
+ — issuer, endpoints, capabilities, and signing-key discovery.
+ OpenID Connect Core 1.0, pairwise subjects
+ (opens in a new tab)
+ — the hostname-based sector model. World ID uses a
+ managed-sector extension.
+ OAuth
+ RFC 6749 · OAuth 2.0 (opens in a new tab)
+ — authorization code grants; refresh grants are available through the MCP OAuth endpoints.
+ RFC 6750 · Bearer Token Usage (opens in a new tab)
+ — MCP access tokens in the HTTP Authorization
+ header.
+ RFC 7009 · Token Revocation (opens in a new tab)
+ — MCP access and refresh token revocation.
+ RFC 7523 · JWT Client Authentication
+ (opens in a new tab)
+ — private_key_jwt
+ authentication with RS256.
+ RFC 7636 · PKCE (opens in a new tab)
+ — S256 proof-key protection for authorization code flows.
+ RFC 8252 · OAuth for Native Apps (opens in a new tab)
+ — the loopback redirect port exception for MCP clients.
+ RFC 8414 · Authorization Server Metadata
+ (opens in a new tab)
+ — MCP OAuth endpoint and capability discovery.
+ RFC 8628 · Device Authorization Grant
+ (opens in a new tab)
+ — confidential-client device authentication with explicit approval.
+ RFC 9207 · Authorization Response Issuer
+ (opens in a new tab)
+ — issuer identification in MCP authorization responses.
+ RFC 9470 · Authentication Step Up (opens in a new tab)
+ — guidance for authentication challenges that your resource server and authorization server
+ implement.
+ RFC 9728 · Protected Resource Metadata
+ (opens in a new tab)
+ — MCP resource, authorization-server, scope, and bearer-method discovery.
+ JOSE
+ RFC 7515 · JSON Web Signature (opens in a new tab),
+ RFC 7517 · JSON Web Key (opens in a new tab), and
+ RFC 7519 · JSON Web Token (opens in a new tab)
+ — RS256 ID tokens, client assertions, and public key sets.
+ RFC 7638 · JWK Thumbprint (opens in a new tab)
+ — stable key identifiers for World IdP's signing keys.
+ MCP clients are discovered through the current
+ OAuth Client ID Metadata Document draft (opens in a new tab).
+ World ID · Documentation
+ Back to top ↑
+ Privacy Notice (opens in a new tab)
+ User Terms and Conditions (opens in a new tab)
+ © World

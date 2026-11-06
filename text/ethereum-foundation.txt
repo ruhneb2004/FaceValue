@@ -1,0 +1,260 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Ethereum Foundation
+$15,000
+ethereum.foundation
+X Logoethereumfndn
+About
+The Ethereum Foundation's Access Layer team builds the pieces that keep apps and wallets censorship resistant, open source, private and secure (CROPS) all the way to the user. At Mumbai we're bringing two of them: Anon-RPC, which anonymizes a wallet's or app's RPC reads, and the alternative mempool for EIP-8141 frame transactions, which opens up transaction types the public mempool won't accept. Build with either, or build any app where one CROPS property is the reason it exists.
+Prizes
+🕶️ Best Use of Anon-RPC ⸺ $5,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+🥉
+3rd place
+$1,000
+Use Anon-RPC as an app that consumes it, or produces anonymity via a new Anon-RPC worker, or both. You could also implement/fork the anon-rpc harness to bring anon-rpc to a new platform or improve support for an existing one.
+Ideas we'd love to see
+portfolio dashboard
+block explorer
+fork of an existing dApp
+network health checker / playground: run anon-rpc against multiple networks and measure/compare
+combine anon-rpc with a light client or proof verification
+new network
+new harness
+Judging criteria
+works end to end in the demo
+quality of user experience in demo
+how much of the app's traffic goes through Anon-RPC (if an app)
+if you choose to exclude some traffic as an intentional performance/anonymity tradeoff instead of implementation difficulty, that can be a good thing, just let us know
+could this be shipped for real after the hackathon
+technical depth
+Qualification Requirements
+Your app routes its RPC reads through Anon-RPC by default. If you're building a worker or the harness, a simple demo app is enough.
+Links and Resources
+Homepage + demo
+https://ethereum.github.io/anon-rpc/
+↗
+Wallet / app guide
+https://ethereum.github.io/anon-rpc/wallets/
+↗
+Network guide
+https://ethereum.github.io/anon-rpc/networks/
+↗
+GitHub
+https://github.com/ethereum/anon-rpc
+↗
+Browser harness (npm)
+https://www.npmjs.com/package/@anon-rpc/browser-harness
+↗
+Browser extension harness (npm)
+https://www.npmjs.com/package/@anon-rpc/browser-extension-harness
+↗
+🧩 Best use of the Frame Transaction Alternative Mempool ⸺ $5,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+🥉
+3rd place
+$1,000
+EIP-8141 frame transactions bring native account abstraction to Ethereum: the account's own code decides what's valid. The public mempool only accepts the simple ones. The alternative mempool (ERC-8421) takes the rest, with ERC-7562-style staking and reputation rules.
+Build in any of three areas:
+something only an alt mempool makes possible: applications that need (a) frame transactions with verification budget higher than 100k (e.g. PQ-secure smart wallets, or PQ-secure privacy protocols), or (b) more flexible state access in sender or paymaster (e.g. ERC20 paymasters, daily quota paymasters)
+developer tooling: a viem/ethers SDK with the developer experience people expect today, an admission simulator, mempool monitoring
+break the rules and improve them: DoS vectors and vulnerabilities, new rules, simulators and fuzzers
+Judging criteria
+creativity
+usefulness
+practicality
+how well it works
+relation to the alt mempool
+Multiple devnets will run during the hackathon with keyed nonces and recent roots live, plus a faucet. Pierre and Alex from the alt mempool team will be on site to help.
+Qualification Requirements
+Show real alt mempool usage: a link to your admitted transaction on the devnet explorer, or code that submits one. Your team must be able to explain the design, the code and the trade-offs.
+Links and Resources
+Bundler / workshop sidecar repo
+https://github.com/forshtat/mempool-workshop-sidecar
+↗
+ethrex EIP-8141 tracer branch
+https://github.com/forshtat/ethrex/tree/eip8141-tracer
+↗
+Devnet explorer
+https://explorer.altmempool.wtf/
+↗
+Public devnet: endpoints and funding
+https://docs.altmempool.wtf/guides/devnet/
+↗
+Alt mempool docs
+https://docs.altmempool.wtf/
+↗
+Start here: workshop quickstart repo
+https://github.com/forshtat/mempool-workshop
+↗
+🌾 Best CROPS App: Censorship Resistant, Open Source, Private, Secure ⸺ $3,500
+🥇
+1st place
+$2,000
+🥈
+2nd place
+$1,000
+🥉
+3rd place
+$500
+CROPS = censorship resistant, open source, private, secure. Most apps lose at least one on the way to users: a frontend that only lives on one domain, a wallet you can't recover without the vendor's server, a dapp whose RPC provider sees every address you look at.
+Build an app, wallet feature or dev tool where one CROPS property is the reason it exists, without giving up the other three. EF tooling is optional: anon-rpc (private reads) and the alt mempool (frame transactions the public mempool won't accept) have their own EF prizes.
+Ideas, others welcome:
+a wallet a user can fully recover with nothing from you: no server, API or relayer
+a frontend that keeps working when its domain, backend or RPC provider disappears
+a payment, messaging or social app where your server learns nothing about who talks to whom
+a tool that shows what an app leaks (RPC calls, trackers, metadata)
+a tool that proves the shipped frontend or extension matches the public repo
+Judging criteria
+works end to end in the demo
+depth of the lead property: structural (works without you) beats cosmetic (a setting)
+the other three still hold, or trade-offs are stated in the README
+UX: would someone use it without knowing what CROPS means
+could it ship after the hackathon
+Qualification Requirements
+Public repo under a free and open-source license (MIT, Apache-2.0, GPL, MPL or similar), with a README that explains how to run it.
+The README has a section titled CROPS, one or two lines per letter:
+C: what you control that the user depends on (domain, server, RPC, relayer) and what happens if it goes away or refuses them
+O: the license, and whether a user can build and run it from the repo alone
+P: what each third party (your server, RPC provider, analytics, indexers) learns about the user
+S: how keys and user data are protected, and the trust assumptions
+A demo video (3 minutes max) that shows the lead property working end to end, including the moment it matters: for example you switch off your backend, swap the RPC provider, or show server logs with nothing identifying in them.
+No third-party trackers or analytics in the client. If the project handles keys or personal data, they stay on the user's device, or the README says why not.
+One EF prize per project. You can submit to anon-rpc, the alt mempool and CROPS, but you will be placed in at most one. EF judges decide where it fits best.
+Links and Resources
+What CROPS means (EF Mandate)
+https://blog.ethereum.org/2026/03/13/ef-mandate
+↗
+Scaffold-ETH 2
+https://github.com/scaffold-eth/scaffold-eth-2
+↗
+Scaffold-ETH docs
+https://scaffoldeth.io
+↗
+Private reads: Anon-RPC
+https://ethereum.github.io/anon-rpc/
+↗
+Anon-RPC wallet and app guide
+https://ethereum.github.io/anon-rpc/wallets/
+↗
+Privacy SDK: Kohaku
+https://github.com/ethereum/kohaku
+↗
+How wallets get rated on these properties: Walletbeat
+https://walletbeat.eth.limo
+↗
+Alt mempool starter page
+https://www.altmempool.wtf/
+↗
+🌾 Best CROPS Upgrade to an Existing Project ⸺ $1,500
+🆕  This prize is only available to Continuity Track participants →
+Already have a project? Add one CROPS property to it during the hackathon: recovery that needs nothing from you, a frontend that survives losing its domain or RPC provider, a server that learns nothing, a build users can verify. Show us the before and after.
+CROPS = censorship resistant, open source, private, secure. The new property should be the reason the upgrade matters, without giving up the other three. EF tooling is optional: anon-rpc (private reads) and the alt mempool (frame transactions the public mempool won't accept) can help.
+Judging criteria
+works end to end in the demo
+depth of the new property: structural (works without you) beats cosmetic (a setting)
+the other three still hold, or trade-offs are stated in the README
+UX: would someone use it without knowing what CROPS means
+could it ship after the hackathon
+Only the new work done during the hackathon is judged.
+Qualification Requirements
+Public repo under a free and open-source license (MIT, Apache-2.0, GPL, MPL or similar), with a README that explains how to run it.
+The README has a section titled CROPS, one or two lines per letter:
+C: what you control that the user depends on (domain, server, RPC, relayer) and what happens if it goes away or refuses them
+O: the license, and whether a user can build and run it from the repo alone
+P: what each third party (your server, RPC provider, analytics, indexers) learns about the user
+S: how keys and user data are protected, and the trust assumptions
+The README states what the project looked like before the hackathon and which property is new.
+A demo video (3 minutes max) showing the before and after, including the moment the new property matters.
+No third-party trackers or analytics in the client. Keys and personal data stay on the user's device, or the README says why not.
+One EF prize per project. EF judges decide where it fits best.
+Links and Resources
+What CROPS means (EF Mandate)
+https://blog.ethereum.org/2026/03/13/ef-mandate
+↗
+Private reads: Anon-RPC
+https://ethereum.github.io/anon-rpc/
+↗
+Privacy SDK: Kohaku
+https://github.com/ethereum/kohaku
+↗
+How wallets get rated on these properties: Walletbeat
+https://walletbeat.eth.limo
+↗
+Alt mempool starter page
+https://www.altmempool.wtf/
+↗
+Resources
+What CROPS means (EF Mandate)
+https://blog.ethereum.org/2026/03/13/ef-mandate
+↗
+Anon-RPC
+https://ethereum.github.io/anon-rpc/
+↗
+Anon-RPC GitHub
+https://github.com/ethereum/anon-rpc
+↗
+Documentation
+https://docs.altmempool.wtf/
+↗
+Alt Mempool Devnet Explorer
+https://explorer.altmempool.wtf/
+↗
+Alt Mempool Starter Page
+https://www.altmempool.wtf/
+↗
+EIP-8141
+https://eips.ethereum.org/EIPS/eip-8141
+↗
+ERC-7562
+https://eips.ethereum.org/EIPS/eip-7562
+↗
+Workshop
+🛠️ Building with Anon-RPC and the alt mempoo...
+Two short sessions from the Ethereum Foundation, then Q&A.
+Andrew Morris (Anon-RPC): Anon-RPC lets wallets and app...
+This workshop is happening in-person
+05:00 PM IST — Thursday, Nov 5, 2026 in Workshop Room 2
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

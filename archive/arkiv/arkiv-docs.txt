@@ -1,0 +1,24 @@
+Welcome to Arkiv | Arkiv documentation
+ Skip to content 
+[ ARKIV ] Docs
+ Search CtrlK Cancel 
+ GitHubDiscord 
+ Select theme DarkLightAuto 
+ [ ARKIV ]
+Build applications with queryable, time-scoped, and tamper-evident data on Ethereum.
+Get started with DB-chains.
+ Get Started 
+[ QUICK START ]
+Section titled “[ QUICK START ]”
+RABDI DB-CHAINStatus Page
+NETWORK ID7794095
+RPC URLhttps://rpc.rabdi.db-chain.testnet.arkiv.network
+WEBSOCKETwss://rpc.rabdi.db-chain.testnet.arkiv.network
+Block ExplorerAdd Network to WalletGet Test TokensGet Access Key
+Use of the public RPC is subject to the Arkiv Terms of Use and Privacy Policy.
+JavaScript / TypeScript
+Build web applications and backends with the JS/TS SDK.
+Store Your First Entity →
+Arkiv Hub
+The home base for builders: faucet, MCP access, and network tools in one place.
+Go to Arkiv Hub →

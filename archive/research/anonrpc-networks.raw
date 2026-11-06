@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>html{background:#0c0a12;color:#ece9f6}</style>
+  <title>anon-rpc for anonymizing networks</title>
+  <link rel="icon" href="../assets/favicon-BmSV52fs.svg" type="image/svg+xml" />
+  <meta
+    name="description"
+    content="Make an anonymizing network available via anon-rpc: author a worker, publish a specifier, host the bundle."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" crossorigin href="../assets/site-D0vgQ7wh.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../">
+        <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 3.5l10 4.2v7.1c0 6.6-4.3 10.6-10 13.2-5.7-2.6-10-6.6-10-13.2V7.7l10-4.2z" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="16" cy="14.5" r="3" fill="url(#ag)"/>
+          <path d="M16 17.5v5" stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round"/>
+          <defs><linearGradient id="ag" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#b79dff"/><stop offset="1" stop-color="#ff79c6"/></linearGradient></defs>
+        </svg>
+        <span class="brand-name">anon-rpc</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../wallets/">Wallet guide</a>
+        <a href="../networks/" aria-current="page">Network guide</a>
+        <a href="../adopters/">Adopters</a>
+        <a href="../spec/">Spec</a>
+        <a class="gh" href="https://github.com/ethereum/anon-rpc" target="_blank" rel="noopener" aria-label="View source on GitHub" title="View source on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.92.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.21-1.49 3.18-1.18 3.18-1.18.63 1.58.23 2.75.11 3.04.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.4-5.25 5.68.41.35.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56C20.71 21.39 24 17.08 24 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg>
+        </a>
+        <a class="btn sm nav-cta" href="../demo/">Live demo →</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="prose">
+    <article>
+<div class="doc-head"><h1>Integration Guide: Anonymizing Networks</h1><a class="ghost" href="https://github.com/ethereum/anon-rpc/blob/main/docs/integrate-network.md" target="_blank" rel="noopener">View on GitHub →</a></div>
+<p>anon-rpc lets an anonymizing network — a mixnet, onion router, RPC privacy
+relay — offer its transport to every anon-rpc wallet at once, with no
+per-wallet SDK integrations. The mechanism: the network ships its client as a
+<strong>worker bundle</strong>, a single file identified by the <code>keccak256</code> hash of its
+bytes; that hash is published on-chain in a specifier contract the network
+owns; and wallets run the bundle in a sandbox, granting it a small capability
+API. The trust a wallet extends is narrow — bounded to the RPC path by the
+sandbox — and pinned to bytes anyone can audit.</p>
+<p>This guide walks through providing that: authoring a conforming worker,
+publishing its specifier, and hosting the bytes. Three deliverables:</p>
+<ol>
+<li>a conforming <strong>worker bundle</strong> (your network client, one file);</li>
+<li>a <strong>specifier contract</strong> pinning its hash and suggesting where to fetch it;</li>
+<li>hosting for the bundle bytes (any static host; or over KPS itself).</li>
+</ol>
+<h2>1. Author the worker</h2>
+<p>Start by copying <a href="https://github.com/ethereum/anon-rpc/tree/main/impl/passthrough-worker"><code>impl/passthrough-worker</code></a>
+— a complete, minimal, conforming worker. It deliberately <strong>copies</strong> the
+worker-facing types (<code>spec-types.ts</code>) rather than importing them: your worker
+is a standalone artifact, buildable with no dependency on any harness.</p>
+<p>The shape of every worker is an accept loop:</p>
+<pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">declare</span><span style="color:#FF79C6"> const</span><span style="color:#F8F8F2"> anonRpcWorker</span><span style="color:#FF79C6">:</span><span style="color:#8BE9FD;font-style:italic"> AnonRpcWorkerApi</span><span style="color:#F8F8F2">; </span><span style="color:#6272A4">// your entire platform</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">(</span><span style="color:#FF79C6">async</span><span style="color:#F8F8F2"> () </span><span style="color:#FF79C6">=></span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#6272A4">  // Set up your network client here (dial entry nodes via anonRpcWorker.kps,</span></span>
+<span class="line"><span style="color:#6272A4">  // read anonRpcWorker.config, load state from anonRpcWorker.storage…).</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">  anonRpcWorker.</span><span style="color:#50FA7B">signalReady</span><span style="color:#F8F8F2">(); </span><span style="color:#6272A4">// or signalFailed({ code, message }) — see below</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF79C6">  for</span><span style="color:#F8F8F2"> (;;) {</span></span>
+<span class="line"><span style="color:#FF79C6">    const</span><span style="color:#F8F8F2"> call </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> anonRpcWorker.</span><span style="color:#50FA7B">acceptCall</span><span style="color:#F8F8F2">();</span></span>
+<span class="line"><span style="color:#FF79C6">    if</span><span style="color:#F8F8F2"> (call.kind </span><span style="color:#FF79C6">!==</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">fetch</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">) </span><span style="color:#FF79C6">continue</span><span style="color:#F8F8F2">; </span><span style="color:#6272A4">// future call kinds: ignore unknown</span></span>
+<span class="line"><span style="color:#F8F8F2">    call.</span><span style="color:#50FA7B">respond</span><span style="color:#F8F8F2">(</span><span style="color:#50FA7B">handle</span><span style="color:#F8F8F2">(call.url, call.requestInit));</span></span>
+<span class="line"><span style="color:#F8F8F2">  }</span></span>
+<span class="line"><span style="color:#F8F8F2">})();</span></span></code></pre>
+<p>The harness queues inbound calls in order, with backpressure, buffering them
+until the worker accepts — a slow startup loses nothing. A call leaves the
+queue only by being delivered, aborted by the host, or failed back to the
+host if the worker dies; none are silently discarded.</p>
+<h3>Your platform: the capability API</h3>
+<p>Everything your code gets is on the global <code>anonRpcWorker</code> (SPEC §7):</p>
+<ul>
+<li><strong><code>kps</code></strong> — <a href="https://ethereum.github.io/kps/">KPS</a> key-pinned
+streams: <code>dial(&quot;&lt;ip&gt;:&lt;port&gt;:&lt;certhash&gt;&quot;)</code> opens secure, multiplexed byte
+streams to a peer identified by a certificate hash. The worker-side API is
+ready-made — the harness bridges the transport, no WebRTC or socket access
+required — but <em>using</em> it is a real adoption decision on the network side:
+your nodes must run KPS listeners to be dialled this way. It&#39;s optional; a
+worker can instead reach its network over WebSocket or any other ambient
+API — at a portability cost, because a worker that relies on APIs outside
+the capability set only works on platforms that supply them, while the
+capability API (KPS included) is guaranteed on every harness platform.
+What KPS buys is direct connections to nodes without the blessing of
+certificate authorities or domain registrars — a substantial gain in
+censorship resistance.</li>
+<li><strong><code>config</code></strong> — whatever the wallet passed at construction, delivered
+exactly as a plain value (JSON plus <code>undefined</code>, <code>Uint8Array</code> and
+<code>ArrayBuffer</code>; SPEC §9.4), schema entirely yours. Typical use: entry node addresses, chain
+selection, tuning. <strong>Document your schema for wallets.</strong></li>
+<li><strong><code>storage</code></strong> — async binary KV, namespaced to your specifier address,
+persistent across restarts and page reloads. Directory descriptors, cached
+circuits, counters.</li>
+<li><strong><code>log</code></strong> — console-like; surfaced to the host&#39;s console (hosts may filter
+or redact).</li>
+<li><strong><code>signalReady()</code> / <code>signalFailed(reason?)</code></strong> — call <code>signalReady()</code> once
+you can serve. If you <em>can&#39;t</em> — bad config, entry nodes unreachable —
+call <code>signalFailed({ code: &quot;your-code&quot;, message: &quot;…&quot; })</code> instead of hanging:
+the wallet&#39;s <code>ready</code> rejects with your <code>code</code> to branch on. Failure is
+final; after it, nothing will be delivered.</li>
+</ul>
+<h3>Per-call options</h3>
+<p><code>call.requestInit</code> carries more than the request. Any key of the wallet&#39;s
+<code>fetch</code> init that the spec doesn&#39;t model arrives there too, as a plain value
+(SPEC §9.1). The spec defines one, <code>anonOptions.isolationKey</code>: the wallet&#39;s
+intent that calls made under different keys not be linkable to one another,
+as if made by unrelated clients. Whether and how your worker acts on it —
+separate circuits, routes, connections — is up to you; if it does, say so in
+the docs you write for wallets.</p>
+<h3>Conformance (SPEC §3.2)</h3>
+<ul>
+<li>Respond to <code>fetch</code> calls via <code>acceptCall</code>; enable Ethereum RPC either as
+general web request access or at a nominated URL like <code>/ethereum-rpc</code>.</li>
+<li><strong>Minimize ambient APIs.</strong> Anything you use beyond <code>anonRpcWorker</code> (even
+<code>fetch</code>) must exist on every platform a harness runs you on. The capability
+API is guaranteed; the rest is not.</li>
+<li>Don&#39;t depend on how the messaging under the capability API works — it&#39;s
+harness-internal and varies.</li>
+</ul>
+<h3>Build: your bytes are your identity</h3>
+<p>Bundle to a <strong>single standalone file</strong> (the template uses esbuild, IIFE,
+no external imports). The exact bytes are what <code>workerHash()</code> pins — build
+deterministically, commit the toolchain, and publish the source so anyone can
+rebuild and verify the hash. That reproducibility is your users&#39; audit trail.</p>
+<p>Test against the reference harness before publishing: point the
+<a href="https://ethereum.github.io/anon-rpc/demo/">live demo</a> at your
+specifier (next step) on a local chain, or adapt the repo&#39;s e2e
+(<code>impl/test/run-e2e.mjs</code>), which boots workers against mock specifiers.</p>
+<h2>2. Publish the specifier</h2>
+<p>The on-chain surface anon-rpc requires is deliberately tiny (SPEC §4):</p>
+<pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">interface</span><span style="color:#8BE9FD;font-style:italic"> IWorkerSpecifier</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#6272A4">  // keccak256 hash of the canonical worker bundle bytes.</span></span>
+<span class="line"><span style="color:#FF79C6">  function</span><span style="color:#50FA7B"> workerHash</span><span style="color:#F8F8F2">() </span><span style="color:#FF79C6">external</span><span style="color:#FF79C6"> view</span><span style="color:#FF79C6"> returns</span><span style="color:#F8F8F2"> (</span><span style="color:#8BE9FD;font-style:italic">bytes32</span><span style="color:#F8F8F2">);</span></span>
+<span class="line"><span style="color:#6272A4">  // Suggested locations from which the bundle MAY be retrieved.</span></span>
+<span class="line"><span style="color:#FF79C6">  function</span><span style="color:#50FA7B"> workerResolvers</span><span style="color:#F8F8F2">() </span><span style="color:#FF79C6">external</span><span style="color:#FF79C6"> view</span><span style="color:#FF79C6"> returns</span><span style="color:#F8F8F2"> (</span><span style="color:#8BE9FD;font-style:italic">string</span><span style="color:#F8F8F2">[] </span><span style="color:#FF79C6">memory</span><span style="color:#F8F8F2">);</span></span>
+<span class="line"><span style="color:#F8F8F2">}</span></span></code></pre>
+<p>Any contract exposing those two views is a specifier — and implementing your
+own is squarely in your wheelhouse. The hash is what wallets pin; <strong>how it
+changes is your governance design space</strong>: a multisig or timelock behind the
+setter, DAO-voted upgrades, integration with on-chain machinery your network
+already has. Whatever update policy your users already trust in you can
+govern which code they run.</p>
+<p>For a ready-made starting point,
+<a href="https://github.com/ethereum/anon-rpc/tree/main/impl/specifier"><code>impl/specifier</code></a>
+has <code>WorkerSpecifier.sol</code>, a deliberately simple single-owner model:</p>
+<ul>
+<li><code>setWorker(newHash, newResolvers)</code> — the owner ships a new version; wallets
+pick it up on their next boot, keccak-verified as ever;</li>
+<li><code>renounceOwnership()</code> — freeze the current hash <strong>forever</strong>, converting
+&quot;trust the owner&quot; into &quot;trust these exact bytes&quot;. Say which model you run.</li>
+</ul>
+<p>It comes with a publish script:</p>
+<pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#8BE9FD">cd</span><span style="color:#F1FA8C"> impl/specifier</span></span>
+<span class="line"><span style="color:#6272A4"># .env: RPC_URL, PRIVATE_KEY, RESOLVER_URLS, … (see its README for all knobs)</span></span>
+<span class="line"><span style="color:#50FA7B">node</span><span style="color:#F1FA8C"> publish-worker.mjs</span></span></code></pre>
+<p>The script rebuilds the bundle, prints its hash, verifies each resolver
+actually serves the pinned bytes <em>before</em> spending gas, deploys, reads the
+contract back, and (with <code>ETHERSCAN_API_KEY</code>) verifies the source. Deployment
+is ~1.1M gas. <code>RESOLVER_URLS</code> accepts <code>https:</code> URLs and <code>kps:</code> resolver
+strings; <code>--github</code> also publishes the bundle to a content-addressed branch of
+your repo and adds its raw URL as a resolver.</p>
+<h2>3. Host the bundle</h2>
+<p>Resolvers are advisory — any bytes matching the hash are accepted, from
+anywhere — so hosting is low-stakes and you should list several:</p>
+<ul>
+<li><strong>Any static host.</strong> Serve the exact bytes; mark them immutable
+(<code>Cache-Control: public, max-age=31536000, immutable</code> — the content is
+hash-addressed, so changed bytes would only fail verification). The
+<code>--github</code> resolver above is a zero-infrastructure version of this.</li>
+<li><strong>Over KPS itself</strong> (SPEC §4.1–4.2) — the no-CA ideal: a <code>kps:</code> resolver
+entry serves the bundle from your own KPS endpoint, pinned by certificate
+hash, with no domain, certificate authority, or hosting provider anywhere
+in the chain. It&#39;s one <code>GET</code> per stream in plain HTTP/1.1 syntax (§4.2 is
+self-contained, ~a page; harnesses advertise <code>Accept-Encoding</code> and accept
+gzip and friends). Optional — but if your network already runs KPS
+endpoints, it makes wallet bootstrap exactly as decentralized as the
+network itself. A reference responder over <code>@kpstreams/server</code> is ~40
+lines; see the bundle server in <code>impl/test/run-e2e.mjs</code>.</li>
+</ul>
+<h2>Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Worker copies the template, serves Ethereum RPC via <code>acceptCall</code> (§3.2)</li>
+<li><input disabled="" type="checkbox"> <code>signalReady()</code> on success, <code>signalFailed({ code })</code> with documented codes on refusal</li>
+<li><input disabled="" type="checkbox"> <code>config</code> schema documented for wallets (if you need it)</li>
+<li><input disabled="" type="checkbox"> Deterministic single-file bundle; source published for hash verification</li>
+<li><input disabled="" type="checkbox"> Specifier deployed; its update governance (who can change the hash, or frozen forever) stated publicly</li>
+<li><input disabled="" type="checkbox"> Two or more resolvers listed, serving byte-identical content</li>
+<li><input disabled="" type="checkbox"> Booted end-to-end via the demo page against your specifier</li>
+<li><input disabled="" type="checkbox"> Listed in <a href="https://github.com/ethereum/anon-rpc/blob/main/adopters.json5"><code>adopters.json5</code></a>
+(open a PR) — that file drives the demo&#39;s worker picker, the sample in
+the wallet guide, and the <a href="https://ethereum.github.io/anon-rpc/adopters/">adopters directory</a>,
+so a listing is how wallet authors find you. Include a <code>configNote</code> for
+anything shared or provisional, like a demo endpoint.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="https://ethereum.github.io/anon-rpc/spec/">Specification</a> — §3.2
+worker conformance, §4 identity, §7–§13 the capability API in full.</li>
+<li><a href="../wallets/">Wallet integration guide</a> — what the other side sees.</li>
+</ul>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>anon-rpc — MIT © Ethereum Foundation</span>
+      <span class="spacer"></span>
+      <a href="../">Home</a>
+      <a href="https://github.com/ethereum/anon-rpc" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/ethereum/anon-rpc/blob/main/SPEC.md" target="_blank" rel="noopener">SPEC.md</a>
+    </div>
+  </footer>
+</body>
+</html>

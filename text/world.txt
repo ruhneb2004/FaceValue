@@ -1,0 +1,161 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+World
+$12,500
+world.org
+X Logoworldnetwork
+About
+World’s developer stack helps builders create products for verified humans and AI-assisted interactions. World ID enables apps to confirm someone is a unique human without revealing their identity.
+Prizes
+💿 World ID Agent Pass ⸺ $2,500
+🆕  This prize is only available to Continuity Track participants →
+🥇
+1st place
+$1,500
+🥈
+2nd place
+$1,000
+Integrate World ID Agent Pass into your project. We are especially interested in agentic products, but any compelling use case is eligible.
+Show what becomes possible when an application can ask a person to authenticate or complete a fresh verification at the moment.
+Strong submissions will show a meaningful action that needs a human identity or approval layer, not simply a login screen added to an existing product.
+Qualification Requirements
+Integrate with the official World ID Agent Pass.
+Demonstrate the complete journey: identity or verification request, user completion, validated result, and the protected application or agent action.
+Demonstrate a denied, expired, cancelled, or otherwise unsuccessful path where the protected action does not occur.
+Validate identity results in a secure backend; do not expose client secrets or treat an unvalidated client response as authorization.
+Include a short integration debrief/feedback: time to first success, friction encountered, missing capability or documentation, and the one improvement with the greatest impact.
+Links and Resources
+World ID Agent Pass
+https://auth.world.org/
+↗
+World ID Agent Pass Docs
+https://auth.world.org/docs
+↗
+World ID Agent Pass Portal
+https://auth.world.org/portal
+↗
+🚀 World ID Agent Pass ⸺ $5,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+🥉
+3rd place
+$1,000
+![We are mocking proofs now, so you don't need sandbox app anymore]!
+Build an application using World ID Agent Pass. We are especially interested in agentic products, but any compelling use case is eligible.
+Show what becomes possible when an application can ask a person to authenticate or complete a fresh verification at the moment.
+Strong submissions will show a meaningful action that needs a human identity or approval layer, not simply a login screen added to an existing product.
+NOTE: Proofs are using fake identities, DO NOT rely in them for production
+Qualification Requirements
+Integrate with the official World ID Agent Pass.
+Demonstrate the complete journey: identity or verification request, user completion, validated result, and the protected application or agent action.
+Demonstrate a denied, expired, cancelled, or otherwise unsuccessful path where the protected action does not occur.
+Validate identity results in a secure backend; do not expose client secrets or treat an unvalidated client response as authorization.
+Include a short integration debrief/feedback: time to first success, friction encountered, missing capability or documentation, and the one improvement with the greatest impact.
+Links and Resources
+World ID Agent Pass 
+https://auth.world.org/
+↗
+World ID Agent Pass Portal
+https://auth.world.org/portal
+↗
+World ID Agent Pass Docs
+https://auth.world.org/docs
+↗
+🪪 Best Use of IDKit ⸺ $2,500
+Up to 2 teams will receive $1,250
+Build a product that uses IDKit to solve a real trust moment: an event where a product needs to know something meaningful about a person before it grants access, completes an action, or changes a user’s experience.
+Use the credential that is proportionate to your use case—such as Proof of Human, Passport/NFC, or Selfie Check (Now live with Sybil score). We are not rewarding the most credentials used. We are rewarding the best decision about which credential is needed, why it is needed, and how it improves a real product experience.
+Strong examples could include fair access to a scarce benefit, a privacy-preserving eligibility check, recovery or protection of an important account action, or a workflow that becomes safer or simpler because it can verify the right level of human trust.
+Qualification Requirements
+Integrate IDKit in a functioning application, mini app, or onchain flow.
+Use at least one supported World ID credential and verify the result on the server or onchain as appropriate.
+Clearly explain the specific product event requiring trust and why the chosen credential is the minimum sufficient assurance.
+Demonstrate a successful verification and one meaningful alternative path, such as cancellation, unavailable credential, rejection, or an ineligible user.
+Include a short integration debrief/feedback: time to first success, friction encountered, missing capability or documentation, and the one improvement with the greatest impact.
+Links and Resources
+IDKit JS Example
+https://idkit-js-example.vercel.app/
+↗
+IDKit integration guide
+https://docs.world.org/world-id/idkit/integrate
+↗
+Configure credentials
+https://docs.world.org/world-id/idkit/credentials
+↗
+Proof of Human credential
+https://docs.world.org/world-id/credentials/1
+↗
+Passport/NFC credential
+https://docs.world.org/world-id/credentials/9303
+↗
+Selfie Check Beta
+https://docs.world.org/world-id/credentials/11
+↗
+Verification flows
+https://docs.world.org/world-id/idkit/verification-flows
+↗
+Developer Portal
+https://developer.worldcoin.org
+↗
+🎉 [Cont] Best Use of IDKit ⸺ $2,500
+🆕  This prize is only available to Continuity Track participants →
+Up to 2 teams will receive $1,250
+Build a product that uses IDKit to solve a real trust moment: an event where a product needs to know something meaningful about a person before it grants access, completes an action, or changes a user’s experience.
+Use the credential that is proportionate to your use case—such as Proof of Human, Passport/NFC, or Selfie Check (Now live with Sybil score). We are not rewarding the most credentials used. We are rewarding the best decision about which credential is needed, why it is needed, and how it improves a real product experience.
+Strong examples could include fair access to a scarce benefit, a privacy-preserving eligibility check, recovery or protection of an important account action, or a workflow that becomes safer or simpler because it can verify the right level of human trust.
+Qualification Requirements
+Integrate IDKit in a functioning application, mini app, or onchain flow.
+Use at least one supported World ID credential and verify the result on the server or onchain as appropriate.
+Clearly explain the specific product event requiring trust and why the chosen credential is the minimum sufficient assurance.
+Demonstrate a successful verification and one meaningful alternative path, such as cancellation, unavailable credential, rejection, or an ineligible user.
+Include a short integration debrief/feedback: time to first success, friction encountered, missing capability or documentation, and the one improvement with the greatest impact.
+Links and Resources
+IDKit Docs
+https://docs.world.org/world-id/overview
+↗
+Resources
+World ID Simulator
+https://simulator.worldcoin.org/id/0x18310f83
+↗
+iOS Sandbox App
+https://testflight.apple.com/join/Tub7zuyD
+↗
+Workshop
+Watch Video →
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

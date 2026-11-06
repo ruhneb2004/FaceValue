@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>html{background:#0c0a12;color:#ece9f6}</style>
+  <title>anon-rpc for wallets &amp; apps</title>
+  <link rel="icon" href="../assets/favicon-BmSV52fs.svg" type="image/svg+xml" />
+  <meta
+    name="description"
+    content="Integrate anon-rpc in a wallet or application: one class, one package, an anonymized fetch."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" crossorigin href="../assets/site-D0vgQ7wh.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../">
+        <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 3.5l10 4.2v7.1c0 6.6-4.3 10.6-10 13.2-5.7-2.6-10-6.6-10-13.2V7.7l10-4.2z" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="16" cy="14.5" r="3" fill="url(#ag)"/>
+          <path d="M16 17.5v5" stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round"/>
+          <defs><linearGradient id="ag" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#b79dff"/><stop offset="1" stop-color="#ff79c6"/></linearGradient></defs>
+        </svg>
+        <span class="brand-name">anon-rpc</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../wallets/" aria-current="page">Wallet guide</a>
+        <a href="../networks/">Network guide</a>
+        <a href="../adopters/">Adopters</a>
+        <a href="../spec/">Spec</a>
+        <a class="gh" href="https://github.com/ethereum/anon-rpc" target="_blank" rel="noopener" aria-label="View source on GitHub" title="View source on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.92.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.21-1.49 3.18-1.18 3.18-1.18.63 1.58.23 2.75.11 3.04.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.4-5.25 5.68.41.35.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56C20.71 21.39 24 17.08 24 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg>
+        </a>
+        <a class="btn sm nav-cta" href="../demo/">Live demo →</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="prose">
+    <article>
+<div class="doc-head"><h1>Integration Guide: Web Wallets and Web Applications</h1><a class="ghost" href="https://github.com/ethereum/anon-rpc/blob/main/docs/integrate-wallet.md" target="_blank" rel="noopener">View on GitHub →</a></div>
+<p><code>anon-rpc</code> makes your RPC anonymous by constructing an anonymous <code>fetch</code>
+function.</p>
+<p>The specific machinery needed for any particular anonymous network runs
+inside a sandbox to reduce the risk for your users and make it easier to
+switch networks.</p>
+<p>This means there is a need to set up that sandbox itself and communicate
+with the worker inside. If you prefer, you can implement that yourself,
+but we also provide <code>@anon-rpc/browser-harness</code> to make it easier - this
+part of the code still lives inside your application.</p>
+<p>If you want to go the DIY route, you should <a href="../spec/">read the spec</a>.
+Otherwise, read on to learn how to use the provided harness.</p>
+<h2>Install</h2>
+<pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#50FA7B">npm</span><span style="color:#F1FA8C"> install</span><span style="color:#F1FA8C"> @anon-rpc/browser-harness</span></span></code></pre>
+<p>Browser-only: the sandbox is a null-origin iframe and the built-in
+<a href="https://ethereum.github.io/kps/">KPS</a> transport runs over WebRTC. A
+native harness would be a separate package.</p>
+<h2>Quick start</h2>
+<div class="picker" id="worker-picker">
+<div class="picker-tabs" role="tablist" aria-label="Known workers"><button type="button" class="picker-tab" role="tab" id="worker-tab-passthrough" aria-controls="worker-panel-passthrough" aria-selected="true" tabindex="0" data-worker="passthrough">passthrough</button><button type="button" class="picker-tab" role="tab" id="worker-tab-tor-js" aria-controls="worker-panel-tor-js" aria-selected="false" tabindex="-1" data-worker="tor-js">tor-js</button><button type="button" class="picker-tab" role="tab" id="worker-tab-nym" aria-controls="worker-panel-nym" aria-selected="false" tabindex="-1" data-worker="nym">nym</button><button type="button" class="picker-tab" role="tab" id="worker-tab-nox" aria-controls="worker-panel-nox" aria-selected="false" tabindex="-1" data-worker="nox">nox</button></div>
+<div class="picker-panel" role="tabpanel" id="worker-panel-passthrough" aria-labelledby="worker-tab-passthrough" data-worker="passthrough"><p class="picker-note">The minimal reference worker: it fulfils calls with an ordinary fetch, so requests are not anonymized. It demonstrates the sandbox and hash pinning, not privacy.</p><pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> { AnonRpcWorker } </span><span style="color:#FF79C6">from</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">@anon-rpc/browser-harness</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> worker </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6;font-weight:bold"> new</span><span style="color:#50FA7B"> AnonRpcWorker</span><span style="color:#F8F8F2">({</span></span>
+<span class="line"><span style="color:#6272A4">  // The anonymizing network's specifier contract, on mainnet.</span></span>
+<span class="line"><span style="color:#F8F8F2">  address</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">0x4fd77be300f31c5fe6ab266d35d27750a3478d27</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">  // Optional, network-defined (see the network's docs for its schema).</span></span>
+<span class="line"><span style="color:#6272A4">  // Delivered to the worker as-is; the harness never interprets it.</span></span>
+<span class="line"><span style="color:#F8F8F2">  config</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> undefined</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">  preExisting</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#6272A4">    // Used ONCE, to read the specifier contract — this breaks the circular</span></span>
+<span class="line"><span style="color:#6272A4">    // "need the chain to reach the chain" dependency. Any EIP-1193-style</span></span>
+<span class="line"><span style="color:#6272A4">    // provider works:</span></span>
+<span class="line"><span style="color:#F8F8F2">    rpcProvider</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#50FA7B">      request</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> ({ </span><span style="color:#FFB86C;font-style:italic">method</span><span style="color:#F8F8F2">, </span><span style="color:#FFB86C;font-style:italic">params</span><span style="color:#F8F8F2"> }) </span><span style="color:#FF79C6">=></span><span style="color:#F8F8F2"> myExistingProvider.</span><span style="color:#50FA7B">request</span><span style="color:#F8F8F2">({ method, params }),</span></span>
+<span class="line"><span style="color:#F8F8F2">    },</span></span>
+<span class="line"><span style="color:#F8F8F2">  },</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// Optional: fetch calls made before readiness are buffered, not dropped.</span></span>
+<span class="line"><span style="color:#6272A4">// await worker.ready;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// A standard fetch, routed through the sandboxed anon-client.</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> res </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> worker.</span><span style="color:#50FA7B">fetch</span><span style="color:#F8F8F2">(</span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">https://rpc.example/</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, {</span></span>
+<span class="line"><span style="color:#F8F8F2">  method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">POST</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"><span style="color:#F8F8F2">  headers</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> { </span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">content-type</span><span style="color:#E9F284">"</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">application/json</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2"> },</span></span>
+<span class="line"><span style="color:#F8F8F2">  body</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> JSON</span><span style="color:#F8F8F2">.</span><span style="color:#50FA7B">stringify</span><span style="color:#F8F8F2">({ jsonrpc</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">2.0</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, id</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> 1</span><span style="color:#F8F8F2">, method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">eth_blockNumber</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, params</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> [] }),</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> { result } </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> res.</span><span style="color:#50FA7B">json</span><span style="color:#F8F8F2">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">worker.</span><span style="color:#50FA7B">close</span><span style="color:#F8F8F2">(); </span><span style="color:#6272A4">// tears down the sandbox</span></span>
+<span class="line"></span></code></pre></div><div class="picker-panel" role="tabpanel" id="worker-panel-tor-js" aria-labelledby="worker-tab-tor-js" data-worker="tor-js" hidden><p class="picker-note">Runs a full Tor client compiled to WebAssembly inside the sandbox, building circuits in the browser. Expect a bootstrap delay before the first response, and higher per-request latency than a direct fetch, since traffic is relayed through multiple hops.</p><p class="picker-note warn">Demonstration gateway only: limited capacity, and it may disappear at any time — run your own for anything real. Browsers cannot open the raw TCP that Tor uses, so gateways act as blind KPS relays into the Tor network.</p><pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> { AnonRpcWorker } </span><span style="color:#FF79C6">from</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">@anon-rpc/browser-harness</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> worker </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6;font-weight:bold"> new</span><span style="color:#50FA7B"> AnonRpcWorker</span><span style="color:#F8F8F2">({</span></span>
+<span class="line"><span style="color:#6272A4">  // The anonymizing network's specifier contract, on mainnet.</span></span>
+<span class="line"><span style="color:#F8F8F2">  address</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">0x700dA3193D35fA54Cd3fBf29B66f2a2A0385659e</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">  // Optional, network-defined (see the network's docs for its schema).</span></span>
+<span class="line"><span style="color:#6272A4">  // Delivered to the worker as-is; the harness never interprets it.</span></span>
+<span class="line"><span style="color:#F8F8F2">  config</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#F8F8F2">    gateways</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> [</span></span>
+<span class="line"><span style="color:#E9F284">      "</span><span style="color:#F1FA8C">152.236.3.22:12298:uEiCH0VdbhryzJcMtCfB0vLA4sOvHdQ4hq5w7CopcwU59bQ</span><span style="color:#E9F284">"</span></span>
+<span class="line"><span style="color:#F8F8F2">    ]</span></span>
+<span class="line"><span style="color:#F8F8F2">  },</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">  preExisting</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#6272A4">    // Used ONCE, to read the specifier contract — this breaks the circular</span></span>
+<span class="line"><span style="color:#6272A4">    // "need the chain to reach the chain" dependency. Any EIP-1193-style</span></span>
+<span class="line"><span style="color:#6272A4">    // provider works:</span></span>
+<span class="line"><span style="color:#F8F8F2">    rpcProvider</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#50FA7B">      request</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> ({ </span><span style="color:#FFB86C;font-style:italic">method</span><span style="color:#F8F8F2">, </span><span style="color:#FFB86C;font-style:italic">params</span><span style="color:#F8F8F2"> }) </span><span style="color:#FF79C6">=></span><span style="color:#F8F8F2"> myExistingProvider.</span><span style="color:#50FA7B">request</span><span style="color:#F8F8F2">({ method, params }),</span></span>
+<span class="line"><span style="color:#F8F8F2">    },</span></span>
+<span class="line"><span style="color:#F8F8F2">  },</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// Optional: fetch calls made before readiness are buffered, not dropped.</span></span>
+<span class="line"><span style="color:#6272A4">// await worker.ready;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// A standard fetch, routed through the sandboxed anon-client.</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> res </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> worker.</span><span style="color:#50FA7B">fetch</span><span style="color:#F8F8F2">(</span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">https://rpc.example/</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, {</span></span>
+<span class="line"><span style="color:#F8F8F2">  method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">POST</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"><span style="color:#F8F8F2">  headers</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> { </span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">content-type</span><span style="color:#E9F284">"</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">application/json</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2"> },</span></span>
+<span class="line"><span style="color:#F8F8F2">  body</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> JSON</span><span style="color:#F8F8F2">.</span><span style="color:#50FA7B">stringify</span><span style="color:#F8F8F2">({ jsonrpc</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">2.0</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, id</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> 1</span><span style="color:#F8F8F2">, method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">eth_blockNumber</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, params</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> [] }),</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> { result } </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> res.</span><span style="color:#50FA7B">json</span><span style="color:#F8F8F2">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">worker.</span><span style="color:#50FA7B">close</span><span style="color:#F8F8F2">(); </span><span style="color:#6272A4">// tears down the sandbox</span></span>
+<span class="line"></span></code></pre></div><div class="picker-panel" role="tabpanel" id="worker-panel-nym" aria-labelledby="worker-tab-nym" data-worker="nym" hidden><p class="picker-note">Runs a Nym mixnet client compiled to WebAssembly inside the sandbox. Requests travel as Sphinx packets through the mixnet and leave at a Nym IP Packet Router, so the RPC endpoint sees the router's address, not yours. The bundle is about 18 MB and the mixnet takes a few seconds to bootstrap.</p><pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> { AnonRpcWorker } </span><span style="color:#FF79C6">from</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">@anon-rpc/browser-harness</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> worker </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6;font-weight:bold"> new</span><span style="color:#50FA7B"> AnonRpcWorker</span><span style="color:#F8F8F2">({</span></span>
+<span class="line"><span style="color:#6272A4">  // The anonymizing network's specifier contract, on mainnet.</span></span>
+<span class="line"><span style="color:#F8F8F2">  address</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">0x3aCD9742C68F6d993066Ae25533e09b9e1f60eD0</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">  // Optional, network-defined (see the network's docs for its schema).</span></span>
+<span class="line"><span style="color:#6272A4">  // Delivered to the worker as-is; the harness never interprets it.</span></span>
+<span class="line"><span style="color:#F8F8F2">  config</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> undefined</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">  preExisting</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#6272A4">    // Used ONCE, to read the specifier contract — this breaks the circular</span></span>
+<span class="line"><span style="color:#6272A4">    // "need the chain to reach the chain" dependency. Any EIP-1193-style</span></span>
+<span class="line"><span style="color:#6272A4">    // provider works:</span></span>
+<span class="line"><span style="color:#F8F8F2">    rpcProvider</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#50FA7B">      request</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> ({ </span><span style="color:#FFB86C;font-style:italic">method</span><span style="color:#F8F8F2">, </span><span style="color:#FFB86C;font-style:italic">params</span><span style="color:#F8F8F2"> }) </span><span style="color:#FF79C6">=></span><span style="color:#F8F8F2"> myExistingProvider.</span><span style="color:#50FA7B">request</span><span style="color:#F8F8F2">({ method, params }),</span></span>
+<span class="line"><span style="color:#F8F8F2">    },</span></span>
+<span class="line"><span style="color:#F8F8F2">  },</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// Optional: fetch calls made before readiness are buffered, not dropped.</span></span>
+<span class="line"><span style="color:#6272A4">// await worker.ready;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// A standard fetch, routed through the sandboxed anon-client.</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> res </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> worker.</span><span style="color:#50FA7B">fetch</span><span style="color:#F8F8F2">(</span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">https://rpc.example/</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, {</span></span>
+<span class="line"><span style="color:#F8F8F2">  method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">POST</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"><span style="color:#F8F8F2">  headers</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> { </span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">content-type</span><span style="color:#E9F284">"</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">application/json</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2"> },</span></span>
+<span class="line"><span style="color:#F8F8F2">  body</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> JSON</span><span style="color:#F8F8F2">.</span><span style="color:#50FA7B">stringify</span><span style="color:#F8F8F2">({ jsonrpc</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">2.0</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, id</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> 1</span><span style="color:#F8F8F2">, method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">eth_blockNumber</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, params</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> [] }),</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> { result } </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> res.</span><span style="color:#50FA7B">json</span><span style="color:#F8F8F2">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">worker.</span><span style="color:#50FA7B">close</span><span style="color:#F8F8F2">(); </span><span style="color:#6272A4">// tears down the sandbox</span></span>
+<span class="line"></span></code></pre></div><div class="picker-panel" role="tabpanel" id="worker-panel-nox" aria-labelledby="worker-tab-nox" data-worker="nox" hidden><p class="picker-note">Wraps each request in Sphinx packets routed through entry, mix and exit nodes, dialled over KPS. TLS to an https RPC runs inside the worker, so the exit node relays the request without reading it. Mixing adds per-hop delay, so expect slower responses than a direct fetch.</p><p class="picker-note warn">Published on the Sepolia testnet: <code>rpcProvider</code> must answer for Sepolia, or the specifier read finds no contract.</p><pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> { AnonRpcWorker } </span><span style="color:#FF79C6">from</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">@anon-rpc/browser-harness</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> worker </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6;font-weight:bold"> new</span><span style="color:#50FA7B"> AnonRpcWorker</span><span style="color:#F8F8F2">({</span></span>
+<span class="line"><span style="color:#6272A4">  // The anonymizing network's specifier contract, on Sepolia.</span></span>
+<span class="line"><span style="color:#F8F8F2">  address</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">0x35133267A8F7EC35046a83DCA0f4Ca8A6e1b7A9A</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">  // Optional, network-defined (see the network's docs for its schema).</span></span>
+<span class="line"><span style="color:#6272A4">  // Delivered to the worker as-is; the harness never interprets it.</span></span>
+<span class="line"><span style="color:#F8F8F2">  config</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> undefined</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">  preExisting</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#6272A4">    // Used ONCE, to read the specifier contract — this breaks the circular</span></span>
+<span class="line"><span style="color:#6272A4">    // "need the chain to reach the chain" dependency. Any EIP-1193-style</span></span>
+<span class="line"><span style="color:#6272A4">    // provider works:</span></span>
+<span class="line"><span style="color:#F8F8F2">    rpcProvider</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#50FA7B">      request</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> ({ </span><span style="color:#FFB86C;font-style:italic">method</span><span style="color:#F8F8F2">, </span><span style="color:#FFB86C;font-style:italic">params</span><span style="color:#F8F8F2"> }) </span><span style="color:#FF79C6">=></span><span style="color:#F8F8F2"> myExistingProvider.</span><span style="color:#50FA7B">request</span><span style="color:#F8F8F2">({ method, params }),</span></span>
+<span class="line"><span style="color:#F8F8F2">    },</span></span>
+<span class="line"><span style="color:#F8F8F2">  },</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// Optional: fetch calls made before readiness are buffered, not dropped.</span></span>
+<span class="line"><span style="color:#6272A4">// await worker.ready;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4">// A standard fetch, routed through the sandboxed anon-client.</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> res </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> worker.</span><span style="color:#50FA7B">fetch</span><span style="color:#F8F8F2">(</span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">https://rpc.example/</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, {</span></span>
+<span class="line"><span style="color:#F8F8F2">  method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">POST</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">,</span></span>
+<span class="line"><span style="color:#F8F8F2">  headers</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> { </span><span style="color:#E9F284">"</span><span style="color:#F1FA8C">content-type</span><span style="color:#E9F284">"</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">application/json</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2"> },</span></span>
+<span class="line"><span style="color:#F8F8F2">  body</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> JSON</span><span style="color:#F8F8F2">.</span><span style="color:#50FA7B">stringify</span><span style="color:#F8F8F2">({ jsonrpc</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">2.0</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, id</span><span style="color:#FF79C6">:</span><span style="color:#BD93F9"> 1</span><span style="color:#F8F8F2">, method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">eth_blockNumber</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, params</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> [] }),</span></span>
+<span class="line"><span style="color:#F8F8F2">});</span></span>
+<span class="line"><span style="color:#FF79C6">const</span><span style="color:#F8F8F2"> { result } </span><span style="color:#FF79C6">=</span><span style="color:#FF79C6"> await</span><span style="color:#F8F8F2"> res.</span><span style="color:#50FA7B">json</span><span style="color:#F8F8F2">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">worker.</span><span style="color:#50FA7B">close</span><span style="color:#F8F8F2">(); </span><span style="color:#6272A4">// tears down the sandbox</span></span>
+<span class="line"></span></code></pre></div>
+</div>
+<script>
+(function () {
+  var tabs = [].slice.call(document.querySelectorAll("#worker-picker .picker-tab"));
+  var panels = [].slice.call(document.querySelectorAll("#worker-picker .picker-panel"));
+  function select(id, focus) {
+    tabs.forEach(function (t) {
+      var on = t.dataset.worker === id;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach(function (p) { p.hidden = p.dataset.worker !== id; });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () { select(t.dataset.worker); });
+  });
+  // Arrow keys move between tabs, as a tablist is expected to.
+  document.querySelector("#worker-picker .picker-tabs").addEventListener("keydown", function (e) {
+    var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    var i = tabs.findIndex(function (t) { return t.getAttribute("aria-selected") === "true"; });
+    select(tabs[(i + step + tabs.length) % tabs.length].dataset.worker, true);
+  });
+})();
+</script><p><code>worker.fetch</code> is this-bound — pass it as a free function to anything that
+accepts a custom <code>fetch</code> or transport (a viem custom transport, an ethers
+<code>FetchRequest</code> getUrl hook, your own JSON-RPC wrapper).</p>
+<h2>Per-call options</h2>
+<p><code>anonOptions</code> passes options to the worker rather than the destination:</p>
+<pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">await</span><span style="color:#F8F8F2"> worker.</span><span style="color:#50FA7B">fetch</span><span style="color:#F8F8F2">(url, { method</span><span style="color:#FF79C6">:</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">POST</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">, body, anonOptions</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> { isolationKey</span><span style="color:#FF79C6">:</span><span style="color:#F8F8F2"> accountId } });</span></span></code></pre>
+<p><code>isolationKey</code> asks that calls under different keys not be linkable to one
+another — e.g. one key per account. Support varies - check what your network does with this key if it&#39;s important to you.</p>
+<h2>What happens when you construct the worker</h2>
+<ol>
+<li>The harness calls <code>workerHash()</code> and <code>workerResolvers()</code> on the specifier
+contract via your bootstrap provider.</li>
+<li>It fetches the worker bundle from the resolvers (<code>https:</code> URLs, or <code>kps:</code>
+entries served over KPS itself) and <strong>only executes bytes whose
+<code>keccak256</code> equals the pinned hash</strong>. Resolvers, CDNs, and mirrors are
+untrusted; the hash is the identity.</li>
+<li>The bundle runs in a Web Worker inside a sandboxed null-origin iframe. Its
+entire platform is a small capability API — inbound fetch calls, the KPS
+transport, storage scoped to this specifier address, logging. No ambient
+access to your page.</li>
+</ol>
+<h2>The trust model, honestly</h2>
+<ul>
+<li><strong>You are trusting the on-chain hash</strong> — that is, whoever controls the
+specifier contract. The code itself is auditable: anyone can rebuild the
+network&#39;s published bundle and check the hash.</li>
+<li><strong>Your bootstrap provider is trusted for one read.</strong> The <code>workerHash()</code>
+value arrives through it — a lying bootstrap RPC could point you at
+different code. Use the provider you already rely on. Note that this one
+read is <em>not</em> anonymized (it happens before the anon-client exists); it
+reveals only that you&#39;re reading a specifier contract.</li>
+<li><strong>The sandbox reduces the worker&#39;s reach — it doesn&#39;t eliminate trust.</strong>
+The worker can&#39;t touch keys, cookies, or the DOM, and the pinned hash
+rules out silent substitution. But it holds the same position as any RPC
+endpoint: it sees every request routed through it (including signed
+transactions before broadcast), and it produces the responses your
+application acts on — a malicious worker can observe, censor, or lie.
+Choosing a network is still a trust decision; the sandbox narrows the
+blast radius, and the hash makes what you&#39;re trusting auditable.</li>
+</ul>
+<h2>Errors and lifecycle</h2>
+<p><code>worker.ready</code> rejects — and all pending and future <code>fetch</code> calls fail — when
+the worker can&#39;t be started or has failed:</p>
+<ul>
+<li>no resolver yielded bytes matching the pinned hash;</li>
+<li>the worker crashed (uncaught errors are unrecoverable by design);</li>
+<li>the worker <strong>declined</strong>: a worker can call <code>signalFailed({ code, message })</code>
+— bad config, unreachable network, unsupported platform. The error reaching
+you carries the network-defined <code>code</code>:</li>
+</ul>
+<pre class="shiki dracula" style="background-color:#08060d;color:#F8F8F2" tabindex="0"><code><span class="line"><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> { RpcError } </span><span style="color:#FF79C6">from</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">@anon-rpc/browser-harness</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF79C6">try</span><span style="color:#F8F8F2"> {</span></span>
+<span class="line"><span style="color:#FF79C6">  await</span><span style="color:#F8F8F2"> worker.ready;</span></span>
+<span class="line"><span style="color:#F8F8F2">} </span><span style="color:#FF79C6">catch</span><span style="color:#F8F8F2"> (e) {</span></span>
+<span class="line"><span style="color:#FF79C6">  if</span><span style="color:#F8F8F2"> (e </span><span style="color:#FF79C6">instanceof</span><span style="color:#8BE9FD;font-style:italic"> RpcError</span><span style="color:#FF79C6"> &#x26;&#x26;</span><span style="color:#F8F8F2"> e.code </span><span style="color:#FF79C6">===</span><span style="color:#E9F284"> "</span><span style="color:#F1FA8C">unsupported-chain</span><span style="color:#E9F284">"</span><span style="color:#F8F8F2">) {</span></span>
+<span class="line"><span style="color:#6272A4">    // branch on code — message text is diagnostic only</span></span>
+<span class="line"><span style="color:#F8F8F2">  }</span></span>
+<span class="line"><span style="color:#F8F8F2">}</span></span></code></pre>
+<p>Individual <code>fetch</code> calls reject with <code>RpcError</code> (carrying the worker&#39;s error
+<code>name</code>/<code>code</code>) or with standard <code>AbortError</code> when you abort via
+<code>init.signal</code> — the same contract as native <code>fetch</code>.</p>
+<p>Practical notes:</p>
+<ul>
+<li>One <code>AnonRpcWorker</code> per network, long-lived; don&#39;t construct per request.</li>
+<li>Calls made before <code>ready</code> resolves are buffered in order — you can fire
+immediately after construction.</li>
+<li><code>close()</code> fails anything in flight and releases the iframe/worker. Create a
+fresh instance to reconnect.</li>
+<li>The worker gets IndexedDB-backed storage namespaced to the specifier
+address (it persists across reloads); it can&#39;t read any other namespace.</li>
+</ul>
+<h2>Try it</h2>
+<p>The <a href="https://ethereum.github.io/anon-rpc/demo/">live demo</a> is this
+exact integration: paste a bootstrap RPC URL and a specifier address, and
+watch an ETH balance stream through the sandboxed worker.</p>
+<p>Shipped it? Add yourself to
+<a href="https://github.com/ethereum/anon-rpc/blob/main/adopters.json5"><code>adopters.json5</code></a>
+(open a PR) and you&#39;ll appear on the
+<a href="https://ethereum.github.io/anon-rpc/adopters/">adopters page</a>, alongside the
+networks you can reach.</p>
+<h2>Reference</h2>
+<ul>
+<li><a href="https://ethereum.github.io/anon-rpc/spec/">Specification</a> —
+normative behavior for everything above (§5 host API, §6 isolation, §12
+errors).</li>
+<li><a href="https://ethereum.github.io/anon-rpc/adopters/">Adopters</a> — the anonymizing
+networks live today, with the specifier address for each and the chain it
+is published on.</li>
+<li><a href="https://www.npmjs.com/package/@anon-rpc/browser-harness"><code>@anon-rpc/browser-harness</code></a>
+— the harness package (README documents the full <code>WorkerInit</code>).</li>
+<li>Networks: see <a href="../networks/">the network integration guide</a> for the
+other side of this contract.</li>
+</ul>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>anon-rpc — MIT © Ethereum Foundation</span>
+      <span class="spacer"></span>
+      <a href="../">Home</a>
+      <a href="https://github.com/ethereum/anon-rpc" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/ethereum/anon-rpc/blob/main/SPEC.md" target="_blank" rel="noopener">SPEC.md</a>
+    </div>
+  </footer>
+</body>
+</html>

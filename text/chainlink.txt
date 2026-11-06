@@ -1,0 +1,78 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+Chainlink
+$5,000
+chain.link
+X Logochainlink
+About
+The industry standard oracle network for powering trust-minimized applications across Web2 and Web3 ⬡
+Prizes
+🔗 Best workflow with CRE ⸺ $1,500
+Build your workflow with CRE! Chainlink Runtime Environment (CRE) is an all-in-one orchestration layer that enables developers to build institutional-grade smart contracts — data-connected, compliance-ready, privacy-preserving, and interoperable across blockchains and traditional systems. With CRE, you can connect blockchains to external APIs, enterprise systems, data sources, LLMs, or AI agents.
+Qualification Requirements
+📍Requirements:
+✅ Goal:
+Build, simulate, or deploy a CRE Workflow that’s used as an orchestration layer within your project. Note: It is NOT mandatory to deploy it during the hackathon, simulation is enough!
+✅ Your workflow should:
+Integrate at least one blockchain with an external API, system, data source, LLM, or AI agent.
+Demonstrate a successful simulation (via the CRE CLI) or a live deployment on the CRE network.
+Be meaningfully used in your project
+Links and Resources
+CRE Docs
+https://docs.chain.link/cre
+↗
+Intro to CRE
+https://www.youtube.com/playlist?list=PLVP9aGDn-X0S-JmwQKGTao6o_CMitvv2_
+↗
+CRE Templates
+https://github.com/smartcontractkit/cre-templates/
+↗
+🏆 Best use of Chainlink CCIP 2.0 ⸺ $3,500
+Up to 2 teams will receive $1,750
+Build something awesome using Chainlink CCIP 2.0! The Chainlink Cross-Chain Interoperability Protocol (CCIP) provides a single simple interface through which applications can securely meet all their cross-chain needs, including token transfers and arbitrary messaging. CCIP 2.0 begins a new era for the digital asset industry by laying the rails for hundreds of trillions of dollars in capital from existing financial systems to flow onchain.
+Possible use cases: Cross-chain DeFi app with liquidity across multiple chains Cross Chain DeFi yield aggregator Token bridge powered by CCIP Multihop CCIP Router. You want to send cross-chain message from blockchain A to blockchain B without worrying if the lane between them exists.
+Use our CCIP Local Simulator to speed up your development on your local Hardhat, Foundry or Remix network, then use our Faucet to easily get testnet funds when you're ready for testnet. Links to both at the bottom in the 'Resources' Section!
+Qualification Requirements
+Each project must use Chainlink CCIP in some form to make a state change on a blockchain, otherwise it will not be eligible for the Chainlink core prizes. This means that a front end simply reading from Chainlink Data Feeds doesn't count. Using Chainlink CCIP inside your smart contracts is required, though you are encouraged to utilize Chainlink Runtime Environment (CRE), Chainlink Data Feeds, Chainlink Data Streams and Chainlink VRF.
+Links and Resources
+CCIP Documentation
+https://docs.chain.link/ccip
+↗
+CCIP 2.0 LinkLab
+https://www.youtube.com/watch?v=jt2fM84DGVE
+↗
+Workshop
+Watch Video →
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

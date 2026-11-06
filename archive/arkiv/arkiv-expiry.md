@@ -1,0 +1,89 @@
+# Expiration
+
+Every entity expires at a block you choose. From that block on, queries don’t return it and every operation on it fails. You set a lifetime of up to about 182 days when you create the entity, and can extend it any time before it expires. A shorter lifetime costs less, so start short and extend what you still need.
+
+## Build an expiration
+
+`ExpirationTime` builds the `expiration` that `createEntity`, `extendEntity` and batches take. Use a duration, a deadline, or a deadline with a minimum:
+
+```ts
+import { ExpirationTime } from "@arkiv-network/sdk"
+
+ExpirationTime.fromHours(12)
+ExpirationTime.fromDays(30)
+ExpirationTime.max()
+ExpirationTime.atDate(new Date("2027-01-01"))
+ExpirationTime.atBlock(5_000_000n)
+ExpirationTime.atDate(new Date("2027-01-01"), {
+  atLeast: ExpirationTime.fromDays(1),
+})
+```
+
+With `atLeast`, the entity lives until the deadline or for the minimum, whichever ends later.
+
+| Helper | Lifetime |
+| --- | --- |
+| `fromSeconds(n)` | `n` seconds, a multiple of the 2-second block time |
+| `fromMinutes(n)`, `fromHours(n)`, `fromDays(n)`, `fromWeeks(n)` | That many minutes, hours, days or weeks |
+| `fromMonths(n)` | `n` periods of exactly 30 days |
+| `fromBlocks(n)` | `n` blocks |
+| `max()` | The [longest lifetime](#the-longest-lifetime) the chain allows |
+| `atBlock(block, { atLeast? })` | Until the given block |
+| `atDate(date, { atLeast? })` | Until the given time, rounded up to the next block |
+
+## Time is counted in blocks
+
+Arkiv counts lifetimes in blocks, and a block takes 2 seconds. The SDK turns durations and dates into blocks at that rate, so a lifetime in days is approximate if blocks come faster or slower. The result of a write tells you the exact block:
+
+```ts
+const { expiresAt } = await walletClient.createEntity(Posts, values, {
+  expiration: ExpirationTime.fromDays(30),
+})
+```
+
+`fromSeconds` throws `InvalidExpiryError` for a duration that isn’t a whole number of blocks, such as 3 seconds.
+
+## The longest lifetime
+
+No entity lives more than 7,884,000 blocks, about 182.5 days, past the block its create or extension lands in. The SDK exports this limit as `MAX_LIFETIME`. Use `ExpirationTime.max()` to ask for all of it:
+
+```ts
+const { expiresAt } = await walletClient.createEntity(Posts, values, {
+  expiration: ExpirationTime.max(),
+})
+```
+
+A longer expiration throws `InvalidExpiryError` before anything is sent. That includes `fromYears(1)`, `fromMonths(7)` and an `atDate` more than about 182 days away. To keep an entity longer, [extend it](#extend-an-entity) before it expires.
+
+## Extend an entity
+
+`extendEntity` sets a new expiration on an existing entity:
+
+```ts
+const { expiresAt } = await walletClient.extendEntity({
+  entityKey,
+  expiration: ExpirationTime.fromDays(30),
+})
+```
+
+A duration counts from now, not from the current expiration. Extending an entity with 10 days left by `fromDays(30)` leaves it with 30 days, not 40. Extending by `max()` resets it to the full 182.5 days. A new expiration earlier than the current one is rejected, and one equal to it changes nothing.
+
+Only the owner can extend an entity, unless it was created with the [`permissionlessExtension` flag](https://docs.arkiv.network/writing/create/#fix-properties-at-creation).
+
+## Find out when an entity expires
+
+Select `$expiresAt` to read an entity’s expiration block, or filter on it to find entities that expire soon:
+
+```ts
+import { lt } from "@arkiv-network/sdk/query"
+import { u64 } from "@arkiv-network/sdk/schema"
+
+const { currentBlock } = await publicClient.getBlockTiming()
+const soon = await publicClient
+  .select({ $key: true, $expiresAt: true })
+  .from(Posts)
+  .where(lt("$expiresAt", u64(currentBlock + 43_200n)))
+  .fetch()
+```
+
+Here `43_200n` blocks is one day. Arkiv emits no event when an entity expires. If you keep a copy of Arkiv data elsewhere, use `$expiresAt` to drop expired entities yourself.

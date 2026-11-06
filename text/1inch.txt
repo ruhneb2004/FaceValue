@@ -1,0 +1,108 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+1inch
+$7,000
+1inch.com
+X Logo1inch
+About
+1inch is a network of decentralized protocols that focus on unifying DeFi liquidity. Most known for our DEX aggregator launched in 2019, we have continued to improve and ship protocol, maintaining our position as one of the premiere players in the token swapping space.
+Our most recent release, Aqua, reimagines how DEXes are designed and is a perfect candidate for creative hackathon teams.
+Prizes
+💧 Build an Aqua App ⸺ $5,000
+🥇
+1st place
+$2,500
+🥈
+2nd place
+$1,500
+🥉
+3rd place
+$1,000
+Create a custom Aqua app that implements a sophisticated DeFi position. If you use SwapVM, you may modify SwapVM opcodes and define your own instructions. The final positions must be demonstrated through tests scripts or a UI.
+Projects that utilize SwapVM will be scored higher during the final judging.
+Qualification Requirements
+Official Aqua/SwapVM contracts must be used (redeployments of a modified SwapVM contract is allowed)
+Onchain execution of token transfers should be presented during the final demo (local forks are ok)
+Proper Git commit history (no single-commit entries on the final day)
+Links and Resources
+SwapVM Smart Contracts
+https://github.com/1inch/swap-vm/tree/main
+↗
+Aqua Smart Contracts
+https://github.com/1inch/aqua
+↗
+Aqua SDK
+https://github.com/1inch/sdks/tree/master/typescript/aqua
+↗
+💦 Build an Aqua App - Continuity Track ⸺ $2,000
+🆕  This prize is only available to Continuity Track participants →
+🥇
+1st place
+$1,500
+🥈
+2nd place
+$500
+Create a custom Aqua app that implements a sophisticated DeFi position. If you use SwapVM, you may modify SwapVM opcodes and define your own instructions. The final positions must be demonstrated through tests scripts or a UI.
+Projects that utilize SwapVM will be scored higher during the final judging.
+Qualification Requirements
+Official Aqua/SwapVM contracts must be used (redeployments of a modified SwapVM contract is allowed)
+Onchain execution of token transfers should be presented during the final demo (local forks are ok)
+Proper Git commit history (no single-commit entries on the final day)
+Links and Resources
+SwapVM Contracts
+https://github.com/1inch/swap-vm/tree/main
+↗
+Aqua Smart Contracts
+https://github.com/1inch/aqua
+↗
+Aqua SDK
+https://github.com/1inch/sdks/tree/master/typescript/aqua
+↗
+Resources
+SwapVM Whitepaper
+https://github.com/1inch/swap-vm/blob/release/1.1/docs/whitepaper-swap-vm-1.0.pdf
+↗
+Aqua Whitepaper
+https://github.com/1inch/aqua/blob/main/docs/whitepaper-aqua-1.0.pdf
+↗
+Workshop
+Reimagining the AMM with 1inch Aqua
+1inch Aqua solves many of the drawbacks of modern AMM design with self-custodial onchain liquidity.
+Join us as we ...
+This workshop is happening in-person
+05:30 PM IST — Thursday, Nov 5, 2026 in Workshop Room 2
+Jobs
+Software Engineer Blockchain / Web3 1inch→
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai

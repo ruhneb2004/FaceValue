@@ -1,0 +1,108 @@
+ETHGlobal
+Login
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Connect Discord
+Events 
+ETHConf New
+Plus 
+Showcase 
+Faucet 
+Swag 
+About 
+Login
+ENS
+$10,000
+ens.domains
+X Logoensdomains
+About
+ENS is the universal pointer for anything on the internet. It turns wallet addresses into human-readable names like yourname.eth: a portable, onchain profile that works across every app, chain, and wallet.
+Developers use ENS to replace raw addresses with real identities, build decentralized websites, and create scalable subname ecosystems. As AI agents become first-class onchain actors, ENS is how you give them a name, a reputation, and a place to be found.
+Prizes
+🧬 Best Use of ENSv2 ⸺ $7,000
+🥇
+1st place
+$3,000
+🥈
+2nd place
+$2,000
+🥉
+3rd place
+$1,000
+🏅
+3rd place
+$1,000
+ENSv2 is now live on Ethereum mainnet. Be among the first to build on it. Explore the new hierarchical registry structure: resolve subnames straight off a parent's resolver with wildcard resolution, or deploy your own subname registry to tokenize and manage subnames under your own rules. Use Enhanced Access Control, the shared, role-based permission system behind both registries and resolvers, to delegate specific rights, like letting an account edit only certain text records on a name. Give subnames their own Permissioned Resolver so they fully own their data, mix in record aliasing at the resolver level or namespace aliasing via a shared registry, and combine it all to build subname setups: expiring, revocable, non-transferable vs. transferable, even forever names with no parent control. Bonus points if you bring AI agents into the mix. Think agents as namespaces, each with their own identity and permissions.
+Qualification Requirements
+Project must be built on ENSv2 on Ethereum mainnet or Sepolia. ENSv2 features should be central to the product, not a cosmetic add-on. Your demo must be functional and not just include hard-coded values. Upon submission, your project showcase must have a link to a live demo and the code needs to be open source and accessible on Github or a similar platform.
+Links and Resources
+Permissioned Registry docs
+https://docs.ens.domains/ensv2/permissioned-registry
+↗
+Permissioned Resolver docs
+https://docs.ens.domains/ensv2/permissioned-resolver/
+↗
+Enhanced Access Control docs
+https://docs.ens.domains/ensv2/enhanced-access-control/
+↗
+Guide for Contract Developers
+https://docs.ens.domains/ensv2/tutorial-contract-developers/
+↗
+🔗 Best Integration of ENSv2 into an Existing Project ⸺ $3,000
+🆕  This prize is only available to Continuity Track participants →
+🥇
+1st place
+$2,000
+🥈
+2nd place
+$1,000
+ENSv2 is now live on Ethereum mainnet. Explore how ENSv2's feature set, including the new registry hierarchy, Enhanced Access Control, Permissioned Resolvers, and record and namespace aliasing, can plug into an existing protocol or project to improve the user experience or unlock entirely new use cases. Take a project you already know, yours or an open one, and integrate it against ENSv2 on Ethereum mainnet.
+Qualification Requirements
+Integration must use ENSv2 on Ethereum mainnet and integrate it into an existing project. It should be clear how ENSv2 improves the project, not just a cosmetic add-on. Your demo must be functional and not just include hard-coded values. Upon submission, your project showcase must have a link to a live demo and the code needs to be open source and accessible on Github or a similar platform.
+Links and Resources
+Guide for App Developers
+https://docs.ens.domains/ensv2/tutorial-app-developers/
+↗
+Resources
+ENSv2 docs
+https://docs.ens.domains/ensv2/overview/
+↗
+Agent-native CLI
+https://github.com/ensdomains/ens-cli
+↗
+Agent Text Records
+https://docs.ens.domains/ensip/26/
+↗
+Building with AI
+https://docs.ens.domains/building-with-ai/
+↗
+AI Agent Registry ENS Name Verification
+https://docs.ens.domains/ensip/25/
+↗
+Workshop
+ENSv2 - Identity for Apps, Agents & Beyond
+An introduction to ENS as identity infrastructure for apps, AI agents and beyond, and what changes in ENSv2. Covers...
+This workshop is happening in-person
+04:00 PM IST — Thursday, Nov 5, 2026 in Workshop Room 1
+Sign up to get the latest news and updates on ETHGlobal
+Products
+ETHConf
+Events
+Pragma
+Packs
+Plus New
+Faucet
+Legal
+Rules & Conduct
+Privacy Policy
+Company
+About
+Brand
+Careers Hiring
+© 2026 ETHGlobal. All rights reserved.
+ETHGlobal Mumbai
