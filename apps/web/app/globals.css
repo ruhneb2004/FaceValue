@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   FaceValue design tokens
+   Source of truth: docs/design-tokens.md
+   Brand anchors: Figma "Golden Harmony" #BA8E23, taupe #54463A
+   Every ratio below was measured, not estimated.
+   ───────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* gold — hue 84° */
+  --gold-50: #fff4cb;
+  --gold-100: #ffecbf;
+  --gold-200: #f8deab;
+  --gold-300: #e9cc90;
+  --gold-400: #d8b670;
+  --gold-500: #c69e49;
+  --gold-600: #b1861e;
+  --gold-700: #93701d;
+  --gold-800: #765a1a;
+  --gold-900: #594415;
+  --gold-950: #3e2f0e;
+
+  /* taupe — hue 63° */
+  --taupe-50: #fcf5ef;
+  --taupe-100: #f5ede7;
+  --taupe-200: #e8dfd8;
+  --taupe-300: #d7cdc5;
+  --taupe-400: #c4b8ae;
+  --taupe-500: #afa297;
+  --taupe-600: #9a8b7e;
+  --taupe-700: #817367;
+  --taupe-800: #685d53;
+  --taupe-900: #4e463f;
+  --taupe-950: #37302b;
+
+  /* warm neutral — hue 63°, near-zero chroma */
+  --neutral-50: #f9f6f4;
+  --neutral-100: #f1eeeb;
+  --neutral-200: #e4e1de;
+  --neutral-300: #d2cecb;
+  --neutral-400: #bebab6;
+  --neutral-500: #a8a49f;
+  --neutral-600: #928c88;
+  --neutral-700: #7a7571;
+  --neutral-800: #625e5b;
+  --neutral-900: #4a4744;
+  --neutral-950: #1f1e1c;
+
+  /* semantic */
+  --color-bg-page: var(--neutral-50);
+  --color-bg-surface: var(--neutral-100);
+  --color-bg-sunken: var(--neutral-200);
+  --color-bg-gold-tint: var(--gold-100);
+
+  --color-text-primary: var(--neutral-950);
+  --color-text-secondary: var(--neutral-900);
+  --color-text-muted: var(--neutral-800);
+  --color-text-on-accent: #ffffff;
+
+  --color-accent-solid: var(--gold-700);
+  --color-accent-hover: var(--gold-800);
+  --color-accent-text: var(--gold-800);
+
+  --color-secondary-solid: var(--taupe-800);
+  --color-border: var(--neutral-700);
+  --color-border-subtle: var(--neutral-300);
+  --color-focus-ring: var(--gold-800);
+
+  /* status states — one hue each, >=15deg apart in OKLCH */
+  --state-active-text: #1f6b45;
+  --state-active-bg: #e8f2ec;
+  --state-active-solid: #1f6b45;
+
+  --state-provisional-text: #8a5a00;
+  --state-provisional-bg: #fdf3e0;
+  --state-provisional-solid: #8a5a00;
+
+  --state-disputed-text: #9a4737;
+  --state-disputed-bg: #ffede5;
+  --state-disputed-solid: #9a4737;
+
+  --state-review-text: #5f3f8a;
+  --state-review-bg: #f2ecf7;
+  --state-review-solid: #5f3f8a;
+
+  --state-moved-text: #4e463f;
+  --state-moved-bg: #f5ede7;
+  --state-moved-solid: #4e463f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-page: var(--color-bg-page);
+  --color-surface: var(--color-bg-surface);
+  --color-sunken: var(--color-bg-sunken);
+  --color-gold-tint: var(--color-bg-gold-tint);
+
+  --color-ink: var(--color-text-primary);
+  --color-ink-2: var(--color-text-secondary);
+  --color-ink-3: var(--color-text-muted);
+
+  --color-accent: var(--color-accent-solid);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-text: var(--color-accent-text);
+  --color-line: var(--color-border);
+  --color-line-subtle: var(--color-border-subtle);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+
+  --radius-control: 8px;
+  --radius-card: 12px;
+
+  --shadow-card: 0 1px 2px rgba(31, 30, 28, 0.06),
+    0 8px 24px -12px rgba(31, 30, 28, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Focus is always visible, never removed */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Money and counts align in columns */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
