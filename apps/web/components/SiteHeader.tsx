@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { useState } from "react";
-import { ArrowUpRight, Copy, Check, SignOut, Wallet } from "@phosphor-icons/react/ssr";
+import { ArrowRight, ArrowUpRight, Copy, Check, SignOut, Wallet } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetTrigger } from "./Sheet";
 import { shortAddress, useWallet } from "@/lib/wallet";
@@ -100,10 +100,29 @@ export function SiteHeader() {
                 </button>
               </>
             ) : (
-              <Button size="sm" variant="secondary" onClick={connect} disabled={connecting}>
+              /* Not the shared Button: this is the one control in the bar that
+                 has to read as the primary action, and a bordered rectangle on a
+                 translucent bar reads as chrome. A filled accent pill with a
+                 trailing arrow states it as the way in. Size stays within the
+                 bar's own metrics so the container is untouched. */
+              <button
+                type="button"
+                onClick={connect}
+                disabled={connecting}
+                className="press group inline-flex min-h-11 items-center gap-2 rounded-full bg-accent pl-4 pr-2.5 font-semibold text-accentink transition-[background-color,gap,opacity] duration-300 hover:gap-2.5 hover:bg-[#b8e600] disabled:opacity-45 motion-reduce:transition-none"
+              >
                 <Wallet size={16} aria-hidden="true" />
-                {connecting ? "Connecting" : "Connect wallet"}
-              </Button>
+                <span>{connecting ? "Connecting" : "Connect wallet"}</span>
+                {/* The arrow is the affordance: it slides on hover and is the
+                    only thing that moves, so the label never shifts position
+                    under the pointer. */}
+                <span
+                  aria-hidden="true"
+                  className="grid size-7 place-items-center rounded-full bg-accentink/10 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                >
+                  <ArrowRight size={13} weight="bold" />
+                </span>
+              </button>
             )}
 
             {/*
@@ -179,16 +198,38 @@ function MenuGlyph({ open }: { open: boolean }) {
   );
 }
 
+/**
+ * A nav link.
+ *
+ * The active one used to differ only in colour, which is both the weakest
+ * possible signal and a state carried by colour alone. It now changes four
+ * things at once: a filled surface, a ring, a weight increase, and a small
+ * accent dot beneath the label. Any one of them survives greyscale, and the dot
+ * survives a colour-blind viewer who cannot tell lime from white.
+ *
+ * The dot is a pseudo-element rather than a node, so it cannot be read out or
+ * focused, and the label keeps its exact position as the state changes. It
+ * scales in on the shared easing curve and is removed entirely under
+ * prefers-reduced-motion, where the fill and weight still carry the state.
+ */
 function NavLink({ href, current, children }: { href: string; current?: boolean; children: React.ReactNode }) {
   return (
     <Link
       href={href}
       aria-current={current ? "page" : undefined}
-      className={`press title-4 grid min-h-11 place-items-center rounded-md px-3 ${
-        current ? "text-ink" : "text-ink2 hover:text-ink"
+      className={`press title-4 relative grid min-h-11 place-items-center rounded-lg px-3.5 transition-colors ${
+        current
+          ? "bg-surface3 font-semibold text-ink ring-1 ring-line ring-inset"
+          : "font-medium text-ink2 hover:bg-surface3/60 hover:text-ink"
       }`}
     >
       {children}
+      <span
+        aria-hidden="true"
+        className={`absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent transition-all duration-300 ${
+          current ? "scale-100 opacity-100" : "scale-0 opacity-0"
+        } motion-reduce:transition-none`}
+      />
     </Link>
   );
 }
