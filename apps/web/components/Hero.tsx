@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { ScanField } from "@/components/three/ScanField";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 
@@ -53,31 +52,37 @@ export function Hero({
       }`}
     >
       {video && (
-        <>
-          {/*
-            The hero visual is a live 3D head that tracks the cursor, replacing
-            the footage. It is both more informative (a head under a scan bar
-            is literally what this product does) and lighter: the video was
-            1.2 MB of opaque pixels behind the copy, this is a few hundred
-            kilobytes of geometry that responds to the reader.
+        /*
+          The footage is a contained panel on the right, not a full-bleed
+          background: bled edge to edge it crowded the headline and made the
+          right side of the hero feel noisy. Inset and rounded with a hairline
+          border, it reads as a framed visual next to the copy.
 
-            Hidden below lg, where a 44% column would be too narrow to read as
-            a head, and the copy needs the full width anyway.
-          */}
-          <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[46%] lg:block">
-            <ScanField className="h-full w-full" />
-          </div>
-          {/* Calibration ticks down the right edge. Flat rules, one element
-              each, so this costs no draw calls and no gradients. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-16 right-6 -z-10 hidden w-px bg-line lg:block"
+          Muted, looping, playsInline and no controls, so it behaves as a
+          background texture rather than a media player. The poster is shown
+          before the first frame, so the panel is never an empty rectangle.
+          `motion-reduce:hidden` removes the moving image for anyone who has
+          asked the system for less motion.
+        */
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-6 right-6 -z-10 hidden w-[44%] overflow-hidden rounded-xl border border-line md:block"
+        >
+          <video
+            className="h-full w-full object-cover opacity-80 motion-reduce:hidden"
+            src="/video/hero-scan.mp4"
+            poster="/video/hero-poster.jpg"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            tabIndex={-1}
           />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute right-6 top-1/2 -z-10 hidden size-1.5 -translate-x-[2px] -translate-y-1/2 rounded-full bg-accent lg:block"
-          />
-        </>
+          {/* Flat scrim only. A gradient here would be a second one on the page,
+              and the design rule allows exactly one, on the heading. */}
+          <div className="absolute inset-0 bg-surface2/35" />
+        </div>
       )}
 
       <div className="mx-auto w-full max-w-[1440px] px-3 md:px-3">
