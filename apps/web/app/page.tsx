@@ -11,6 +11,8 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { StatusStages } from "@/components/StatusStages";
 import { Button } from "@/components/Button";
 import { Footer } from "@/components/Footer";
+import { SEED_LIKENESSES } from "@/lib/seed";
+import { isLicensable } from "@/lib/types";
 
 /**
  * Landing page. Section order follows the skill's A2 and A6:
@@ -179,19 +181,32 @@ export default function Landing() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-[1440px] px-6 md:px-12 py-20 md:py-28">
-          <div className="rounded-xl border border-line bg-surface3 px-6 py-10 md:px-10 md:py-12">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
+        {/* Closing prompt. The old version was a shallow card with the copy in
+            one corner and the buttons in the other, so most of a full-width
+            panel was dead space between them. This gives the block a heading at
+            the same scale as the sections above, puts the two actions directly
+            under the copy they belong to, and uses the remaining width for the
+            one number that answers "why now". */}
+        <section
+          aria-labelledby="closing"
+          className="mx-auto w-full max-w-[1440px] px-6 md:px-12 pb-20 pt-8 md:pb-28"
+        >
+          <div className="overflow-hidden rounded-2xl border border-line bg-surface2">
+            <div className="grid gap-10 p-8 md:p-12 lg:grid-cols-[minmax(0,1.5fr)_auto] lg:items-end lg:gap-16">
               <div>
-                <h2 className="heading-5 max-w-[24ch] text-ink">
+                <h2
+                  id="closing"
+                  className="max-w-[20ch] text-[2rem] leading-[1.08] font-medium tracking-[-0.02em] text-ink text-balance md:text-[2.75rem]"
+                >
                   Browse the registry before you commit to anything
                 </h2>
-                <p className="body-6 mt-3 max-w-[46ch] text-ink2">
-                  Connecting a wallet shows prices, bonds and open challenges.
-                  It costs nothing and signs nothing.
+                <p className="mt-5 max-w-[44ch] text-[1.0625rem] leading-relaxed text-ink2">
+                  Connecting a wallet shows prices, bonds and open challenges. It
+                  costs nothing and signs nothing.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-3 lg:justify-end">
+
+              <div className="flex flex-wrap gap-3">
                 <Button href="/explore" size="lg">
                   Explore likenesses
                   <ArrowRight size={18} aria-hidden="true" />
@@ -201,6 +216,34 @@ export default function Landing() {
                 </Button>
               </div>
             </div>
+
+            {/* A strip of the three facts a reader checks before leaving. They
+                are the numbers the registry actually holds, not decoration, and
+                they use the width the card was otherwise wasting. */}
+            <dl className="grid grid-cols-3 divide-x divide-line border-t border-line">
+              {[
+                { k: "Entries", v: String(SEED_LIKENESSES.length) },
+                {
+                  k: "Licensable now",
+                  v: String(SEED_LIKENESSES.filter((l) => isLicensable(l.state)).length),
+                },
+                {
+                  k: "Open challenges",
+                  v: String(
+                    SEED_LIKENESSES.reduce((n, l) => n + l.openChallenges, 0),
+                  ),
+                },
+              ].map((s) => (
+                <div key={s.k} className="px-6 py-5 md:px-8">
+                  <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-ink2">
+                    {s.k}
+                  </dt>
+                  <dd className="tnum mt-1.5 font-mono text-[1.25rem] text-ink">
+                    {s.v}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
       </main>
