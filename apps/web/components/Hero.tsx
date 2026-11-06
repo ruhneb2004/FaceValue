@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { HeadCanvas } from "@/components/three/HeadCanvas";
+import { ScanField } from "@/components/three/ScanField";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { Button } from "./Button";
 
@@ -65,7 +65,7 @@ export function Hero({
             a head, and the copy needs the full width anyway.
           */}
           <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[46%] lg:block">
-            <HeadCanvas className="h-full w-full" />
+            <ScanField className="h-full w-full" />
           </div>
           {/* Calibration ticks down the right edge. Flat rules, one element
               each, so this costs no draw calls and no gradients. */}
