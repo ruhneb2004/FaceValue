@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     cos?: number;
     referenceHash?: string;
     nullifier?: string;
+    captureSource?: "camera" | "file";
   };
   if (!b.likenessId || !b.challenger) {
     return NextResponse.json({ error: "likenessId and challenger are required." }, { status: 400 });
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
     cos: b.cos,
     referenceHash: b.referenceHash,
     nullifier: b.nullifier,
+    captureSource: b.captureSource,
   });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
 

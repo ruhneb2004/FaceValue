@@ -216,6 +216,7 @@ function ChallengeForm() {
                   cos: 0.9,
                   referenceHash: reference.hash,
                   nullifier: proof?.nullifier,
+                  captureSource: reference.source,
                 }),
               });
               const data = (await res.json().catch(() => ({}))) as {

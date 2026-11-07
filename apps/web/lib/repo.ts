@@ -190,6 +190,8 @@ export function openChallenge(input: {
   cos: number;
   /** Hex SHA-256 of the challenger's live capture. */
   referenceHash?: string;
+  /** Whether the challenge image came from the camera or a file upload. */
+  captureSource?: "camera" | "file";
   /** Challenger's World ID nullifier; must differ from the registrant's. */
   nullifier?: string;
 }): Result<{ challengeId: string; tier: 1 | 3; likeness: Likeness }> {
@@ -250,7 +252,7 @@ export function openChallenge(input: {
   // Stake is equal to the registrant bond (price * 2), per the equal-stake rule.
   const stake = likeness.pricePerUse * 2;
   db.prepare(
-    "INSERT INTO challenges (id, likeness_id, challenger, stake, cos, tier, status, reference_hash, nullifier) VALUES (?, ?, ?, ?, ?, ?, 'open', ?, ?)",
+    "INSERT INTO challenges (id, likeness_id, challenger, stake, cos, tier, status, reference_hash, nullifier, capture_source) VALUES (?, ?, ?, ?, ?, ?, 'open', ?, ?, ?)",
   ).run(
     challengeId,
     likeness.id,
@@ -260,6 +262,7 @@ export function openChallenge(input: {
     tier,
     input.referenceHash ?? null,
     input.nullifier ?? null,
+    input.captureSource ?? null,
   );
   db.prepare(
     "INSERT INTO bond_ledger (id, likeness_id, challenge_id, kind, from_account, amount) VALUES (?, ?, ?, 'challenge', ?, ?)",

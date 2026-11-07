@@ -87,6 +87,11 @@ function migrate(d: DB) {
       -- registrant's, so a registrant cannot challenge their own record.
       reference_hash    TEXT,
       nullifier         TEXT,
+      -- How the challenge image arrived: 'camera' or 'file'. A challenge is the
+      -- moment someone claims ownership, so an uploaded file is not equivalent
+      -- evidence to a live capture — it can be any image of anyone. Recorded so
+      -- the UI and the resolver can see which it was rather than guessing.
+      capture_source    TEXT,
       created_at        TEXT NOT NULL DEFAULT (datetime('now')),
       resolved_at       TEXT
     );
