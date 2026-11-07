@@ -1,3 +1,6 @@
+import { appendFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { NextResponse, connection } from "next/server";
 
 /**
@@ -15,6 +18,25 @@ import { NextResponse, connection } from "next/server";
  * Per the docs the payload needs no remapping: forward it and read
  * `success` / `nullifier_hash`.
  */
+/**
+ * Append a diagnostic line to a temp file.
+ *
+ * Reading server stdout during a live demo is awkward, and diagnosing a failing
+ * proof already cost too many round trips. The point of failure has to be
+ * inspectable afterwards instead of reconstructed by guesswork. Never throws:
+ * diagnostics must not be able to break verification.
+ */
+function trace(line: string) {
+  try {
+    appendFileSync(
+      join(tmpdir(), "facevalue-worldid.log"),
+      `${new Date().toISOString()} ${line}\n`,
+    );
+  } catch {
+    // ignored on purpose
+  }
+}
+
 export async function POST(req: Request) {
   await connection();
 
@@ -65,6 +87,8 @@ export async function POST(req: Request) {
         : "developer.world.org");
     const verifyUrl = `https://${verifyHost}/api/v4/verify/${rpId}`;
     console.info("[worldid/verify] posting to", verifyUrl);
+    trace(`POST ${verifyUrl}`);
+    trace(`payload ${JSON.stringify(payload).slice(0, 1200)}`);
 
     // This app is already registered for World ID 4.0 — v4 accepts its rp_id and
     // validates 4.0-only fields, while v2 reports "App not found" / "Action not
@@ -85,13 +109,19 @@ export async function POST(req: Request) {
   if (!res.ok) {
     // Surface World's own reason rather than a bare 400, so the UI can explain
     // what happened instead of saying "verification failed".
-    const detail = (await res.json().catch(() => null)) as
-      | { error?: { message?: string; code?: string }; detail?: string }
-      | null;
+    const raw = await res.text();
+    trace(`reply ${res.status} ${raw.slice(0, 1200)}`);
+    let detail: { error?: { message?: string; code?: string }; detail?: string; code?: string } | null =
+      null;
+    try {
+      detail = JSON.parse(raw);
+    } catch {
+      detail = null;
+    }
     const message =
       detail?.error?.message ??
       detail?.detail ??
-      (detail?.error?.code ? `World rejected the proof (${detail.error.code}).` : null) ??
+      (detail?.code ? `World rejected the proof (${detail.code}).` : null) ??
       `World rejected the proof (HTTP ${res.status}).`;
     return NextResponse.json({ error: message }, { status: 400 });
   }
