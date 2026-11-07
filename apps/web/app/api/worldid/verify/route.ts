@@ -58,6 +58,11 @@ export async function POST(req: Request) {
       (process.env.NEXT_PUBLIC_WORLDID_ENV === "staging"
         ? "staging-developer.world.org"
         : "developer.world.org");
+
+    // This app is already registered for World ID 4.0 — v4 accepts its rp_id and
+    // validates 4.0-only fields, while v2 reports "App not found" / "Action not
+    // found". So there is nothing to migrate and no reason to fall back: a v2
+    // retry here could only turn one honest error into a misleading one.
     res = await fetch(`https://${verifyHost}/api/v4/verify/${rpId}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
