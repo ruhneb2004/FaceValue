@@ -29,29 +29,29 @@ const WALLET_A = "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const WALLET_B = "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 const WALLET_C = "0xcccccccccccccccccccccccccccccccccccccccc";
 
-test("registering with no nullifier is refused", () => {
+test("registering with no nullifier is refused", async () => {
   // This used to assert the opposite. A registration with no World ID proof was
   // accepted, which meant 'one likeness per human' could be bypassed by omitting a
   // field — anyone could mint unlimited unbacked claims. The registry's central
   // promise needs a unique human, so a missing proof is now a rejection.
-  const r = registerLikeness({ name: "No Nullifier", controller: WALLET_A, pricePerUse: 20 });
+  const r = await registerLikeness({ name: "No Nullifier", controller: WALLET_A, pricePerUse: 20 });
   assert.equal(r.ok, false);
   if (!r.ok) assert.equal(r.status, 400);
 });
 
-test("unproofed registrations cannot be created in bulk", () => {
+test("unproofed registrations cannot be created in bulk", async () => {
   // The old partial unique index allowed many nullifier-less rows to coexist. That
   // was fine for the index but wrong for the product: it made the per-human rule
   // optional. Two attempts must both fail, neither may create a row.
-  const a = registerLikeness({ name: "Anon One", controller: WALLET_A, pricePerUse: 10 });
-  const b = registerLikeness({ name: "Anon Two", controller: WALLET_B, pricePerUse: 10 });
+  const a = await registerLikeness({ name: "Anon One", controller: WALLET_A, pricePerUse: 10 });
+  const b = await registerLikeness({ name: "Anon Two", controller: WALLET_B, pricePerUse: 10 });
   assert.equal(a.ok, false);
   assert.equal(b.ok, false);
 });
 
-test("one likeness per nullifier is enforced", () => {
+test("one likeness per nullifier is enforced", async () => {
   const nullifier = "0x" + "11".repeat(32);
-  const first = registerLikeness({
+  const first = await registerLikeness({
     name: "First Claim",
     controller: WALLET_A,
     pricePerUse: 20,
@@ -59,7 +59,7 @@ test("one likeness per nullifier is enforced", () => {
   });
   assert.equal(first.ok, true);
 
-  const second = registerLikeness({
+  const second = await registerLikeness({
     name: "Second Claim",
     controller: WALLET_B,
     pricePerUse: 20,
@@ -72,9 +72,9 @@ test("one likeness per nullifier is enforced", () => {
   }
 });
 
-test("a challenge from the registrant's own nullifier is rejected", () => {
+test("a challenge from the registrant's own nullifier is rejected", async () => {
   const nullifier = "0x" + "22".repeat(32);
-  const reg = registerLikeness({
+  const reg = await registerLikeness({
     name: "Self Challenge Guard",
     controller: WALLET_A,
     pricePerUse: 20,
@@ -83,7 +83,7 @@ test("a challenge from the registrant's own nullifier is rejected", () => {
   assert.equal(reg.ok, true);
   if (!reg.ok) return;
 
-  const res = openChallenge({
+  const res = await openChallenge({
     likenessId: reg.data.id,
     challenger: WALLET_B,
     grounds: "This frames a shoot I did in March and the record names me.",
@@ -98,9 +98,9 @@ test("a challenge from the registrant's own nullifier is rejected", () => {
   }
 });
 
-test("a challenge from a different nullifier is accepted", () => {
+test("a challenge from a different nullifier is accepted", async () => {
   const regNullifier = "0x" + "33".repeat(32);
-  const reg = registerLikeness({
+  const reg = await registerLikeness({
     name: "Legit Challenge",
     controller: WALLET_A,
     pricePerUse: 20,
@@ -109,7 +109,7 @@ test("a challenge from a different nullifier is accepted", () => {
   assert.equal(reg.ok, true);
   if (!reg.ok) return;
 
-  const res = openChallenge({
+  const res = await openChallenge({
     likenessId: reg.data.id,
     challenger: WALLET_C,
     grounds: "This is my face in the March shoot and the record names someone else.",
@@ -121,9 +121,9 @@ test("a challenge from a different nullifier is accepted", () => {
   if (res.ok) assert.equal(res.status, 201);
 });
 
-test("reference hash is stored on register and on the challenge", () => {
+test("reference hash is stored on register and on the challenge", async () => {
   const hash = "ef".repeat(32);
-  const reg = registerLikeness({
+  const reg = await registerLikeness({
     name: "Hash Stored",
     controller: WALLET_A,
     pricePerUse: 20,

@@ -46,7 +46,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const likeness = getLikeness(id);
+  const likeness = await getLikeness(id);
   if (!likeness) return { title: "Likeness not found — FaceValue" };
   return { title: `${likeness.name} — FaceValue` };
 }
@@ -89,7 +89,7 @@ function LikenessShell() {
 async function LikenessBody({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await connection();
-  const likeness = getLikeness(id);
+  const likeness = await getLikeness(id);
 
   // An unknown id is a 404, not an empty page. Silently rendering a blank
   // record would let a dead link look like a cleared one.

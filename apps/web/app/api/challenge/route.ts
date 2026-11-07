@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "A cosine between -1 and 1 is required." }, { status: 400 });
   }
 
-  const result = openChallenge({
+  const result = await openChallenge({
     likenessId: b.likenessId,
     challenger: b.challenger,
     grounds: b.grounds ?? "",

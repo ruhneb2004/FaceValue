@@ -4,7 +4,7 @@ import { voteOnReview, listResolvers, ensureResolvers } from "@/lib/repo";
 /** GET /api/review — the three resolver seats. */
 export async function GET() {
   await connection();
-  ensureResolvers();
+  await ensureResolvers();
   return NextResponse.json({ resolvers: listResolvers() });
 }
 
@@ -31,8 +31,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "verdict must be registrant, challenger or evidence." }, { status: 400 });
   }
 
-  ensureResolvers();
-  const result = voteOnReview({ challengeId: b.challengeId, resolver: b.resolver, verdict: b.verdict });
+  await ensureResolvers();
+  const result = await voteOnReview({ challengeId: b.challengeId, resolver: b.resolver, verdict: b.verdict });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json(result.data, { status: result.status });
 }

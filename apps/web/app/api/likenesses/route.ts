@@ -16,5 +16,6 @@ export async function GET() {
   // without it the grid served a snapshot taken at build time and a licence
   // never showed up.
   await connection();
-  return NextResponse.json({ likenesses: listLikenesses() });
+  const likenesses = await listLikenesses();
+  return NextResponse.json({ likenesses });
 }

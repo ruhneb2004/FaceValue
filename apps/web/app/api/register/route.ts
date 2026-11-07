@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     nullifier?: string;
   };
 
-  const result = registerLikeness({
+  const result = await registerLikeness({
     name: b.name ?? "",
     ensName: b.ensName,
     controller: b.controller ?? "",
@@ -63,5 +63,6 @@ export async function POST(req: Request) {
 /** GET /api/register — not meaningful; list is at /api/likenesses. */
 export async function GET() {
   await connection();
-  return NextResponse.json({ likenesses: listLikenesses() });
+  const likenesses = await listLikenesses();
+  return NextResponse.json({ likenesses });
 }

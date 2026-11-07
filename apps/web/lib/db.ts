@@ -1,55 +1,101 @@
-import Database from "better-sqlite3";
-import { mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import { SEED_LIKENESSES } from "./seed.ts";
 import type { LikenessState } from "./types.ts";
 
 /**
- * The app database.
+ * The app database, on Postgres.
  *
- * SQLite, one file, opened once per process. The schema follows
- * `docs/dispute-spec.md §6`: likenesses, challenges, licenses, resolvers,
- * review_votes, bond_ledger. The bond_ledger and review_votes tables are
- * indexes of what the (future) contract does — the contract is the authority,
- * this is what the UI reads without a chain call per row.
+ * Why Postgres: the SQLite file only worked while the app ran on one machine. A
+ * hosted instance has no durable filesystem — on Vercel it is read-only, and
+ * anywhere else the file is lost on redeploy — so the registry would have reset on
+ * every push. Postgres moves the data somewhere that outlives the process.
  *
- * Seeded from `SEED_LIKENESSES` so the running app looks identical to the
- * hardcoded version it replaces. The seed writes `disputed` rows by opening a
- * challenge for them, so the derived state rule holds from the first read: a
- * likeness is `disputed` exactly when it has open challenges.
+ * The authority is still the bond contract on Hedera. These tables are an index of
+ * it: what the UI can read without a chain call per row. That ordering matters
+ * because it means a lost database is recoverable from chain events, while a lost
+ * chain is not recoverable from here.
  *
- * File location: `FACEVALUE_DB`, or `./.data/facevalue.db` by default. The
- * default is gitignored.
+ * `better-sqlite3` was synchronous; `pg` is not, so every repo function is async.
+ * That is a real change to the call sites, not a rename.
  */
 
-export type DB = Database.Database;
+export type DB = Pool;
 
-const DB_PATH = process.env.FACEVALUE_DB ?? ".data/facevalue.db";
+let pool: Pool | null = null;
 
-let db: DB | null = null;
+/**
+ * Connection string. `DATABASE_URL` first, so a hosted platform can inject it;
+ * otherwise a local default that matches the docker instance this was built
+ * against.
+ */
+export function connectionString(): string {
+  return (
+    process.env.DATABASE_URL ??
+    "postgresql://postgres:postgres@localhost:5433/facevalue"
+  );
+}
+
+/**
+ * Whether to negotiate TLS.
+ *
+ * A hosted Postgres requires TLS and a local docker instance does not, so this is
+ * derived from the host rather than hardcoded: localhost stays plain, anything else
+ * is treated as remote and TLS is required.
+ */
+function isRemote(url: string): boolean {
+  return !/localhost|127\.0\.0\.1|::1/.test(url);
+}
+
+function poolConfig() {
+  const url = connectionString();
+  return {
+    connectionString: url,
+    statement_timeout: 10_000,
+    max: Number(process.env.DATABASE_POOL_MAX ?? 10),
+    ...(isRemote(url)
+      ? {
+          // Managed providers present their own certificate chain, which this
+          // client cannot verify without the CA bundle. Encryption is still on;
+          // only certificate pinning is relaxed, and the connection string is
+          // itself a secret, so this is the same trust boundary as the password.
+          ssl: { rejectUnauthorized: false },
+          connectionTimeoutMillis: 15_000,
+        }
+      : {}),
+  };
+}
 
 export function getDb(): DB {
-  if (db) return db;
-  mkdirSync(dirname(DB_PATH), { recursive: true });
-  db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
-  migrate(db);
-  seedIfEmpty(db);
-  return db;
+  if (pool) return pool;
+  pool = new Pool(poolConfig());
+  return pool;
 }
 
-/** A fresh in-memory database, for tests. */
-export function makeTestDb(): DB {
-  const d = new Database(":memory:");
-  d.pragma("foreign_keys = ON");
-  migrate(d);
-  seedIfEmpty(d);
-  return d;
+/** Run the migration once per process. Idempotent, so it is safe on every boot. */
+let migrated: Promise<void> | null = null;
+
+export async function ensureSchema(): Promise<void> {
+  if (!migrated) {
+    migrated = (async () => {
+      await migrate();
+      // Seed here rather than in getDb(): seeding needs a query, and a query would
+      // call back into ensureSchema. Doing it inside the one-time init keeps a
+      // fresh database looking like the demo it replaces without a second entry
+      // point that someone has to remember to call.
+      await seedIfEmpty();
+    })().catch((err) => {
+      // Clear the memo on failure so a transient connection error can be retried
+      // rather than poisoning the process for its lifetime.
+      migrated = null;
+      throw err;
+    });
+  }
+  return migrated;
 }
 
-function migrate(d: DB) {
-  d.exec(`
+async function migrate(): Promise<void> {
+  const db = getDb();
+  await db.query(`
     CREATE TABLE IF NOT EXISTS likenesses (
       id            TEXT PRIMARY KEY,
       name          TEXT NOT NULL,
@@ -60,13 +106,13 @@ function migrate(d: DB) {
       holder        TEXT NOT NULL,
       settlement_deadline TEXT,
       -- SHA-256 of the captured reference frame. The image itself is never
-      -- persisted; this hash is what couples a record to its reference and is
-      -- the only thing a challenge is matched against.
+      -- persisted; this hash couples a record to its reference and is the only
+      -- thing a challenge is matched against.
       reference_hash TEXT,
       -- World ID nullifier. Server-side only, never exposed publicly. One
       -- likeness per human is enforced by the unique index below.
       nullifier     TEXT,
-      created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
     );
     -- One likeness per World ID nullifier. Partial index so un-registered rows
     -- (null nullifier) do not collide with each other.
@@ -78,24 +124,18 @@ function migrate(d: DB) {
       likeness_id       TEXT NOT NULL REFERENCES likenesses(id),
       challenger        TEXT NOT NULL,
       stake             INTEGER NOT NULL,
-      cos               REAL,
+      cos               DOUBLE PRECISION,
       tier              INTEGER,            -- 1 | 2 | 3, set at resolution
       status            TEXT NOT NULL CHECK (status IN ('open','won','lost','review')),
       resolved_by       TEXT,               -- 'auto' | 'multisig'
-      -- Hash of the challenger's live capture, and their World ID nullifier.
-      -- The nullifier is checked server-side to be distinct from the
-      -- registrant's, so a registrant cannot challenge their own record.
       reference_hash    TEXT,
       nullifier         TEXT,
-      -- How the challenge image arrived: 'camera' or 'file'. A challenge is the
-      -- moment someone claims ownership, so an uploaded file is not equivalent
-      -- evidence to a live capture — it can be any image of anyone. Recorded so
-      -- the UI and the resolver can see which it was rather than guessing.
+      -- How the challenge image arrived: 'camera' or 'file'. A challenge claims
+      -- ownership, so an upload is not equivalent evidence to a live capture.
       capture_source    TEXT,
-      created_at        TEXT NOT NULL DEFAULT (datetime('now')),
-      resolved_at       TEXT
+      created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+      resolved_at       TIMESTAMPTZ
     );
-    -- A challenger may hold at most one OPEN challenge per likeness.
     CREATE UNIQUE INDEX IF NOT EXISTS one_open_per_challenger
       ON challenges(likeness_id, challenger) WHERE status = 'open';
 
@@ -104,20 +144,20 @@ function migrate(d: DB) {
       likeness_id  TEXT NOT NULL REFERENCES likenesses(id),
       buyer        TEXT NOT NULL,
       price        INTEGER NOT NULL,
-      created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
     CREATE TABLE IF NOT EXISTS resolvers (
       address    TEXT PRIMARY KEY,
-      active     INTEGER NOT NULL DEFAULT 1,
-      added_at   TEXT NOT NULL DEFAULT (datetime('now'))
+      active     BOOLEAN NOT NULL DEFAULT TRUE,
+      added_at   TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
     CREATE TABLE IF NOT EXISTS review_votes (
       challenge_id     TEXT NOT NULL REFERENCES challenges(id),
       resolver_address TEXT NOT NULL,
       verdict          TEXT NOT NULL CHECK (verdict IN ('registrant','challenger','evidence')),
-      voted_at         TEXT NOT NULL DEFAULT (datetime('now')),
+      voted_at         TIMESTAMPTZ NOT NULL DEFAULT now(),
       PRIMARY KEY (challenge_id, resolver_address)
     );
 
@@ -129,48 +169,89 @@ function migrate(d: DB) {
       from_account TEXT,
       to_account   TEXT,
       amount       INTEGER NOT NULL,
-      created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
 }
 
-function seedIfEmpty(d: DB) {
-  const { n } = d.prepare("SELECT COUNT(*) AS n FROM likenesses").get() as { n: number };
-  if (n > 0) return;
+/** Run a query and return rows. Thin wrapper so call sites read cleanly. */
+export async function q<T extends QueryResultRow>(
+  sql: string,
+  params: unknown[] = [],
+): Promise<T[]> {
+  await ensureSchema();
+  const res = await getDb().query<T>(sql, params);
+  return res.rows;
+}
 
-  const insertLikeness = d.prepare(`
-    INSERT INTO likenesses (id, name, price_per_use, state, ens_name, controller, holder, settlement_deadline)
-    VALUES (@id, @name, @pricePerUse, @state, @ensName, @controller, @holder, @settlementDeadline)
-  `);
-  const insertChallenge = d.prepare(`
-    INSERT INTO challenges (id, likeness_id, challenger, stake, status)
-    VALUES (@id, @likeness_id, @challenger, @stake, 'open')
-  `);
+/** Run a query and return the first row, or null. */
+export async function q1<T extends QueryResultRow>(
+  sql: string,
+  params: unknown[] = [],
+): Promise<T | null> {
+  const rows = await q<T>(sql, params);
+  return rows[0] ?? null;
+}
 
-  const tx = d.transaction(() => {
-    for (const l of SEED_LIKENESSES) {
-      // Seed rows carry a `disputed` state and an openChallenges count. Store
-      // the base state and materialise the challenges that make it derived.
-      const baseState: LikenessState = l.state === "disputed" ? "active" : l.state;
-      insertLikeness.run({
-        id: l.id,
-        name: l.name,
-        pricePerUse: l.pricePerUse,
-        state: baseState,
-        ensName: l.ensName ?? null,
-        controller: l.controller,
-        holder: l.holder,
-        settlementDeadline: l.settlementDeadline ?? null,
-      });
-      for (let i = 0; i < (l.openChallenges ?? 0); i++) {
-        insertChallenge.run({
-          id: `${l.id}-seed-${i + 1}`,
-          likeness_id: l.id,
-          challenger: `0xseed${String(i + 1).padStart(34, "0")}`,
-          stake: l.pricePerUse * 2,
-        });
-      }
-    }
-  });
-  tx();
+/**
+ * Run several statements in one transaction.
+ *
+ * The bond ledger, the challenge row and the likeness state must move together:
+ * a challenge that is recorded without its stake row is a challenge whose money
+ * cannot be accounted for. SQLite gave us this for free by running synchronously
+ * in one process; with a connection pool it has to be asked for explicitly.
+ */
+export async function tx<T>(fn: (c: PoolClient) => Promise<T>): Promise<T> {
+  await ensureSchema();
+  const client = await getDb().connect();
+  try {
+    await client.query("BEGIN");
+    const out = await fn(client);
+    await client.query("COMMIT");
+    return out;
+  } catch (err) {
+    await client.query("ROLLBACK").catch(() => {});
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+/** Seed once, so a fresh database looks like the demo it replaces. */
+export async function seedIfEmpty(): Promise<void> {
+  // Raw pool, not q1(): q1() calls ensureSchema(), and ensureSchema() calls this —
+  // that cycle would recurse until the stack died.
+  const db = getDb();
+  const res = await db.query<{ n: string }>("SELECT COUNT(*)::text AS n FROM likenesses");
+  if (Number(res.rows[0]?.n ?? 0) > 0) return;
+
+  for (const l of SEED_LIKENESSES) {
+    await db.query(
+      `INSERT INTO likenesses
+        (id, name, price_per_use, state, ens_name, controller, holder,
+         settlement_deadline, reference_hash)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+       ON CONFLICT (id) DO NOTHING`,
+      [
+        l.id,
+        l.name,
+        l.pricePerUse,
+        l.state satisfies LikenessState,
+        l.ensName ?? null,
+        l.controller,
+        l.holder,
+        l.settlementDeadline ?? null,
+        null,
+      ],
+    );
+  }
+}
+
+/** Reset the pool. Used by tests so each run starts from a clean connection. */
+export async function closeDb(): Promise<void> {
+  if (pool) {
+    await pool.end();
+    pool = null;
+    migrated = null;
+  }
 }

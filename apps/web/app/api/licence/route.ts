@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Connect a wallet first." }, { status: 400 });
   }
 
-  const result = licenseLikeness({ likenessId: b.likenessId, buyer: b.buyer });
+  const result = await licenseLikeness({ likenessId: b.likenessId, buyer: b.buyer });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json(result.data, { status: result.status });
 }

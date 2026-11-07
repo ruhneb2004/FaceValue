@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "challengeId is required." }, { status: 400 });
   }
 
-  const result = resolveTier1({ challengeId: b.challengeId });
+  const result = await resolveTier1({ challengeId: b.challengeId });
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
 
   // Off-chain is the default and the demo-safe path.
