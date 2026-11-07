@@ -53,17 +53,24 @@ export async function POST(req: Request) {
     // A simulator proof is issued by the staging verifier, and the two verifiers
     // do not share a database — sending a staging proof to the production host is
     // rejected. So the verify host has to match the bridge the proof came from.
+    // Server-side code must not rely on NEXT_PUBLIC_* — those are inlined for the
+    // browser build and their presence in a route handler is not guaranteed. That
+    // ambiguity is why the environment question kept coming back. WORLDID_ENV is a
+    // plain server variable; both are accepted so the .env needs no duplication.
+    const envName = process.env.WORLDID_ENV ?? process.env.NEXT_PUBLIC_WORLDID_ENV;
     const verifyHost =
       process.env.WORLDID_VERIFY_HOST ||
-      (process.env.NEXT_PUBLIC_WORLDID_ENV === "staging"
+      (envName === "staging"
         ? "staging-developer.world.org"
         : "developer.world.org");
+    const verifyUrl = `https://${verifyHost}/api/v4/verify/${rpId}`;
+    console.info("[worldid/verify] posting to", verifyUrl);
 
     // This app is already registered for World ID 4.0 — v4 accepts its rp_id and
     // validates 4.0-only fields, while v2 reports "App not found" / "Action not
     // found". So there is nothing to migrate and no reason to fall back: a v2
     // retry here could only turn one honest error into a misleading one.
-    res = await fetch(`https://${verifyHost}/api/v4/verify/${rpId}`, {
+    res = await fetch(verifyUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload),
