@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "start": "node --env-file=.env node_modules/next/dist/bin/next start",
+    "lint": "eslint",
+    "start:plain": "next start"
   },
   "dependencies": {
     "@dicebear/collection": "9.4.3",

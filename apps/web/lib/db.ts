@@ -29,10 +29,18 @@ let pool: Pool | null = null;
  * against.
  */
 export function connectionString(): string {
-  return (
-    process.env.DATABASE_URL ??
-    "postgresql://postgres:postgres@localhost:5433/facevalue"
-  );
+  const url = process.env.DATABASE_URL;
+  if (url && url.trim()) return url.trim();
+
+  // On a hosted platform there is no localhost database, so a missing URL would
+  // only surface as a confusing connection timeout on the first request. Fail at
+  // startup with the actual reason instead.
+  if (process.env.NODE_ENV === "production" && !process.env.ALLOW_LOCAL_DB) {
+    throw new Error(
+      "DATABASE_URL is not set. The registry needs a Postgres URL in production.",
+    );
+  }
+  return "postgresql://postgres:postgres@localhost:5433/facevalue";
 }
 
 /**
