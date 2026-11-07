@@ -2,7 +2,7 @@ import {
   createPublicClient,
   createWalletClient,
   http,
-  keccak256,
+  labelhash,
   namehash,
   toHex,
   type Address,
@@ -25,48 +25,84 @@ import { normalize } from "viem/ens";
  * address is public by construction, so anything written must already be public.
  */
 
-export const ENS_REGISTRY: Address = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+/**
+ * ENSv2 on Sepolia.
+ *
+ * Sepolia now runs ENSv2: names live in a `PermissionedRegistry` (ETHRegistry) and
+ * subnames live in a per-name `UserRegistry` proxy. That means the v1 path in most
+ * tutorials — `setSubnodeRecord` on the legacy registry — simply reverts here even
+ * though the legacy contract still has code. We learned that from a failed
+ * transaction, so it is written down next to the code that depends on it.
+ *
+ * The parent was registered through the ETHRegistrar (commit/reveal, fee paid in
+ * MockUSDC), then a UserRegistry proxy was deployed through the Verifiable Factory
+ * and attached with `setSubregistry`. Minting a subname is then a single
+ * `register` call on that UserRegistry.
+ */
+export const ETH_REGISTRY: Address = "0xd4ebcbbdf463c9c45784603db0ddd499bc44a8b4";
+
 export const ENS_PUBLIC_RESOLVER: Address = "0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5";
+
+/** Address(0) subregistry: the subname gets no child registry of its own. */
+const NO_SUBREGISTRY = "0x0000000000000000000000000000000000000000" as Address;
+
+/**
+ * All roles and their admin counterparts, from the ENS v2 docs.
+ *
+ * Note this is 0x1111...1111, not (1 << N) - 1. The bitmap sets each role bit and
+ * each corresponding admin bit, so a contiguous all-ones value is wrong and the
+ * grant is rejected.
+ */
+const ALL_ROLES = BigInt(
+  "0x1111111111111111111111111111111111111111111111111111111111111111",
+);
+
+const USER_REGISTRY_ABI = [
+  {
+    name: "register",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "label", type: "string" },
+      { name: "owner", type: "address" },
+      { name: "subregistry", type: "address" },
+      { name: "resolver", type: "address" },
+      { name: "roleBitmap", type: "uint256" },
+      { name: "expiry", type: "uint64" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    name: "getState",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "anyId", type: "uint256" }],
+    outputs: [{ name: "", type: "uint8" }],
+  },
+] as const;
 
 /** Bytecode is unnecessary for these calls; only the ABI signatures matter. */
 const REGISTRY_ABI = [
   {
-    name: "setSubnodeRecord",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "parentNode", type: "bytes32" },
-      { name: "label", type: "bytes32" },
-      { name: "owner", type: "address" },
-      { name: "resolver", type: "address" },
-      { name: "ttl", type: "uint64" },
-    ],
-    outputs: [],
-  },
-  {
-    name: "owner",
+    name: "getOwner",
     type: "function",
     stateMutability: "view",
-    inputs: [{ name: "node", type: "bytes32" }],
+    inputs: [{ name: "anyId", type: "uint256" }],
     outputs: [{ name: "", type: "address" }],
-  },
-] as const;
-
-const RESOLVER_ABI = [
-  {
-    name: "setAddr",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "node", type: "bytes32" },
-      { name: "a", type: "address" },
-    ],
-    outputs: [],
   },
 ] as const;
 
 const parentName = () => process.env.ENS_PARENT_NAME || "facevalue.eth";
 const rpcUrl = () => process.env.ENS_RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com";
+
+/**
+ * The UserRegistry proxy that holds the subnames of the parent name.
+ *
+ * Deployed once via the Verifiable Factory and attached to the parent with
+ * `setSubregistry`; every mint goes through it. Read from env because it is a
+ * deployment address that changes if the parent is ever re-registered.
+ */
+const userRegistry = () => (process.env.ENS_SUBREGISTRY_ADDRESS ?? "") as Address;
 
 const publicClient = () =>
   createPublicClient({ chain: sepolia, transport: http(rpcUrl()) });
@@ -79,7 +115,11 @@ const publicClient = () =>
  * When false the caller gets a clear "not enabled" result rather than a revert.
  */
 export function ensEnabled(): boolean {
-  return process.env.ENS_SUBNAMES === "true" && !!process.env.ENS_PARENT_OWNER_KEY;
+  return (
+    process.env.ENS_SUBNAMES === "true" &&
+    !!process.env.ENS_PARENT_OWNER_KEY &&
+    !!process.env.ENS_SUBREGISTRY_ADDRESS
+  );
 }
 
 /** A label is one DNS segment: lowercase alphanumerics and hyphens. */
@@ -108,16 +148,29 @@ export function likenessSubname(name: string): string | null {
 }
 
 export type SubnameResult =
-  | { ok: true; name: string; txHash: Hex }
+  | {
+      ok: true;
+      name: string;
+      txHash: Hex;
+      /** False while the name is owned but has no address record yet. */
+      resolved: boolean;
+    }
   | { ok: false; reason: string };
 
 /**
- * Mint `<label>.facevalue.eth` and point it at `owner`.
+ * Mint `<label>.facevalue.eth`, owned by `owner`.
  *
- * Two transactions: create the subnode, then set its address on the resolver.
- * `setSubnodeRecord` can attach a resolver atomically, but the address itself is
- * stored by the resolver, so it needs a second call. Doing the record first keeps
- * the name owned by the right address even if the second call fails.
+ * One transaction: `register` on the UserRegistry mints the token that carries
+ * ownership. No resolver record is written here.
+ *
+ * Why no address record: ENSv2 separates ownership from records, and a record
+ * write is authorised against the *resolver*, not the name. The shared
+ * PublicResolver rejects our `setAddr` because our addresses hold no role on it,
+ * and a resolver proxy deployed through the Verifiable Factory with this
+ * implementation exposes no record setters at all. So the subname is a real,
+ * owned name that does not yet resolve to an address. Saying that plainly beats
+ * writing a name that looks resolvable and is not — the `resolved` flag on the
+ * result is false and the UI does not claim otherwise.
  */
 export async function mintSubname(
   name: string,
@@ -126,52 +179,50 @@ export async function mintSubname(
   const full = likenessSubname(name);
   if (!full) return { ok: false, reason: "That name has no usable ENS label." };
   if (!ensEnabled()) {
-    return { ok: false, reason: "ENS writes are not enabled (ENS_SUBNAMES is off)." };
-  }
-
-  const key = process.env.ENS_PARENT_OWNER_KEY as Hex;
-  const account = privateKeyToAccount(key);
-  const wallet = createWalletClient({ account, chain: sepolia, transport: http(rpcUrl()) });
-  const client = publicClient();
-
-  const parentNode = namehash(parentName());
-  const label = full.split(".")[0];
-  const labelHash = keccak256(toHex(label));
-
-  // Fail before spending gas if we do not actually control the parent. A revert
-  // from setSubnodeRecord costs a failed transaction and says less.
-  const currentOwner = await client.readContract({
-    address: ENS_REGISTRY,
-    abi: REGISTRY_ABI,
-    functionName: "owner",
-    args: [parentNode],
-  });
-  if (currentOwner.toLowerCase() !== account.address.toLowerCase()) {
     return {
       ok: false,
-      reason: `This key does not own ${parentName()} (owner is ${currentOwner}).`,
+      reason: "ENS writes are not enabled (ENS_SUBNAMES, key or subregistry missing).",
     };
   }
 
+  // Keys in env files are often pasted without the 0x prefix, and viem rejects
+  // the bare hex with a tick error that does not say why. Normalise instead.
+  const raw = process.env.ENS_PARENT_OWNER_KEY as Hex;
+  const key = (raw.startsWith("0x") ? raw : `0x${raw}`) as Hex;
+  const account = privateKeyToAccount(key);
+  const wallet = createWalletClient({ account, chain: sepolia, transport: http(rpcUrl()) });
+  const client = publicClient();
+  const registry = userRegistry();
+
+  const label = full.split(".")[0];
+
+  // Skip the write entirely if this subname is already minted. Re-minting would
+  // revert and cost gas, and a likeness can be re-saved many times.
   try {
-    const tx1 = await wallet.writeContract({
-      address: ENS_REGISTRY,
-      abi: REGISTRY_ABI,
-      functionName: "setSubnodeRecord",
-      args: [parentNode, labelHash, owner, ENS_PUBLIC_RESOLVER, BigInt(0)],
+    const state = await client.readContract({
+      address: registry,
+      abi: USER_REGISTRY_ABI,
+      functionName: "getState",
+      args: [BigInt(labelhash(label))],
     });
-    await client.waitForTransactionReceipt({ hash: tx1 });
+    if (state === 2) return { ok: true, name: full, txHash: "0x" as Hex, resolved: false };
+  } catch {
+    // An unreadable state is not a reason to refuse; fall through and let the
+    // write fail loudly with the chain's own error.
+  }
 
-    const node = namehash(full);
-    const tx2 = await wallet.writeContract({
-      address: ENS_PUBLIC_RESOLVER,
-      abi: RESOLVER_ABI,
-      functionName: "setAddr",
-      args: [node, owner],
+  try {
+    // Expiry a year out. ENSv2 stores expiry per label, so a subname is not
+    // permanent by default — this is the renewal horizon.
+    const expiry = BigInt(Math.floor(Date.now() / 1000) + 365 * 24 * 3600);
+    const tx = await wallet.writeContract({
+      address: registry,
+      abi: USER_REGISTRY_ABI,
+      functionName: "register",
+      args: [label, owner, NO_SUBREGISTRY, ENS_PUBLIC_RESOLVER, ALL_ROLES, expiry],
     });
-    await client.waitForTransactionReceipt({ hash: tx2 });
-
-    return { ok: true, name: full, txHash: tx2 };
+    await client.waitForTransactionReceipt({ hash: tx });
+    return { ok: true, name: full, txHash: tx, resolved: false };
   } catch (err) {
     return { ok: false, reason: `ENS write failed: ${(err as Error).message}` };
   }

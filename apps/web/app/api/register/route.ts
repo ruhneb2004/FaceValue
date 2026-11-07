@@ -33,7 +33,13 @@ export async function POST(req: Request) {
   // A provisional claim must be cheap to make: paying gas is not part of claiming,
   // and an unreachable or unfunded chain must not stop someone recording a claim.
   // The name is reported separately so the UI can say exactly what happened.
-  let ens: { name: string | null; minted: boolean; reason?: string } = {
+  let ens: {
+    name: string | null;
+    minted: boolean;
+    /** False while the name is owned but has no address record yet. */
+    resolved?: boolean;
+    reason?: string;
+  } = {
     name: null,
     minted: false,
   };
@@ -47,7 +53,7 @@ export async function POST(req: Request) {
         result.data.holder as `0x${string}`,
       );
       ens = minted.ok
-        ? { name: minted.name, minted: true }
+        ? { name: minted.name, minted: true, resolved: minted.resolved }
         : { name, minted: false, reason: minted.reason };
     }
   } catch (err) {
