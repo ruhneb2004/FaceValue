@@ -75,10 +75,10 @@ export async function POST(req: Request) {
     // A simulator proof is issued by the staging verifier, and the two verifiers
     // do not share a database — sending a staging proof to the production host is
     // rejected. So the verify host has to match the bridge the proof came from.
-    // Server-side code must not rely on NEXT_PUBLIC_* — those are inlined for the
-    // browser build and their presence in a route handler is not guaranteed. That
-    // ambiguity is why the environment question kept coming back. WORLDID_ENV is a
-    // plain server variable; both are accepted so the .env needs no duplication.
+    // Sandbox verifies against the PRODUCTION endpoint — the docs are explicit:
+    // 'To verify a proof, send it to the production verify endpoint. Nothing else
+    // is required.' Only the staging simulator uses the staging verifier.
+    // WORLDID_ENV is a plain server variable; NEXT_PUBLIC_* is not dependable here.
     const envName = process.env.WORLDID_ENV ?? process.env.NEXT_PUBLIC_WORLDID_ENV;
     const verifyHost =
       process.env.WORLDID_VERIFY_HOST ||
