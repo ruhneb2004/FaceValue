@@ -29,8 +29,19 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { action?: string };
   const action = body.action ?? "register-likeness";
 
-  const rpId = process.env.WORLDID_RP_ID;
-  const signingKey = process.env.WORLDID_RP_SIGNING_KEY;
+  // A staging app (World ID Sandbox) is a separate app with its own app_id, rp_id
+  // and signing key. When its credentials are present they take precedence for the
+  // staging environment, so both can be configured at once and switching is a
+  // config change rather than a code change.
+  const envName = process.env.WORLDID_ENV ?? process.env.NEXT_PUBLIC_WORLDID_ENV;
+  const useStagingTrust = envName === "staging" && process.env.WORLDID_STAGING_RP_ID;
+
+  const rpId = useStagingTrust
+    ? process.env.WORLDID_STAGING_RP_ID
+    : process.env.WORLDID_RP_ID;
+  const signingKey = useStagingTrust
+    ? process.env.WORLDID_STAGING_RP_SIGNING_KEY
+    : process.env.WORLDID_RP_SIGNING_KEY;
   const nonce = randomBytes(16).toString("hex");
   const createdAt = Math.floor(Date.now() / 1000);
   const expiresAt = createdAt + 300;
