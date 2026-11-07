@@ -114,17 +114,26 @@ export function registerLikeness(input: {
 
   // One likeness per human (plan §3). Checked explicitly so the caller gets a
   // readable 409 rather than a raw unique-constraint violation.
-  if (input.nullifier) {
-    const existing = db
-      .prepare("SELECT id FROM likenesses WHERE nullifier = ?")
-      .get(input.nullifier) as { id: string } | undefined;
-    if (existing) {
-      return {
-        ok: false,
-        status: 409,
-        error: "This World ID has already registered a likeness. One likeness per human.",
-      };
-    }
+  // Fail closed, like the challenge path: without a nullifier there is no proof a
+  // unique human is registering, so the registry would accept an unlimited number
+  // of unbacked claims and 'one likeness per human' would mean nothing.
+  if (!input.nullifier) {
+    return {
+      ok: false,
+      status: 400,
+      error:
+        "A World ID proof is required to register. One likeness per human cannot be enforced without it.",
+    };
+  }
+  const existing = db
+    .prepare("SELECT id FROM likenesses WHERE nullifier = ?")
+    .get(input.nullifier) as { id: string } | undefined;
+  if (existing) {
+    return {
+      ok: false,
+      status: 409,
+      error: "This World ID has already registered a likeness. One likeness per human.",
+    };
   }
 
   // Time alone is not enough: a fast double-submit, or two registrations in the
@@ -211,17 +220,29 @@ export function openChallenge(input: {
   // this, a registrant could challenge their own record with a second account
   // and route the bond to themselves. The registrant's nullifier is server-side
   // only, so this comparison never exposes either value.
-  if (input.nullifier) {
-    const registrant = db
-      .prepare("SELECT nullifier FROM likenesses WHERE id = ?")
-      .get(likeness.id) as { nullifier: string | null } | undefined;
-    if (registrant?.nullifier && registrant.nullifier === input.nullifier) {
-      return {
-        ok: false,
-        status: 409,
-        error: "This World ID belongs to the registrant. A challenge needs a different unique human.",
-      };
-    }
+  //
+  // Fail closed. The previous `if (input.nullifier)` guard was skipped entirely
+  // when the field was omitted, so a request without one created a challenge and
+  // the same human could contest their own record — the exact thing the registry
+  // claims is impossible. A missing nullifier is now a rejection, not a bypass.
+  if (!input.nullifier) {
+    return {
+      ok: false,
+      status: 400,
+      error:
+        "A World ID proof is required to challenge. A challenge must come from a different unique human than the registrant.",
+    };
+  }
+
+  const registrant = db
+    .prepare("SELECT nullifier FROM likenesses WHERE id = ?")
+    .get(likeness.id) as { nullifier: string | null } | undefined;
+  if (registrant?.nullifier && registrant.nullifier === input.nullifier) {
+    return {
+      ok: false,
+      status: 409,
+      error: "This World ID belongs to the registrant. A challenge needs a different unique human.",
+    };
   }
 
   const tier = tierOf(input.cos);
